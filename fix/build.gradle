@@ -1,0 +1,93 @@
+configurations {
+   fix
+}
+dependencies {
+   fix "com.globalforge.infix:fix:1.0"
+   runtime "org.slf4j:slf4j-simple:1.7.7"
+}
+project.ext {
+   mainClass = 'com.globalforge.infix.FixRepositoryParser'
+   resourceDir = "${rootProject.projectDir}/src/main/resources" 
+   libDir = "${rootProject.projectDir}/libs"
+   repoDir = "${projectDir}/src/main/resources" 
+}
+task(copyLib, dependsOn:assemble) {
+   copy {
+     from 'build/libs'
+     into project.ext.libDir
+   }
+}
+
+task(parseFIX40,
+   type: JavaExec, dependsOn:copyLib) {
+   main = project.ext.mainClass
+   classpath sourceSets.main.runtimeClasspath 
+   args 'FIX.4.0'
+   systemProperty 'CONFIG_DIR', project.ext.resourceDir 
+}
+
+task(parseFIX41,
+   type: JavaExec, dependsOn:parseFIX40) {
+   main = project.ext.mainClass
+   classpath sourceSets.main.runtimeClasspath
+   args 'FIX.4.1'
+   systemProperty 'CONFIG_DIR', project.ext.resourceDir 
+}
+
+task(parseFIX42,
+   type: JavaExec, dependsOn:parseFIX41) {
+   main = project.ext.mainClass
+   classpath sourceSets.main.runtimeClasspath
+   args 'FIX.4.2'
+   systemProperty 'CONFIG_DIR', project.ext.resourceDir 
+}
+
+task(parseFIX43,
+   type: JavaExec, dependsOn:parseFIX42) {
+   main = project.ext.mainClass
+   classpath sourceSets.main.runtimeClasspath
+   args 'FIX.4.3'
+   systemProperty 'CONFIG_DIR', project.ext.resourceDir 
+}
+
+task(parseFIX44,
+   type: JavaExec, dependsOn:parseFIX43) {
+   main = project.ext.mainClass
+   classpath sourceSets.main.runtimeClasspath
+   args 'FIX.4.4'
+   systemProperty 'CONFIG_DIR', project.ext.resourceDir 
+}
+
+task(parseFIX50,
+   type: JavaExec, dependsOn:parseFIX44) {
+   main = project.ext.mainClass
+   classpath sourceSets.main.runtimeClasspath
+   args 'FIX.5.0'
+   systemProperty 'CONFIG_DIR', project.ext.resourceDir 
+}
+
+task(parseFIX50SP1,
+   type: JavaExec, dependsOn:parseFIX50) {
+   main = project.ext.mainClass
+   classpath sourceSets.main.runtimeClasspath
+   args 'FIX.5.0SP1'
+   systemProperty 'CONFIG_DIR', project.ext.resourceDir 
+}
+
+task(parseFIXT11,
+   type: JavaExec, dependsOn:parseFIX50SP1) {
+   main = project.ext.mainClass
+   classpath sourceSets.main.runtimeClasspath
+   args 'FIXT.1.1'
+   systemProperty 'CONFIG_DIR', project.ext.resourceDir 
+}
+
+task(parseFIX50SP2,
+   type: JavaExec, dependsOn:parseFIXT11) {
+   main = project.ext.mainClass
+   classpath sourceSets.main.runtimeClasspath
+   args 'FIX.5.0SP2'
+   systemProperty 'CONFIG_DIR', project.ext.resourceDir 
+}
+
+task(buildXML, dependsOn:parseFIX50SP2)

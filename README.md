@@ -10,9 +10,7 @@ InFIX greatly reduces the number of code releases needed when on-boarding new FI
 Building the app
 ----------------
 Install Gradle from https://gradle.org
-Infix is tested with version 1.11
-It may not work with the latest 2.x.x version.
-This would be a great thing to do next.
+Infix is tested with version 1.11 and it may not work with the latest 2.x.x version.  This would be a great thing to do next.
 
 
 

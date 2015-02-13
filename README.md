@@ -15,12 +15,19 @@ The engine behind InFIX is ANTLR4 (http://antlr.org).  With a little work, InFIX
 
 If you care to help with any of the above, why not join the InFIX project as a developer?
 
-Building the app
-----------------
+Set up the Build Environment
+----------------------------
 Install Gradle from https://gradle.org.
 
 Infix is tested with Gradle version 1.11 and it may not work with the latest 2.x.x version.  This would be a great thing to do next.
 
+Build the App
+-------------
+The first step in the pipeline is to build the data dictionary xml for each supported FIX version by parsing the FIX repository file.
 
+All commands issued from the project root.
+./gradlew buildXML
+
+to be continued....
 
 

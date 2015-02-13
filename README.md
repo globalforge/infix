@@ -25,7 +25,7 @@ Build the App
 -------------
 The first step in the pipeline is to build the data dictionary xml for each supported FIX version by parsing the FIX repository file.
 
-All commands issued from the project root.
+All commands issued from the project root.  
 ./gradlew buildXML
 
 to be continued....

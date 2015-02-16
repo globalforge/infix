@@ -15,7 +15,8 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.sun.org.apache.xerces.internal.parsers.XMLParser;
+import com.globalforge.infix.antlr.XMLParser;
+import com.globalforge.infix.antlr.XMLParserBaseListener;
 
 /*-
  The MIT License (MIT)

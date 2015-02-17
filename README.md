@@ -23,11 +23,24 @@ Infix is tested with Gradle version 1.11 and it may not work with the latest 2.x
 
 Build the App
 -------------
-The first step in the pipeline is to build the data dictionary xml for each supported FIX version by parsing the FIX repository file.
+The first step in the pipeline is to build the data dictionaries.  This is one time operation and should never have to be done again until the FIX community releases another FIX version. Issue the below task and a data dictionary will be build for each standard FIX version.
 
 All commands issued from the project root.  
 ./gradlew buildXML
 
-to be continued....
+The above command will create a series of xml files.  One file per FIX version.  The next step is generate the java source code used by InFIX from the xml files.
+
+./gradlew buildSrc
+
+The above command generates java source code for all the FIX data dictionaries.  The next step is to build the InFIX language recognizer and compile all the source code into a single library called infix-1.0.jar
+
+./gradlew distTar
+
+The above command will create a distribution archive called infix-1.0.tar.  Unpack the tar file and proceed to the next step.
+
+Test the App
+-------------
+InFIX comes with a sample application.  Take a peek at the README.txt file in the distribution.  See if you can execute the runExample.sh program and apply rules found in the help guide at http://infix.globalforge.com/roadmap.html
+
 
 

@@ -565,7 +565,7 @@ public class FixMessageMgr {
         putField(Integer.toString(10), String.format("%03d", checkSum % 256),
             false);
         InfixField chksum = getField(10);
-        str.append(chksum);
+        str.append(chksum).append('\u0001');
         return str.toString();
     }
 

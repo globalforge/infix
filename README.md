@@ -9,7 +9,7 @@ InFIX greatly reduces the number of code releases needed when on-boarding new FI
 
 Preamble
 --------
-InFIX is a Java 1.7 application built on an Apple MacBook Air running OS X version 10.10.2 but it should be buildable on any UNIX-like platform.  Work is needed to enhance the build scripts to produce a Windows executable.  Care to help?
+InFIX is a Java 1.7 application built on an Apple MacBook Air running OS X version 10.10.2 but it should be buildable on any UNIX-like platform.  Work is needed to enhance the build scripts to build on windoes.  The only obstacle is a shell script called buildAntlr.sh that get's called during the build process to run Antlr.  The script should be ported to native Gradle commands.  Care to help?
 
 The engine behind InFIX is ANTLR4 (http://antlr.org).  With a little work, InFIX can be ported to C#, Python (2 and 3) and at some point in the future C++. The language limitations are due to currently supported code generation targets by Antlr4.
 

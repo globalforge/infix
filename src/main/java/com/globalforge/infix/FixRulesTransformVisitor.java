@@ -56,6 +56,8 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     /** logger */
     final static Logger logger = LoggerFactory
         .getLogger(FixRulesTransformVisitor.class);
+    private static final int LEFT = 0;
+    private static final int RIGHT = 1;
     private FixMessageMgr msgMgr = null;
     private final SimpleDateFormat datetime = new SimpleDateFormat(
         "yyyyMMdd-HH:mm:ss.SSS");
@@ -63,7 +65,6 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     private String fixMessage = null;
     private boolean isStatementTrue = false;
     private final Deque<String> ctxTree = new LinkedBlockingDeque<String>();
-    private final FixTimeChecker timeChecker = new FixTimeChecker();
 
     /**
      * Initialize the rule engine with a Fix input string.
@@ -90,10 +91,6 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     @Override
     public String visitParseRules(@NotNull FixRulesParser.ParseRulesContext ctx) {
         try {
-            // //////////////////////////////////////////
-            // CAUTION: USE ONLY FOR DEMO LICENSE !!! //
-            // //////////////////////////////////////////
-            // timeChecker.checkTime();
             msgMgr = new FixMessageMgr(fixMessage);
         } catch (Exception e) {
             logger.error(
@@ -124,7 +121,6 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      */
     @Override
     public String visitAction(@NotNull FixRulesParser.ActionContext ctx) {
-        ctxTree.clear();
         return visitChildren(ctx);
     }
 
@@ -196,12 +192,34 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     }
 
     /**
+     * Exchange tags.
+     */
+    public String visitExchange(@NotNull FixRulesParser.ExchangeContext ctx) {
+        String lTagNum = ctx.tag(LEFT).tagref().tn.getText();
+        String rTagNum = ctx.tag(RIGHT).tagref().tn.getText();
+        // No one messes with 8 or 35. Too bad!
+        if (lTagNum.equals("8") || lTagNum.equals("35")) { return null; }
+        if (rTagNum.equals("8") || rTagNum.equals("35")) { return null; }
+        String lRef = visit(ctx.tag(LEFT));
+        Deque<String> lCtx = new LinkedBlockingDeque<String>(ctxTree);
+        String rRef = visit(ctx.tag(RIGHT));
+        Deque<String> rCtx = new LinkedBlockingDeque<String>(ctxTree);
+        InfixField lValue = msgMgr.getContext(lRef);
+        InfixField rValue = msgMgr.getContext(rRef);
+        if (lValue == null || rValue == null) { return null; }
+        msgMgr.putContext(lCtx, lTagNum, rValue.getTagVal());
+        msgMgr.putContext(rCtx, rTagNum, lValue.getTagVal());
+        return null;
+    }
+
+    /**
      * Do something with a tag. Just continues on visiting the children.
      * 
      * @see FixRulesParser.TagContext
      */
     @Override
     public String visitTag(@NotNull FixRulesParser.TagContext ctx) {
+        ctxTree.clear();
         return visitChildren(ctx);
     }
 
@@ -301,8 +319,15 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      */
     @Override
     public String visitMyTag(@NotNull FixRulesParser.MyTagContext ctx) {
-        String tagValue = null;
         String context = ctx.tag().getText();
+        return getTag(context);
+    }
+
+    /**
+     * Given a tag context, lookup up the value.
+     */
+    private String getTag(String context) {
+        String tagValue = null;
         InfixField field = msgMgr.getContext(context);
         if (field != null) {
             tagValue = field.getTagVal();
@@ -382,8 +407,9 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      */
     @Override
     public String visitAddSub(@NotNull FixRulesParser.AddSubContext ctx) {
-        String left = visit(ctx.expr(0)); // get value of left subexpression
-        String right = visit(ctx.expr(1)); // get value of right subexpression
+        String left = visit(ctx.expr(LEFT)); // get value of left subexpression
+        String right = visit(ctx.expr(RIGHT)); // get value of right
+                                               // subexpression
         if ((left == null) || (right == null)) {
             logger.warn("null field in 'Add/Sub'. No assignment: {}",
                 ctx.getText());
@@ -412,8 +438,9 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      */
     @Override
     public String visitMulDiv(@NotNull FixRulesParser.MulDivContext ctx) {
-        String left = visit(ctx.expr(0)); // get value of left subexpression
-        String right = visit(ctx.expr(1)); // get value of right subexpression
+        String left = visit(ctx.expr(LEFT)); // get value of left subexpression
+        String right = visit(ctx.expr(RIGHT)); // get value of right
+                                               // subexpression
         if ((left == null) || (right == null)) {
             logger.warn("null field in 'Mul/Div'. No assignment: {}",
                 ctx.getText());
@@ -440,8 +467,9 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      */
     @Override
     public String visitCat(@NotNull FixRulesParser.CatContext ctx) {
-        String left = visit(ctx.expr(0)); // get value of left subexpression
-        String right = visit(ctx.expr(1)); // get value of right subexpression
+        String left = visit(ctx.expr(LEFT)); // get value of left subexpression
+        String right = visit(ctx.expr(RIGHT)); // get value of right
+                                               // subexpression
         if ((left == null) || (right == null)) {
             logger.warn("null field in '|'. No assignment: {}", ctx.getText());
             return null;
@@ -677,9 +705,9 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      */
     @Override
     public String visitAndOr(@NotNull FixRulesParser.AndOrContext ctx) {
-        visit(ctx.iff(0)); // left
+        visit(ctx.iff(LEFT)); // left
         boolean leftIsTrue = isStatementTrue;
-        visit(ctx.iff(1)); // right
+        visit(ctx.iff(RIGHT)); // right
         switch (ctx.op.getType()) {
             case FixRulesParser.AND:
                 isStatementTrue = leftIsTrue && isStatementTrue;

@@ -31,7 +31,7 @@ parseRules      :   fixrules;
 
 fixrules        :   action (';' action)* ';'? ;
 														
-action          :   assign | unary | conditional | userdef;
+action          :   assign | exchange | unary | conditional | userdef;
 
 conditional     :   iff then (els)? ;
 
@@ -44,6 +44,8 @@ qualifiedName   :   Identifier ('.' Identifier)* ;
 Identifier      :   Letter (Letter|JavaIDDigit)* ;
 			
 assign          :   tag EQ expr;
+
+exchange        :   tag FLP tag;
 
 tag             :   ref* tagref;        // (&382[1]->)*&375  
 
@@ -69,14 +71,6 @@ expr            :   expr op=(MUL|DIV) expr      # MulDiv
                 |   template                    # AutoGen
                 |   '(' expr ')'                # Parens
                 ;
-/*               
-intexpr         :   intexpr op=(MUL|DIV) intexpr      # IntMulDiv
-                |   intexpr op=(ADD|MINUS) intexpr    # IntAddSub
-                |   intexpr CT intexpr                # ICat
-                |   INT                               # IInt
-                |   '(' intexpr ')'                   # IParens
-                ;		
-*/	
 			
 terminal        :   tag             # myTag
                 |   userTerm        # myUserTerm
@@ -113,6 +107,7 @@ is              :   IS tg=terminal ;
 then            :   '?' fixrules	;
 els             :   ':' fixrules	;
 
+FLP				: '<->';
 DEL             : '~'  ;
 CT              : '|'  ;
 IEQ             : '==' ;

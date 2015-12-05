@@ -13,6 +13,6 @@ import org.junit.runners.Suite;
     TestFixField.class, TestGroup.class, TestIs.class, TestIsEqual.class,
     TestIsGreater.class, TestIsGreaterEquals.class, TestIsLess.class,
     TestIsLessEquals.class, TestIsNotEqual.class, TestNot.class,
-    TestUnary.class, TestUserDev.class })
+    TestUnary.class, TestUserDev.class, TestExchange.class })
 public class TestAllSuite {
 }

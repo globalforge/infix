@@ -8,7 +8,7 @@ allprojects {
     //apply plugin: 'jdepend'
     apply plugin: 'pmd'
     group = 'com.globalforge.infix'
-    version = '1.0'
+    version = '1.1'
 
     jar {
         manifest.attributes provider: 'GlobalForge'
@@ -73,7 +73,7 @@ apply plugin: 'distribution'
 distributions {
      main {
          contents {
-             from "build/libs/infix-1.0.jar"
+             from "build/libs/infix-1.1.jar"
              from "libs/antlr-4.4-complete.jar"
              from "libs/slf4j-api-1.7.7.jar"
              from "libs/slf4j-simple-1.7.7.jar"
@@ -84,7 +84,7 @@ configurations {
    main 
 }
 dependencies {
-   main "com.globalforge.infix:infix:1.0"
+   main "com.globalforge.infix:infix:1.1"
 }
 project.ext {
    outputDir = "${projectDir}/src/main/java/com/globalforge/infix/antlr"
@@ -127,6 +127,7 @@ task cleanAll(type: Delete) {
    delete "${rootProject.projectDir}/fix/build"
    delete "${rootProject.projectDir}/dict/build-eclipse"
    delete "${rootProject.projectDir}/dict/build"
+   delete "${rootProject.projectDir}/src/main/dist/infix-1.1.jar"
    delete "${rootProject.projectDir}/src/main/dist/infix-1.0.jar"
    delete "${rootProject.projectDir}/src/main/dist/antlr-4.4-complete.jar"
    delete "${rootProject.projectDir}/src/main/dist/slf4j-simple-1.7.7.jar"

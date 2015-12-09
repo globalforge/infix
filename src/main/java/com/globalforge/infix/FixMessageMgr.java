@@ -77,6 +77,12 @@ public class FixMessageMgr {
         parseMessage(baseMsg);
     }
 
+    public FixMessageMgr(String tag8Value, String tag35Value) throws Exception {
+        init(tag8Value);
+        putFieldFromMsgParse("8", tag8Value);
+        putFieldFromMsgParse("35", tag35Value);
+    }
+
     /**
      * Obtain a view into the context dictionary.
      * 
@@ -84,7 +90,7 @@ public class FixMessageMgr {
      * the tag number in rule syntax. The value is the unique decimal which
      * describes the order the fix field appears in the fix message.
      */
-    public Map<String, BigDecimal> getCtxToOrderDict() {
+    Map<String, BigDecimal> getCtxToOrderDict() {
         return new HashMap<String, BigDecimal>(ctxDict);
     }
 
@@ -96,7 +102,7 @@ public class FixMessageMgr {
      * message and value represents the fix field containing both tag number and
      * tag value.
      */
-    public Map<BigDecimal, InfixField> getOrderToFieldDict() {
+    Map<BigDecimal, InfixField> getOrderToFieldDict() {
         return new HashMap<BigDecimal, InfixField>(fldDict);
     }
 
@@ -106,7 +112,7 @@ public class FixMessageMgr {
      * @return Map<String, FixField>. The key is the tag number in rule syntax
      * and the value is the fix data wrapped in {@link InfixField}.
      */
-    public Map<String, InfixField> getCtxToFieldDict() {
+    Map<String, InfixField> getCtxToFieldDict() {
         Map<String, InfixField> retMap = new HashMap<String, InfixField>();
         String[] keySet = ctxDict.keySet().toArray(new String[ctxDict.size()]);
         for (String ctx : keySet) {
@@ -123,7 +129,7 @@ public class FixMessageMgr {
      * @return Map<Integer, FixField>. The key is the tag number and the value
      * is the fix data wrapped in {@link InfixField}.
      */
-    public Map<Integer, InfixField> getTagNumToFieldDict() {
+    Map<Integer, InfixField> getTagNumToFieldDict() {
         Map<Integer, InfixField> retMap = new HashMap<Integer, InfixField>();
         String[] keySet = ctxDict.keySet().toArray(new String[ctxDict.size()]);
         for (String ctx : keySet) {
@@ -147,12 +153,8 @@ public class FixMessageMgr {
         InstantiationException, IllegalAccessException {
         ctxDict.clear();
         fldDict.clear();
-        // long start = System.nanoTime();
         int p = 0;
         int prev = 0;
-        // 45=FOO^A 10=001^A
-        // final LinkedList<String> lst = new LinkedList<String>();
-        // System.out.println(baseMsg);
         String field = null;
         while ((p = baseMsg.indexOf('\001', prev)) != -1) {
             field = baseMsg.substring(prev, p);
@@ -160,38 +162,12 @@ public class FixMessageMgr {
             if (field == null || field.isEmpty()) {
                 continue;
             }
-            // System.out.println("field=" + field);
-            // lst.add(field);
             parseField(field.trim());
-            // if (prev > baseMsg.length()) {
-            // }
         }
         field = baseMsg.substring(prev);
         if (field != null && !field.isEmpty()) {
             parseField(field.trim());
-            // lst.add(field);
         }
-        /*-
-        Iterator<String> it = lst.iterator();
-        while (it.hasNext()) {
-            field = it.next();
-            // System.out.println(field);
-            parseField(field.trim());
-        }
-         */
-        /*-
-        String[] fields = baseMsg.split(String.valueOf('\001'));
-        for (String field : fields) {
-            if (field == null || field.isEmpty()) {
-                continue;
-            }
-            parseField(field.trim());
-        }
-         */
-        // long diff = System.nanoTime() - start;
-        // System.out.println("parse time: "
-        // + TimeUnit.MILLISECONDS.convert(diff, TimeUnit.NANOSECONDS));
-        // printDict(); // debug
     }
 
     /**
@@ -211,9 +187,6 @@ public class FixMessageMgr {
         int index = fixField.indexOf('=');
         String tagNum = fixField.substring(0, index);
         String tagVal = fixField.substring(index + 1);
-        // String[] tagAndVal = fixField.split("=");
-        // String tagNum = tagAndVal[0];
-        // String tagVal = tagAndVal[1];
         if (tagNum.equals("8")) {
             init(tagVal);
         }
@@ -242,7 +215,7 @@ public class FixMessageMgr {
      * 
      * @return String The Fix message type.
      */
-    String getMsgType() {
+    private String getMsgType() {
         String tagVal = null;
         InfixField msgType = getField(35);
         if (msgType != null) {

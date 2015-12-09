@@ -145,6 +145,13 @@ public class InfixActions {
         return result;
     }
 
+    public String transformFIXMsg(String tag8Value, String tag35Value) {
+        FixRulesTransformVisitor visitor =
+            new FixRulesTransformVisitor(tag8Value, tag35Value);
+        String result = visitor.visit(tree);
+        return result;
+    }
+
     /**
      * Returns an antlr rule tree for debugging.
      */

@@ -7,7 +7,7 @@ The example app is scripted to run on Unix flavored Systems.
 Contents include:
 	#1 Antlr 4.3 libraries (http://antlr.org)
 	#2 Simple Logging Facade (http://slf4j.org)
-	#3 Infix library (infix-1.0-pub.jar)
+	#3 Infix library (infix-1.1.jar)
 	#4 Sample Application.
 
 See runExample.sh to see how to build the classpath and run the sample

@@ -646,6 +646,41 @@ public class TestUserDev {
         }
     }
 
+    @Test
+    public void t35() {
+        try {
+            String sampleRule = "{com.globalforge.infix.TestUserDev$UserCtx12}";
+            InfixActions rules = new InfixActions(sampleRule);
+            String result = rules.transformFIXMsg("FIX.4.4", "D");
+            ArrayList<InfixField> myList =
+                StaticTestingUtils.parseMessageIntoList(result);
+            InfixField fld = myList.get(3);
+            Assert.assertEquals("FOO", fld.getTagVal());
+            Assert.assertEquals(42, fld.getTagNum());
+        } catch (Throwable t) {
+            t.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    public void t36() {
+        try {
+            String sampleRule =
+                "{com.globalforge.infix.TestUserDev$UserCtx12};&42=\"BAR\"";
+            InfixActions rules = new InfixActions(sampleRule);
+            String result = rules.transformFIXMsg("FIX.4.4", "D");
+            ArrayList<InfixField> myList =
+                StaticTestingUtils.parseMessageIntoList(result);
+            InfixField fld = myList.get(3);
+            Assert.assertEquals("BAR", fld.getTagVal());
+            Assert.assertEquals(42, fld.getTagNum());
+        } catch (Throwable t) {
+            t.printStackTrace();
+            fail();
+        }
+    }
+
     public static class UTerm1 implements InfixUserTerminal {
         @Override
         public String visitTerminal(InfixAPI infixApi) {
@@ -862,6 +897,20 @@ public class TestUserDev {
             myMap.put("&555[0]->&539[1]->&525", "525");
             myMap.put("&555[0]->&539[1]->&538", "538");
             myMap.put("&999", "999");
+            infixApi.putMessageDict(myMap);
+        }
+    }
+
+    public static class UserCtx12 implements InfixUserContext {
+        @Override
+        public String visitMessage(String fixMessage) {
+            return fixMessage;
+        }
+
+        @Override
+        public void visitInfixAPI(InfixAPI infixApi) {
+            Map<String, String> myMap = new HashMap<String, String>();
+            myMap.put("&42", "FOO");
             infixApi.putMessageDict(myMap);
         }
     }

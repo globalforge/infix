@@ -65,6 +65,8 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     private String fixMessage = null;
     private boolean isStatementTrue = false;
     private final Deque<String> ctxTree = new LinkedBlockingDeque<String>();
+    private final String tag8Value;
+    private final String tag35Value;
 
     /**
      * Initialize the rule engine with a Fix input string.
@@ -73,6 +75,13 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      */
     public FixRulesTransformVisitor(String fixMsg) {
         this.fixMessage = fixMsg;
+        this.tag8Value = null;
+        this.tag35Value = null;
+    }
+
+    public FixRulesTransformVisitor(String tag8Value, String tag35Value) {
+        this.tag8Value = tag8Value;
+        this.tag35Value = tag35Value;
     }
 
     /**
@@ -91,7 +100,11 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     @Override
     public String visitParseRules(@NotNull FixRulesParser.ParseRulesContext ctx) {
         try {
-            msgMgr = new FixMessageMgr(fixMessage);
+            if (fixMessage != null) {
+                msgMgr = new FixMessageMgr(fixMessage);
+            } else {
+                msgMgr = new FixMessageMgr(tag8Value, tag35Value);
+            }
         } catch (Exception e) {
             logger.error(
                 "Bad message or unsupported fix version....parser HALT.", e);

@@ -59,8 +59,10 @@ class FixAPIImpl implements InfixAPI {
      */
     @Override
     public void putContext(String ctx, String tagVal) {
-        if (ctx.equals("&8") || ctx.equals("&35")) { throw new IllegalArgumentException(
-            "Assign tag 8 or 35 before calling InfixAPI"); }
+        if (ctx.equals("&8")) { throw new IllegalArgumentException(
+            "Invalid context change.  Can't change FIX Version."); }
+        if (ctx.equals("&35")) { throw new IllegalArgumentException(
+            "Invalid context change.  Can't change Msg Type."); }
         FixContextBuilder ctxBldr = new FixContextBuilder();
         ctxBldr.parseContext(ctx);
         fldMgr.putContext(ctxBldr.getContexts(), ctxBldr.getTagNum(), tagVal);

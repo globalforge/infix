@@ -53,7 +53,8 @@ class FixAPIImpl implements InfixAPI {
     }
 
     /**
-     * Insert a fix context into memory during a rule parse.
+     * Insert a fix context into memory during a rule parse. FixVersion and
+     * MsgType are not permitted to be modified.
      * 
      * @see InfixAPI#putContext(String, String)
      */

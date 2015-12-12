@@ -145,6 +145,21 @@ public class InfixActions {
         return result;
     }
 
+    /**
+     * Accepts a FIX version and MsgType, applies rules, and returns a
+     * tranformed FIX message. It's up to the user to add meaningful tag
+     * references and values during the rules parse. Currently, the only way to
+     * achieve that is using the user defined behavior API which can offer an
+     * implementation of the InfixAPI. The InfixAPI provides methods to insert
+     * tag references and values as if they were parsed from a FIX message. The
+     * only restrictions is that you must know the FIX version and MsgType ahead
+     * of time which defines the message you will populate and for which any
+     * subsequent rules apply.
+     * 
+     * @param tag8Value FIX version
+     * @param tag35Value Message Type
+     * @return String the transformed fix message.
+     */
     public String transformFIXMsg(String tag8Value, String tag35Value) {
         FixRulesTransformVisitor visitor =
             new FixRulesTransformVisitor(tag8Value, tag35Value);

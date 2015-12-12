@@ -681,6 +681,20 @@ public class TestUserDev {
         }
     }
 
+    public static class UserCtx12 implements InfixUserContext {
+        @Override
+        public String visitMessage(String fixMessage) {
+            return fixMessage;
+        }
+
+        @Override
+        public void visitInfixAPI(InfixAPI infixApi) {
+            Map<String, String> myMap = new HashMap<String, String>();
+            myMap.put("&42", "FOO");
+            infixApi.putMessageDict(myMap);
+        }
+    }
+
     public static class UTerm1 implements InfixUserTerminal {
         @Override
         public String visitTerminal(InfixAPI infixApi) {
@@ -897,20 +911,6 @@ public class TestUserDev {
             myMap.put("&555[0]->&539[1]->&525", "525");
             myMap.put("&555[0]->&539[1]->&538", "538");
             myMap.put("&999", "999");
-            infixApi.putMessageDict(myMap);
-        }
-    }
-
-    public static class UserCtx12 implements InfixUserContext {
-        @Override
-        public String visitMessage(String fixMessage) {
-            return fixMessage;
-        }
-
-        @Override
-        public void visitInfixAPI(InfixAPI infixApi) {
-            Map<String, String> myMap = new HashMap<String, String>();
-            myMap.put("&42", "FOO");
             infixApi.putMessageDict(myMap);
         }
     }

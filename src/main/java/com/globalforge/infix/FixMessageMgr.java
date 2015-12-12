@@ -90,7 +90,7 @@ public class FixMessageMgr {
      * the tag number in rule syntax. The value is the unique decimal which
      * describes the order the fix field appears in the fix message.
      */
-    Map<String, BigDecimal> getCtxToOrderDict() {
+    public Map<String, BigDecimal> getCtxToOrderDict() {
         return new HashMap<String, BigDecimal>(ctxDict);
     }
 
@@ -102,7 +102,7 @@ public class FixMessageMgr {
      * message and value represents the fix field containing both tag number and
      * tag value.
      */
-    Map<BigDecimal, InfixField> getOrderToFieldDict() {
+    public Map<BigDecimal, InfixField> getOrderToFieldDict() {
         return new HashMap<BigDecimal, InfixField>(fldDict);
     }
 
@@ -112,7 +112,7 @@ public class FixMessageMgr {
      * @return Map<String, FixField>. The key is the tag number in rule syntax
      * and the value is the fix data wrapped in {@link InfixField}.
      */
-    Map<String, InfixField> getCtxToFieldDict() {
+    public Map<String, InfixField> getCtxToFieldDict() {
         Map<String, InfixField> retMap = new HashMap<String, InfixField>();
         String[] keySet = ctxDict.keySet().toArray(new String[ctxDict.size()]);
         for (String ctx : keySet) {
@@ -129,7 +129,7 @@ public class FixMessageMgr {
      * @return Map<Integer, FixField>. The key is the tag number and the value
      * is the fix data wrapped in {@link InfixField}.
      */
-    Map<Integer, InfixField> getTagNumToFieldDict() {
+    public Map<Integer, InfixField> getTagNumToFieldDict() {
         Map<Integer, InfixField> retMap = new HashMap<Integer, InfixField>();
         String[] keySet = ctxDict.keySet().toArray(new String[ctxDict.size()]);
         for (String ctx : keySet) {

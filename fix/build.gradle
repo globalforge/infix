@@ -2,7 +2,7 @@ configurations {
    fix
 }
 dependencies {
-   fix "com.globalforge.infix:fix:1.0"
+   fix "com.globalforge.infix:fix:1.1"
    runtime "org.slf4j:slf4j-simple:1.7.7"
 }
 project.ext {

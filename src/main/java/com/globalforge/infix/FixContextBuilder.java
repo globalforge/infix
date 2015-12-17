@@ -83,11 +83,11 @@ final class FixContextBuilder {
      */
     private void buildContext(LinkedBlockingDeque<String> contexts) {
         String top = contexts.peek();
-        if (!top.contains(REF)) {
+        if (!top.contains(FixContextBuilder.REF)) {
             ctxs = this.reverseStack(contexts);
             return;
         }
-        if (top.endsWith(REF)) {
+        if (top.endsWith(FixContextBuilder.REF)) {
             // Isolate the tag index. If > 0, decrement and return else strip
             // off the tag index and ref.
             int firstBrk = top.lastIndexOf("[");
@@ -106,8 +106,9 @@ final class FixContextBuilder {
         } else {
             // strip off the tag ref, push what is lef onto the stack and
             // return;
-            int refIdx = top.lastIndexOf(REF);
-            String nextTop = top.substring(0, refIdx + REF.length());
+            int refIdx = top.lastIndexOf(FixContextBuilder.REF);
+            String nextTop =
+                top.substring(0, refIdx + FixContextBuilder.REF.length());
             contexts.push(nextTop);
         }
         buildContext(contexts);
@@ -158,13 +159,13 @@ final class FixContextBuilder {
      * @param ctxs The context indicators for the tag.
      */
     static void printCtx(Deque<String> ctxs) {
-        logger.info("----- begin ctxs -----");
+        FixContextBuilder.logger.info("----- begin ctxs -----");
         Iterator<String> it = ctxs.iterator();
         while (it.hasNext()) {
             String ctx = it.next();
-            logger.info(ctx);
+            FixContextBuilder.logger.info(ctx);
         }
-        logger.info("------ end ctxs ------");
+        FixContextBuilder.logger.info("------ end ctxs ------");
     }
 
     /**

@@ -921,7 +921,7 @@ public class TestGroup {
             // NPSG15451 | 3
             sampleRule = "&555[0]->&539[1]->&804[0]->&545=\"MY_ACCT1\"";
             rules = new InfixActions(sampleRule);
-            result = rules.transformFIXMsg(sampleMsg9, true);
+            result = rules.transformFIXMsg(TestGroup.sampleMsg9, true);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(25);

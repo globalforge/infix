@@ -22,7 +22,8 @@ public class TestExchange {
         try {
             String action = "&49<->&56";
             InfixActions rules = new InfixActions(action);
-            String result = rules.transformFIXMsg(sampleMessage, true); // System.out.println(result);
+            String result =
+                rules.transformFIXMsg(TestExchange.sampleMessage, true); // System.out.println(result);
             ListMultimap<Integer, String> resultStore =
                 StaticTestingUtils.parseMessage(result);
             String r = resultStore.get(56).get(0);
@@ -42,7 +43,8 @@ public class TestExchange {
         try {
             String action = "&49=&100";
             InfixActions rules = new InfixActions(action);
-            String result = rules.transformFIXMsg(sampleMessage, true); // System.out.println(result);
+            String result =
+                rules.transformFIXMsg(TestExchange.sampleMessage, true); // System.out.println(result);
             ListMultimap<Integer, String> resultStore =
                 StaticTestingUtils.parseMessage(result);
             String r = resultStore.get(49).get(0);
@@ -62,7 +64,8 @@ public class TestExchange {
         try {
             String action = "&49<->&382[0]->&375";
             InfixActions rules = new InfixActions(action);
-            String result = rules.transformFIXMsg(sampleMessage, true); // System.out.println(result);
+            String result =
+                rules.transformFIXMsg(TestExchange.sampleMessage, true); // System.out.println(result);
             // System.out.println(sampleMessage);
             // System.out.println(result);
             ListMultimap<Integer, String> resultStore =
@@ -82,7 +85,8 @@ public class TestExchange {
         try {
             String action = "&382[0]->&375<->&382[1]->&375";
             InfixActions rules = new InfixActions(action);
-            String result = rules.transformFIXMsg(sampleMessage, true); // System.out.println(result);
+            String result =
+                rules.transformFIXMsg(TestExchange.sampleMessage, true); // System.out.println(result);
             // System.out.println(sampleMessage);
             // System.out.println(result);
             ListMultimap<Integer, String> resultStore =
@@ -102,7 +106,8 @@ public class TestExchange {
         try {
             String action = "&382[1]->&375<->&382[0]->&375";
             InfixActions rules = new InfixActions(action);
-            String result = rules.transformFIXMsg(sampleMessage, true); // System.out.println(result);
+            String result =
+                rules.transformFIXMsg(TestExchange.sampleMessage, true); // System.out.println(result);
             // System.out.println(sampleMessage);
             // System.out.println(result);
             ListMultimap<Integer, String> resultStore =

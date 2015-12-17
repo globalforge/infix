@@ -40,6 +40,56 @@ public class TestAssignTerminals {
             Assert.fail();
         }
     }
+    static final String sampleMessageNonNumeric = "8=FIX.4.4" + '\u0001'
+        + "9=1042" + '\u0001' + "35=D" + '\u0001' + "44=3.142" + '\u0001'
+        + "43=-1" + '\u0001' + "-43=-1" + '\u0001' + "-44=1" + '\u0001'
+        + "45=0" + '\u0001' + "FOO=0" + '\u0001' + "BAR=NONSENSE" + '\u0001'
+        + "&=Ridiculous" + '\u0001' + "78=2" + '\u0001' + "79=FOO" + '\u0001'
+        + "80=eb8cd" + '\u0001' + "79=BAR" + '\u0001' + "80=8dhosb" + '\u0001'
+        + "10=004";
+
+    @Test
+    public void testTagNonNumeric1() {
+        try {
+            sampleRule = "&BAR=\"D\"";
+            rules = new InfixActions(sampleRule);
+            Assert.fail();
+        } catch (Exception e) {
+        }
+    }
+
+    @Test
+    public void testTagNonNumeric2() {
+        try {
+            sampleRule = "&43=\"NNT2\"";
+            rules = new InfixActions(sampleRule);
+            result =
+                rules
+                    .transformFIXMsg(TestAssignTerminals.sampleMessageNonNumeric);
+            resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertEquals(resultStore.get(43).get(0), "NNT2");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testTagNonNumeric3() {
+        try {
+            sampleRule = "&-43=\"NNT2\"";
+            rules = new InfixActions(sampleRule);
+            result =
+                rules
+                    .transformFIXMsg(TestAssignTerminals.sampleMessageNonNumeric);
+            System.out.println(StaticTestingUtils.rs(result));
+            resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertEquals(resultStore.get(-43).get(0), "NNT2");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
 
     @Test
     public void testTagINT() {
@@ -440,7 +490,7 @@ public class TestAssignTerminals {
                 "&35=8;&683=2;&683[0]->&688=0;&683[0]->&689=1;&683[1]->&688=3;&683[1]->&689=4"; // 1
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestAssignTerminals.sampleMessage1);
-            System.out.println(StaticTestingUtils.rs(result));
+            // System.out.println(StaticTestingUtils.rs(result));
             resultStore = StaticTestingUtils.parseMessage(result);
             Assert.assertEquals("2", resultStore.get(683).get(0));
             Assert.assertEquals("0", resultStore.get(688).get(0));

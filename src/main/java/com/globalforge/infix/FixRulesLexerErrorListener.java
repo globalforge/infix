@@ -57,7 +57,7 @@ public class FixRulesLexerErrorListener extends BaseErrorListener {
         if ((sourceName != null) && !sourceName.isEmpty()) {
             logMsg = String.format(logMsg + ": sourceName: " + sourceName);
         }
-        logger.error(logMsg);
+        FixRulesLexerErrorListener.logger.error(logMsg);
         throw new RuntimeException(logMsg);
     }
 }

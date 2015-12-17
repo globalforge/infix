@@ -3,8 +3,8 @@ package com.globalforge.infix;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import com.globalforge.infix.api.InfixActions;
 import com.globalforge.infix.api.InfixAPI;
+import com.globalforge.infix.api.InfixActions;
 import com.globalforge.infix.api.InfixUserTerminal;
 import com.google.common.collect.ListMultimap;
 

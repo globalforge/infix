@@ -119,7 +119,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
                 msgMgr = new FixMessageMgr(tag8Value, tag35Value);
             }
         } catch (Exception e) {
-            logger.error(
+            FixRulesTransformVisitor.logger.error(
                 "Bad message or unsupported fix version....parser HALT.", e);
             return null;
         }
@@ -171,7 +171,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
             // groups differ between version or msg type.
             msgMgr = new FixMessageMgr(fixMsg);
         } catch (Exception e) {
-            logger
+            FixRulesTransformVisitor.logger
                 .error(
                     "Can not re-parse message after tag 8 or tag 35 assignment. Rolling back assignment.",
                     e);
@@ -199,7 +199,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         String tagNum = ctx.tag().tagref().tn.getText();
         String tagVal = visit(ctx.expr());
         // This prevents any assignment
-        if (tagNum == null || tagVal == null) { return null; }
+        if ((tagNum == null) || (tagVal == null)) { return null; }
         // If the user is re-assigning the fix version or the msg type we need
         // to re-parse the message once we store the value and complete the
         // assignment.
@@ -221,19 +221,22 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      * Exchange tags. Exchanges value between two tags without resorting to
      * assignment to a temporary variable using other infix operators.
      */
+    @Override
     public String visitExchange(@NotNull FixRulesParser.ExchangeContext ctx) {
-        String lTagNum = ctx.tag(LEFT).tagref().tn.getText();
-        String rTagNum = ctx.tag(RIGHT).tagref().tn.getText();
+        String lTagNum =
+            ctx.tag(FixRulesTransformVisitor.LEFT).tagref().tn.getText();
+        String rTagNum =
+            ctx.tag(FixRulesTransformVisitor.RIGHT).tagref().tn.getText();
         // No one messes with 8 or 35. Too bad!
         if (lTagNum.equals("8") || lTagNum.equals("35")) { return null; }
         if (rTagNum.equals("8") || rTagNum.equals("35")) { return null; }
-        String lRef = visit(ctx.tag(LEFT));
+        String lRef = visit(ctx.tag(FixRulesTransformVisitor.LEFT));
         Deque<String> lCtx = new LinkedBlockingDeque<String>(ctxTree);
-        String rRef = visit(ctx.tag(RIGHT));
+        String rRef = visit(ctx.tag(FixRulesTransformVisitor.RIGHT));
         Deque<String> rCtx = new LinkedBlockingDeque<String>(ctxTree);
         InfixField lValue = msgMgr.getContext(lRef);
         InfixField rValue = msgMgr.getContext(rRef);
-        if (lValue == null || rValue == null) { return null; }
+        if ((lValue == null) || (rValue == null)) { return null; }
         msgMgr.putContext(lCtx, lTagNum, rValue.getTagVal());
         msgMgr.putContext(rCtx, rTagNum, lValue.getTagVal());
         return null;
@@ -434,12 +437,18 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      */
     @Override
     public String visitAddSub(@NotNull FixRulesParser.AddSubContext ctx) {
-        String left = visit(ctx.expr(LEFT)); // get value of left subexpression
-        String right = visit(ctx.expr(RIGHT)); // get value of right
-                                               // subexpression
+        String left = visit(ctx.expr(FixRulesTransformVisitor.LEFT)); // get
+                                                                      // value
+                                                                      // of left
+                                                                      // subexpression
+        String right = visit(ctx.expr(FixRulesTransformVisitor.RIGHT)); // get
+                                                                        // value
+                                                                        // of
+                                                                        // right
+        // subexpression
         if ((left == null) || (right == null)) {
-            logger.warn("null field in 'Add/Sub'. No assignment: {}",
-                ctx.getText());
+            FixRulesTransformVisitor.logger.warn(
+                "null field in 'Add/Sub'. No assignment: {}", ctx.getText());
             return null;
         }
         BigDecimal result = null;
@@ -465,12 +474,18 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      */
     @Override
     public String visitMulDiv(@NotNull FixRulesParser.MulDivContext ctx) {
-        String left = visit(ctx.expr(LEFT)); // get value of left subexpression
-        String right = visit(ctx.expr(RIGHT)); // get value of right
-                                               // subexpression
+        String left = visit(ctx.expr(FixRulesTransformVisitor.LEFT)); // get
+                                                                      // value
+                                                                      // of left
+                                                                      // subexpression
+        String right = visit(ctx.expr(FixRulesTransformVisitor.RIGHT)); // get
+                                                                        // value
+                                                                        // of
+                                                                        // right
+        // subexpression
         if ((left == null) || (right == null)) {
-            logger.warn("null field in 'Mul/Div'. No assignment: {}",
-                ctx.getText());
+            FixRulesTransformVisitor.logger.warn(
+                "null field in 'Mul/Div'. No assignment: {}", ctx.getText());
             return null;
         }
         BigDecimal result = null;
@@ -494,11 +509,18 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      */
     @Override
     public String visitCat(@NotNull FixRulesParser.CatContext ctx) {
-        String left = visit(ctx.expr(LEFT)); // get value of left subexpression
-        String right = visit(ctx.expr(RIGHT)); // get value of right
-                                               // subexpression
+        String left = visit(ctx.expr(FixRulesTransformVisitor.LEFT)); // get
+                                                                      // value
+                                                                      // of left
+                                                                      // subexpression
+        String right = visit(ctx.expr(FixRulesTransformVisitor.RIGHT)); // get
+                                                                        // value
+                                                                        // of
+                                                                        // right
+        // subexpression
         if ((left == null) || (right == null)) {
-            logger.warn("null field in '|'. No assignment: {}", ctx.getText());
+            FixRulesTransformVisitor.logger.warn(
+                "null field in '|'. No assignment: {}", ctx.getText());
             return null;
         }
         return left + right;
@@ -550,7 +572,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         TerminalContext rVal = ctx.op;
         String rResult = visit(rVal);
         String lResult = visit(lVal);
-        if (rResult != null && lResult != null) {
+        if ((rResult != null) && (lResult != null)) {
             isStatementTrue = rResult.equals(lResult);
         } else {
             isStatementTrue = false;
@@ -569,7 +591,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         TerminalContext rVal = ctx.op;
         String rResult = visit(rVal);
         String lResult = visit(lVal);
-        if (rResult != null && lResult != null) {
+        if ((rResult != null) && (lResult != null)) {
             isStatementTrue = !rResult.equals(lResult);
         } else {
             isStatementTrue = false;
@@ -588,7 +610,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         TerminalContext rVal = ctx.op;
         String rResult = visit(rVal);
         String lResult = visit(lVal);
-        if (rResult != null && lResult != null) {
+        if ((rResult != null) && (lResult != null)) {
             int compareTo = doCompare(lResult, rResult);
             isStatementTrue = compareTo > 0 ? true : false;
         } else {
@@ -608,7 +630,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         TerminalContext rVal = ctx.op;
         String rResult = visit(rVal);
         String lResult = visit(lVal);
-        if (rResult != null && lResult != null) {
+        if ((rResult != null) && (lResult != null)) {
             int compareTo = doCompare(lResult, rResult);
             isStatementTrue = compareTo < 0 ? true : false;
         } else {
@@ -628,7 +650,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         TerminalContext rVal = ctx.op;
         String rResult = visit(rVal);
         String lResult = visit(lVal);
-        if (rResult != null && lResult != null) {
+        if ((rResult != null) && (lResult != null)) {
             int compareTo = doCompare(lResult, rResult);
             isStatementTrue = compareTo <= 0 ? true : false;
         } else {
@@ -648,7 +670,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         TerminalContext rVal = ctx.op;
         String rResult = visit(rVal);
         String lResult = visit(lVal);
-        if (rResult != null && lResult != null) {
+        if ((rResult != null) && (lResult != null)) {
             int compareTo = doCompare(lResult, rResult);
             isStatementTrue = compareTo >= 0 ? true : false;
         } else {
@@ -732,9 +754,9 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      */
     @Override
     public String visitAndOr(@NotNull FixRulesParser.AndOrContext ctx) {
-        visit(ctx.iff(LEFT)); // left
+        visit(ctx.iff(FixRulesTransformVisitor.LEFT)); // left
         boolean leftIsTrue = isStatementTrue;
-        visit(ctx.iff(RIGHT)); // right
+        visit(ctx.iff(FixRulesTransformVisitor.RIGHT)); // right
         switch (ctx.op.getType()) {
             case FixRulesParser.AND:
                 isStatementTrue = leftIsTrue && isStatementTrue;

@@ -31,7 +31,8 @@ public class StaticTestingUtils {
         return dict;
     }
 
-    public static final ArrayList<InfixField> parseMessageIntoList(String baseMsg) {
+    public static final ArrayList<InfixField> parseMessageIntoList(
+        String baseMsg) {
         ArrayList<InfixField> myArray = new ArrayList<InfixField>();
         char[] baseMsgArray = baseMsg.trim().toCharArray();
         int index = 0;

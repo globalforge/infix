@@ -73,7 +73,7 @@ abstract class FixGroupMgr {
      * Clears the state of static data.
      */
     static void cleanStaticData() {
-        grpMap.clear();
+        FixGroupMgr.grpMap.clear();
     }
 
     /**
@@ -227,7 +227,8 @@ abstract class FixGroupMgr {
         GroupInProgress gm = null;
         if (isGroupId) {
             gm = grpStack.peek();
-            if (gm != null && !gm.getRepeatingGroup().containsNestedGrp(tagNum)) {
+            if ((gm != null)
+                && !gm.getRepeatingGroup().containsNestedGrp(tagNum)) {
                 grpStack.clear();
             }
         }
@@ -341,11 +342,11 @@ abstract class FixGroupMgr {
      * Used for debugging. Prints the locations of repeating groups.
      */
     void printMarks() {
-        logger.info("--- Group Marks ---");
+        FixGroupMgr.logger.info("--- Group Marks ---");
         Iterator<String> iter = grpCtxPos.keySet().iterator();
         while (iter.hasNext()) {
             String k = iter.next();
-            logger.info("Ctx: {}, Mark: {}", k, grpCtxPos.get(k));
+            FixGroupMgr.logger.info("Ctx: {}, Mark: {}", k, grpCtxPos.get(k));
         }
     }
 }

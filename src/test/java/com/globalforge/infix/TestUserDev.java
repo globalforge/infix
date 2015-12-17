@@ -1,6 +1,5 @@
 package com.globalforge.infix;
 
-import static org.junit.Assert.fail;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +21,7 @@ public class TestUserDev {
         try {
             String sampleRule = "{com.globalforge.infix.TestUserDev$UserCtx1}";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage1);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage1);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(3);
@@ -30,7 +29,7 @@ public class TestUserDev {
             // System.out.println(StaticTestingUtils.rs(result));
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -40,7 +39,7 @@ public class TestUserDev {
             String sampleRule =
                 "{com.globalforge.infix.TestUserDev$UserCtx1#visitInfixAPI}";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage1);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage1);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(3);
@@ -48,7 +47,7 @@ public class TestUserDev {
             // System.out.println(StaticTestingUtils.rs(result));
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -58,7 +57,7 @@ public class TestUserDev {
             String sampleRule =
                 "{com.globalforge.infix.TestUserDev$UserCtx1#visitMessage}";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage1);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage1);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(3);
@@ -66,7 +65,7 @@ public class TestUserDev {
             // System.out.println(StaticTestingUtils.rs(result));
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -76,7 +75,7 @@ public class TestUserDev {
             String sampleRule =
                 "&44=\"FOOBAR\";{com.globalforge.infix.TestUserDev$UserCtx1}";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage1);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage1);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(3);
@@ -84,7 +83,7 @@ public class TestUserDev {
             // System.out.println(StaticTestingUtils.rs(result));
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -94,7 +93,7 @@ public class TestUserDev {
             String sampleRule =
                 "{com.globalforge.infix.TestUserDev$UserCtx1};&44=\"FOOBAR\"";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage1);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage1);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(3);
@@ -102,7 +101,7 @@ public class TestUserDev {
             // System.out.println(StaticTestingUtils.rs(result));
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -111,7 +110,7 @@ public class TestUserDev {
         try {
             String sampleRule = "{com.globalforge.infix.TestUserDev$UserCtx2}";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage1);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage1);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(5);
@@ -123,7 +122,7 @@ public class TestUserDev {
             // System.out.println(StaticTestingUtils.rs(result));
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -132,7 +131,7 @@ public class TestUserDev {
         try {
             String sampleRule = "{com.globalforge.infix.TestUserDev$UserCtx3}";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage1);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage1);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(7);
@@ -150,7 +149,7 @@ public class TestUserDev {
             // System.out.println(StaticTestingUtils.rs(result));
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -159,7 +158,7 @@ public class TestUserDev {
         try {
             String sampleRule = "{com.globalforge.infix.TestUserDev$UserCtx4}";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage1);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage1);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(12);
@@ -167,7 +166,7 @@ public class TestUserDev {
             // System.out.println(StaticTestingUtils.rs(result));
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -176,7 +175,7 @@ public class TestUserDev {
         try {
             String sampleRule = "{com.globalforge.infix.TestUserDev$UserCtx5}";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage1);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage1);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(9);
@@ -184,7 +183,7 @@ public class TestUserDev {
             // System.out.println(StaticTestingUtils.rs(result));
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -194,20 +193,20 @@ public class TestUserDev {
             String sampleRule =
                 "&44={com.globalforge.infix.example.ExampleUserAssignment}";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage1);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage1);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(3);
             Assert.assertEquals(Double.toString(Math.PI), fld.getTagVal());
             // again
-            result = rules.transformFIXMsg(sampleMessage1);
+            result = rules.transformFIXMsg(TestUserDev.sampleMessage1);
             myList = StaticTestingUtils.parseMessageIntoList(result);
             fld = myList.get(3);
             Assert.assertEquals(Double.toString(Math.PI), fld.getTagVal());
             // System.out.println(StaticTestingUtils.rs(result));
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -217,20 +216,20 @@ public class TestUserDev {
             String sampleRule =
                 "&44 = &44 - {com.globalforge.infix.example.ExampleUserNumberAssignment}";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage1);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage1);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(3);
             Assert.assertEquals("-43", fld.getTagVal());
             // again
-            result = rules.transformFIXMsg(sampleMessage1);
+            result = rules.transformFIXMsg(TestUserDev.sampleMessage1);
             myList = StaticTestingUtils.parseMessageIntoList(result);
             fld = myList.get(3);
             Assert.assertEquals("-43", fld.getTagVal());
             // System.out.println(StaticTestingUtils.rs(result));
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -239,20 +238,20 @@ public class TestUserDev {
         try {
             String sampleRule = "{com.globalforge.infix.TestUserDev$UserCtx5}";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage1);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage1);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(9);
             Assert.assertEquals("MCS", fld.getTagVal());
             // again
-            result = rules.transformFIXMsg(sampleMessage1);
+            result = rules.transformFIXMsg(TestUserDev.sampleMessage1);
             myList = StaticTestingUtils.parseMessageIntoList(result);
             fld = myList.get(9);
             Assert.assertEquals("MCS", fld.getTagVal());
             // System.out.println(StaticTestingUtils.rs(result));
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -262,11 +261,11 @@ public class TestUserDev {
             String sampleRule = "{com.globalforge.infix.TestUserDev$UserCtx6}";
             InfixActions rules = new InfixActions(sampleRule);
             @SuppressWarnings("unused")
-            String result = rules.transformFIXMsg(sampleMessage1);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage1);
             // System.out.println(StaticTestingUtils.rs(result));
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -275,8 +274,8 @@ public class TestUserDev {
         try {
             String sampleRule = "{com.globalforge.infix.TestUserDev$UserCtx7}";
             InfixActions rules = new InfixActions(sampleRule);
-            rules.transformFIXMsg(sampleMessage1);
-            fail();
+            rules.transformFIXMsg(TestUserDev.sampleMessage1);
+            Assert.fail();
         } catch (Throwable t) {
         }
     }
@@ -286,8 +285,8 @@ public class TestUserDev {
         try {
             String sampleRule = "{com.globalforge.infix.TestUserDev$UserCtx8}";
             InfixActions rules = new InfixActions(sampleRule);
-            rules.transformFIXMsg(sampleMessage1);
-            fail();
+            rules.transformFIXMsg(TestUserDev.sampleMessage1);
+            Assert.fail();
         } catch (Throwable t) {
         }
     }
@@ -297,8 +296,8 @@ public class TestUserDev {
         try {
             String sampleRule = "{com.globalforge.infix.TestUserDev$UserCtx9}";
             InfixActions rules = new InfixActions(sampleRule);
-            rules.transformFIXMsg(sampleMessage1);
-            fail();
+            rules.transformFIXMsg(TestUserDev.sampleMessage1);
+            Assert.fail();
         } catch (Throwable t) {
         }
     }
@@ -308,8 +307,8 @@ public class TestUserDev {
         try {
             String sampleRule = "{com.globalforge.infix.TestUserDev$UserCtx10}";
             InfixActions rules = new InfixActions(sampleRule);
-            rules.transformFIXMsg(sampleMessage1);
-            fail();
+            rules.transformFIXMsg(TestUserDev.sampleMessage1);
+            Assert.fail();
         } catch (Throwable t) {
         }
     }
@@ -319,7 +318,7 @@ public class TestUserDev {
         try {
             String sampleRule = "{com.globalforge.infix.TestUserDev$UserCtx11}";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage1);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage1);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(7);
@@ -337,7 +336,7 @@ public class TestUserDev {
             // System.out.println(StaticTestingUtils.rs(result));
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
     // name = [InstrmtLegExecGrp], id = [555], members = [555|600|601|602
@@ -357,14 +356,14 @@ public class TestUserDev {
             String sampleRule =
                 "{com.globalforge.infix.TestUserDev$UTerm1} == {com.globalforge.infix.TestUserDev$UTerm1} ? &44=1 : &44=0";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage1);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage1);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(3);
             Assert.assertEquals("1", fld.getTagVal());
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -374,14 +373,14 @@ public class TestUserDev {
             String sampleRule =
                 "{com.globalforge.infix.TestUserDev$UTerm1} == &45 ? &44=1 : &44=0";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage1);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage1);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(3);
             Assert.assertEquals("0", fld.getTagVal());
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -391,14 +390,14 @@ public class TestUserDev {
             String sampleRule =
                 "&45 == {com.globalforge.infix.TestUserDev$UTerm1} ? &44=1 : &44=0";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage1);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage1);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(3);
             Assert.assertEquals("0", fld.getTagVal());
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -408,22 +407,16 @@ public class TestUserDev {
             String sampleRule =
                 "&44 == {com.globalforge.infix.TestUserDev$UTerm1} ? &44=1 : &44=0";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage1);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage1);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(3);
             Assert.assertEquals("0", fld.getTagVal());
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
-    static final String sampleMessage2 = "8=FIX.4.4" + '\u0001' + "9=10"
-        + '\u0001' + "35=8" + '\u0001' + "44=-1" + '\u0001' + "555=2"
-        + '\u0001' + "600=FOO" + '\u0001' + "601=2" + '\u0001' + "539=1"
-        + '\u0001' + "524=STR" + '\u0001' + "538=-33" + '\u0001' + "600=FOO1"
-        + '\u0001' + "601=3" + '\u0001' + "602=4" + '\u0001' + "207=42"
-        + '\u0001' + "10=004";
 
     @Test
     public void t22() {
@@ -431,14 +424,14 @@ public class TestUserDev {
             String sampleRule =
                 "&207 == {com.globalforge.infix.TestUserDev$UTerm1} ? &44=1 : &44=0";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage2);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage2);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(3);
             Assert.assertEquals("1", fld.getTagVal());
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -448,14 +441,14 @@ public class TestUserDev {
             String sampleRule =
                 "&207 != {com.globalforge.infix.TestUserDev$UTerm1} ? &44=1 : &44=0";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage2);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage2);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(3);
             Assert.assertEquals("0", fld.getTagVal());
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -465,14 +458,14 @@ public class TestUserDev {
             String sampleRule =
                 "&45 != {com.globalforge.infix.TestUserDev$UTerm1} ? &44=1 : &44=0";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage2);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage2);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(3);
             Assert.assertEquals("0", fld.getTagVal());
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -482,14 +475,14 @@ public class TestUserDev {
             String sampleRule =
                 "{com.globalforge.infix.TestUserDev$UTerm1} != &45 ? &44=1 : &44=0";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage2);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage2);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(3);
             Assert.assertEquals("0", fld.getTagVal());
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -499,14 +492,14 @@ public class TestUserDev {
             String sampleRule =
                 "{com.globalforge.infix.TestUserDev$UTerm1} != {com.globalforge.infix.TestUserDev$UTerm1} ? &44=1 : &44=0";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage2);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage2);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(3);
             Assert.assertEquals("0", fld.getTagVal());
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -516,14 +509,14 @@ public class TestUserDev {
             String sampleRule =
                 "{com.globalforge.infix.TestUserDev$UTerm1} != &207 ? &44=1 : &44=0";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage2);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage2);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(3);
             Assert.assertEquals("0", fld.getTagVal());
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -533,14 +526,14 @@ public class TestUserDev {
             String sampleRule =
                 "{com.globalforge.infix.TestUserDev$UTerm1} <= &207 ? &44=1 : &44=0";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage2);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage2);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(3);
             Assert.assertEquals("1", fld.getTagVal());
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -550,14 +543,14 @@ public class TestUserDev {
             String sampleRule =
                 "{com.globalforge.infix.TestUserDev$UTerm1} >= &207 ? &44=1 : &44=0";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage2);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage2);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(3);
             Assert.assertEquals("1", fld.getTagVal());
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -567,14 +560,14 @@ public class TestUserDev {
             String sampleRule =
                 "{com.globalforge.infix.TestUserDev$UTerm1} < &207 ? &44=1 : &44=0";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage2);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage2);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(3);
             Assert.assertEquals("0", fld.getTagVal());
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -584,14 +577,14 @@ public class TestUserDev {
             String sampleRule =
                 "{com.globalforge.infix.TestUserDev$UTerm1} > &207 ? &44=1 : &44=0";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage2);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage2);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(3);
             Assert.assertEquals("0", fld.getTagVal());
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -601,14 +594,14 @@ public class TestUserDev {
             String sampleRule =
                 "!{com.globalforge.infix.TestUserDev$UTerm1} ? &44=1 : &44=0";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage2);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage2);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(3);
             Assert.assertEquals("0", fld.getTagVal());
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -618,14 +611,14 @@ public class TestUserDev {
             String sampleRule =
                 "^{com.globalforge.infix.TestUserDev$UTerm1} ? &44=1 : &44=0";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage2);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage2);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(3);
             Assert.assertEquals("1", fld.getTagVal());
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -635,14 +628,14 @@ public class TestUserDev {
             String sampleRule =
                 "{com.globalforge.infix.TestUserDev$UTerm1} != {com.globalforge.infix.TestUserDev$UTerm1} ? &44=1 : &44=0";
             InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage2);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage2);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(3);
             Assert.assertEquals("0", fld.getTagVal());
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -659,7 +652,7 @@ public class TestUserDev {
             Assert.assertEquals(42, fld.getTagNum());
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
         }
     }
 
@@ -677,7 +670,30 @@ public class TestUserDev {
             Assert.assertEquals(42, fld.getTagNum());
         } catch (Throwable t) {
             t.printStackTrace();
-            fail();
+            Assert.fail();
+        }
+    }
+    static final String sampleMessage2 = "8=FIX.4.4" + '\u0001' + "9=10"
+        + '\u0001' + "35=8" + '\u0001' + "44=-1" + '\u0001' + "555=2"
+        + '\u0001' + "600=FOO" + '\u0001' + "601=2" + '\u0001' + "539=1"
+        + '\u0001' + "524=STR" + '\u0001' + "538=-33" + '\u0001' + "600=FOO1"
+        + '\u0001' + "601=3" + '\u0001' + "602=4" + '\u0001' + "207=42"
+        + '\u0001' + "10=004";
+
+    @Test
+    public void t37() {
+        try {
+            String sampleRule =
+                "{com.globalforge.infix.TestUserDev$UserCtxNonNumeric};&42=\"BAR\"";
+            InfixActions rules = new InfixActions(sampleRule);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage2);
+            ArrayList<InfixField> myList =
+                StaticTestingUtils.parseMessageIntoList(result);
+            InfixField fld = myList.get(14);
+            Assert.assertEquals("BAR", fld.getTagVal());
+        } catch (Throwable t) {
+            t.printStackTrace();
+            Assert.fail();
         }
     }
 
@@ -729,6 +745,22 @@ public class TestUserDev {
         @Override
         public void visitInfixAPI(InfixAPI infixApi) {
             infixApi.putContext("&44", "199");
+        }
+    }
+
+    public static class UserCtxNonNumeric implements InfixUserContext {
+        @Override
+        public String visitMessage(String fixMessage) {
+            return fixMessage;
+        }
+
+        @Override
+        public void visitInfixAPI(InfixAPI infixApi) {
+            infixApi.putContext("&FOO", "BAR");
+            infixApi.putContext("&", "BAR");
+            infixApi.putContext("& ", "BAR");
+            infixApi.putContext(" ", "BAR");
+            infixApi.putContext("", "BAR");
         }
     }
 

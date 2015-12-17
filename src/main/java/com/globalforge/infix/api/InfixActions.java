@@ -93,7 +93,7 @@ public class InfixActions {
      * @param fixVersion The fix version static data to load.
      */
     public static void primeEngine(String fixVersion) {
-        if (fixVersion != null && !fixVersion.isEmpty()) {
+        if ((fixVersion != null) && !fixVersion.isEmpty()) {
             try {
                 final String sampleMessage1 =
                     "8=" + fixVersion + '\u0001' + "9=10" + '\u0001' + "35=8"

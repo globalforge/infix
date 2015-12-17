@@ -68,6 +68,17 @@ public class FixMessageMgr {
     private FixGroupMgr grpMgr = null;
 
     /**
+     * Test if string is an integer. It allows for negative field numbers. Yes,
+     * I've seen them used.
+     * 
+     * @param str The string to test.
+     * @return true if integer
+     */
+    public static boolean isInteger(String str) {
+        return str.matches("^-?\\d+$");
+    }
+
+    /**
      * Parses a fix message, assigns context, and keeps state.
      * 
      * @param baseMsg The input message
@@ -159,13 +170,13 @@ public class FixMessageMgr {
         while ((p = baseMsg.indexOf('\001', prev)) != -1) {
             field = baseMsg.substring(prev, p);
             prev = p + 1;
-            if (field == null || field.isEmpty()) {
+            if ((field == null) || field.isEmpty()) {
                 continue;
             }
             parseField(field.trim());
         }
         field = baseMsg.substring(prev);
-        if (field != null && !field.isEmpty()) {
+        if ((field != null) && !field.isEmpty()) {
             parseField(field.trim());
         }
     }
@@ -254,6 +265,10 @@ public class FixMessageMgr {
      * @param rememberGroups Whether to keep track of repeating groups.
      */
     private void putField(String tagNum, String tagVal, boolean rememberGroups) {
+        if (!FixMessageMgr.isInteger(tagNum)) {
+            FixMessageMgr.logger.warn("Dropping non-numeric field: " + tagNum);
+            return;
+        }
         FixFieldContext f =
             grpMgr.getContext(getMsgType(), tagNum, tagVal, rememberGroups);
         String ctx = f.getKey();
@@ -316,6 +331,10 @@ public class FixMessageMgr {
      * @param tagVal The tagval to insert
      */
     void putContext(Deque<String> contexts, String tagNum, String tagVal) {
+        if (!FixMessageMgr.isInteger(tagNum)) {
+            FixMessageMgr.logger.warn("Dropping non-numeric field: " + tagNum);
+            return;
+        }
         String fullContext = contexts.pop();
         if (containsContext(fullContext)) {
             BigDecimal ordinal = ctxDict.get(fullContext);
@@ -380,7 +399,8 @@ public class FixMessageMgr {
      */
     void removeContext(String ctx) {
         if (ctx.equals("&8")) {
-            logger.info("Context not allowed for deletion: " + ctx);
+            FixMessageMgr.logger.info("Context not allowed for deletion: "
+                + ctx);
             return;
         }
         remove(ctx);
@@ -469,31 +489,32 @@ public class FixMessageMgr {
      * Debug method to print out the dictionaries.
      */
     void printDict() {
-        // logger.info("--- Ctx Dictionary ---");
+        FixMessageMgr.logger.info("--- Ctx Dictionary ---");
         Iterator<String> iter = ctxDict.keySet().iterator();
         int chksum = 0;
         while (iter.hasNext()) {
             String k = iter.next();
             if (k.equals("&10")) {
-                // logger.info("Key: {}, Value: {} (ignore chksum)", k,
-                // ctxDict.get(k));
+                FixMessageMgr.logger.info("Key: {}, Value: {} (ignore chksum)",
+                    k, ctxDict.get(k));
                 chksum = ctxDict.get(k).intValue();
             } else {
-                // logger.info("Key: {}, Value: {}", k, ctxDict.get(k));
+                FixMessageMgr.logger.info("Key: {}, Value: {}", k,
+                    ctxDict.get(k));
             }
         }
-        // logger.info("--- Fld Dictionary ---");
+        FixMessageMgr.logger.info("--- Fld Dictionary ---");
         Iterator<Entry<BigDecimal, InfixField>> it =
             fldDict.entrySet().iterator();
         while (it.hasNext()) {
             Entry<BigDecimal, InfixField> entry = it.next();
             BigDecimal k = entry.getKey();
             if (k.intValue() == chksum) {
-                // logger.info("Key: {}, Value: {} (ignore chksum)",
-                // entry.getKey(), entry.getValue());
+                FixMessageMgr.logger.info("Key: {}, Value: {} (ignore chksum)",
+                    entry.getKey(), entry.getValue());
             } else {
-                // logger.info("Key: {}, Value: {}", entry.getKey(),
-                // entry.getValue());
+                FixMessageMgr.logger.info("Key: {}, Value: {}", entry.getKey(),
+                    entry.getValue());
             }
         }
         grpMgr.printMarks();
@@ -557,20 +578,20 @@ public class FixMessageMgr {
         try {
             parseMessage(newMsg);
         } catch (Throwable e) {
-            logger
+            FixMessageMgr.logger
                 .error(
                     "Could not parse new msg. Attempting to recover original msg. [bad msg: {}]",
                     newMsg, e);
             try {
                 parseMessage(curMsg);
             } catch (Throwable e1) {
-                logger
+                FixMessageMgr.logger
                     .error(
                         "Could not recover original msg. Abandon All Hope. [orig msg: {}]",
                         curMsg, e);
                 return;
             }
-            logger.info("Recovered original msg: {}", curMsg);
+            FixMessageMgr.logger.info("Recovered original msg: {}", curMsg);
         }
     }
 
@@ -593,7 +614,7 @@ public class FixMessageMgr {
      * @param className The name of the class to instantiate.
      */
     void handleUserDefinedContext(String className, String methodName) {
-        InfixUserContext userCtx = userContextMap.get(className);;
+        InfixUserContext userCtx = userContextMap.get(className);
         if (userCtx == null) {
             Class<?> c = null;
             try {
@@ -649,7 +670,7 @@ public class FixMessageMgr {
      */
     String handleUserDefinedTerminal(String className) {
         try {
-            InfixUserTerminal userCtx = userAssignMap.get(className);;
+            InfixUserTerminal userCtx = userAssignMap.get(className);
             if (userCtx == null) {
                 Class<?> c = Class.forName(className);
                 userCtx = (InfixUserTerminal) c.newInstance();

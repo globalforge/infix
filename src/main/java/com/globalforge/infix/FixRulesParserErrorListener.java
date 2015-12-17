@@ -72,7 +72,7 @@ public class FixRulesParserErrorListener extends BaseErrorListener {
                 logMsg += " not a number. ";
             }
         }
-        logger.error(logMsg + " Tree = {}", stack);
+        FixRulesParserErrorListener.logger.error(logMsg + " Tree = {}", stack);
         throw new RuntimeException(logMsg);
     }
 }

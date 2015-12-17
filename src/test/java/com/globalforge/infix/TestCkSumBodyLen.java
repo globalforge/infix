@@ -24,7 +24,8 @@ public class TestCkSumBodyLen {
         try {
             sampleRule = "&35=8";
             rules = new InfixActions(sampleRule);
-            result = rules.transformFIXMsg(TestCkSumBodyLen.sampleMessage1, true);
+            result =
+                rules.transformFIXMsg(TestCkSumBodyLen.sampleMessage1, true);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(2);

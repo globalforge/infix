@@ -93,8 +93,7 @@ project.ext {
 }
 
 task buildAntlr(type:Exec) {
-   workingDir 'bin'
-   commandLine './buildAntlr.sh',project.ext.resourceDir,project.ext.libDir,project.ext.outputDir
+   commandLine 'java', '-jar', "${project.ext.libDir}/antlr-4.4-complete.jar", '-package', 'com.globalforge.infix.antlr', '-o', project.ext.outputDir, '-visitor', '-listener', "${project.ext.resourceDir}/FixRules.g4"
 }
 
 task cleanAll(type: Delete) {

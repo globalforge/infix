@@ -16,10 +16,13 @@ project.ext {
    rootResourceDir = "${rootProject.projectDir}/src/main/resources"
 }
 
-task buildAntlr(type:Exec) {
-   workingDir 'bin'
-   commandLine './buildAntlr.sh',project.ext.resourceDir,project.ext.libDir,project.ext.outputDir 
-} 
+task buildLexer(type:Exec) {
+   commandLine 'java', '-jar', "${project.ext.libDir}/antlr-4.4-complete.jar", '-package', 'com.globalforge.infix.antlr', '-o', project.ext.outputDir, '-visitor', '-listener', "${project.ext.resourceDir}/XMLLexer.g4"
+}
+
+task buildParser(type:Exec) {
+   commandLine 'java', '-jar', "${project.ext.libDir}/antlr-4.4-complete.jar", '-package', 'com.globalforge.infix.antlr', '-o', project.ext.outputDir, '-visitor', '-listener', "${project.ext.resourceDir}/XMLParser.g4"
+}
 
 task(copyLib, dependsOn:assemble) {
    copy {
@@ -104,4 +107,5 @@ task(buildFIX50SP2,
 
 task(buildSrc, dependsOn:buildFIX50SP2)
 
-compileJava.dependsOn("buildAntlr")
+compileJava.dependsOn("buildLexer")
+compileJava.dependsOn("buildParser")

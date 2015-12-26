@@ -79,15 +79,60 @@ public class FixMessageMgr {
     }
 
     /**
-     * Parses a fix message, assigns context, and keeps state.
+     * Parses a fix message in raw fix format, assigns context, and keeps state.
      * 
      * @param baseMsg The input message
-     * @throws Exception The fix message can not be parsed.
+     * @throws IllegalAccessException If the class represented by the fix
+     * version or its nullary constructor is not accessible..
+     * @throws InstantiationException If the class represented by the fix
+     * version represents an abstract class, an interface, an array class, a
+     * primitive type, or void; or if the class has no nullary constructor; or
+     * if the instantiation fails for some other reason.
+     * @throws ClassNotFoundException If the fix message contains a Fix version
+     * in tag 8 that is unrecognized the system will fail when it tries to
+     * instantiate a {@link FixGroupMgr} for that version at runtime.
      */
-    public FixMessageMgr(String baseMsg) throws Exception {
+    public FixMessageMgr(String baseMsg) throws ClassNotFoundException,
+        InstantiationException, IllegalAccessException {
         parseMessage(baseMsg);
     }
 
+    /*-
+     * Parses a QuickFix message, assigns context, and keeps state.
+     * 
+     * @param baseMsg The input message
+     * @throws IllegalAccessException If the class represented by the fix
+     * version or its nullary constructor is not accessible..
+     * @throws InstantiationException If the class represented by the fix
+     * version represents an abstract class, an interface, an array class, a
+     * primitive type, or void; or if the class has no nullary constructor; or
+     * if the instantiation fails for some other reason.
+     * @throws ClassNotFoundException If the fix message contains a Fix version
+     * in tag 8 that is unrecognized the system will fail when it tries to
+     * instantiate a {@link FixGroupMgr} for that version at runtime.
+     
+    public FixMessageMgr(Message msg) throws ClassNotFoundException,
+        InstantiationException, IllegalAccessException {
+        parseMessage(msg.toString());
+    }
+    
+     */
+    /**
+     * Sets up a base message with Fix Version and MsgType specief. The rest of
+     * the fields may be added via a callback to InfixAPI. See User Defined
+     * Behavior.
+     * 
+     * @param baseMsg The input message
+     * @throws IllegalAccessException If the class represented by the fix
+     * version or its nullary constructor is not accessible..
+     * @throws InstantiationException If the class represented by the fix
+     * version represents an abstract class, an interface, an array class, a
+     * primitive type, or void; or if the class has no nullary constructor; or
+     * if the instantiation fails for some other reason.
+     * @throws ClassNotFoundException If the fix message contains a Fix version
+     * in tag 8 that is unrecognized the system will fail when it tries to
+     * instantiate a {@link FixGroupMgr} for that version at runtime.
+     */
     public FixMessageMgr(String tag8Value, String tag35Value) throws Exception {
         init(tag8Value);
         putFieldFromMsgParse("8", tag8Value);
@@ -155,10 +200,15 @@ public class FixMessageMgr {
      * Reset the system. Parse a fix message into data structures.
      * 
      * @param baseMsg The base message.
-     * @throws IllegalAccessException
-     * @throws InstantiationException
-     * @throws ClassNotFoundException
-     * @throws Exception Ill formatted baseMsg encountered.
+     * @throws IllegalAccessException If the class represented by the fix
+     * version or its nullary constructor is not accessible..
+     * @throws InstantiationException If the class represented by the fix
+     * version represents an abstract class, an interface, an array class, a
+     * primitive type, or void; or if the class has no nullary constructor; or
+     * if the instantiation fails for some other reason.
+     * @throws ClassNotFoundException If the fix message contains a Fix version
+     * in tag 8 that is unrecognized the system will fail when it tries to
+     * instantiate a {@link FixGroupMgr} for that version at runtime.
      */
     private void parseMessage(String baseMsg) throws ClassNotFoundException,
         InstantiationException, IllegalAccessException {
@@ -187,8 +237,12 @@ public class FixMessageMgr {
      * 
      * @param fixField The string representing a Fix field as it is found in a
      * Fix message.
-     * @throws IllegalAccessException
-     * @throws InstantiationException
+     * @throws IllegalAccessException If the class represented by the fix
+     * version or its nullary constructor is not accessible..
+     * @throws InstantiationException If the class represented by the fix
+     * version represents an abstract class, an interface, an array class, a
+     * primitive type, or void; or if the class has no nullary constructor; or
+     * if the instantiation fails for some other reason.
      * @throws ClassNotFoundException If the fix message contains a Fix version
      * in tag 8 that is unrecognized the system will fail when it tries to
      * instantiate a {@link FixGroupMgr} for that version at runtime.
@@ -210,11 +264,15 @@ public class FixMessageMgr {
      * fix version has new definitions of repeating groups.
      * 
      * @param fixVersion The value found in tag 8 in a Fix message.
-     * @throws IllegalAccessException
-     * @throws InstantiationException
      * @throws ClassNotFoundException If the fix message contains a Fix version
      * in tag 8 that is unrecognized the system will fail when it tries to
      * instantiate a {@link FixGroupMgr} for that version at runtime.
+     * @throws IllegalAccessException If the class represented by the fix
+     * version or its nullary constructor is not accessible..
+     * @throws InstantiationException If the class represented by the fix
+     * version represents an abstract class, an interface, an array class, a
+     * primitive type, or void; or if the class has no nullary constructor; or
+     * if the instantiation fails for some other reason.
      */
     private void init(String fixVersion) throws ClassNotFoundException,
         InstantiationException, IllegalAccessException {

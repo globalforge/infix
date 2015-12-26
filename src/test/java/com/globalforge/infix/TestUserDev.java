@@ -2,8 +2,8 @@ package com.globalforge.infix;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
@@ -312,13 +312,37 @@ public class TestUserDev {
         } catch (Throwable t) {
         }
     }
+    // name = [InstrmtLegExecGrp], id = [555], members = [600|601|602
+    // name = [NestedParties], id = [539], members = [524|525|538],
+    // 382->555, 78->539, 79->524
+    // size: 22
+    static final String sampleMessage1 = "8=FIX.4.4" + '\u0001' + "9=10"
+        + '\u0001' + "35=8" + '\u0001' + "44=-1" + '\u0001' + "555=2"
+        + '\u0001' + "600=FOO" + '\u0001' + "601=2 " + '\u0001' + "539=1"
+        + '\u0001' + "524=STR" + '\u0001' + "538=-33" + '\u0001' + "600=FOO1"
+        + '\u0001' + "601=3" + '\u0001' + "602=4" + '\u0001' + "10=004"
+        + '\u0001';
 
+    // name = [NestedParties], id = [539], members = [524|525|538|804],
+    /*-
+    @Override
+    public void visitInfixAPI(InfixAPI infixApi) {
+        Map<String, String> myMap = new HashMap<String, String>();
+        myMap.put("&555[0]->&539", "2");
+        myMap.put("&555[0]->&539[1]->&524", "524");
+        myMap.put("&555[0]->&539[1]->&525", "525");
+        myMap.put("&555[0]->&539[1]->&538", "538");
+        myMap.put("&999", "999");
+        infixApi.putMessageDict(myMap);
+    }
+     */
     @Test
     public void t17() {
         try {
             String sampleRule = "{com.globalforge.infix.TestUserDev$UserCtx11}";
             InfixActions rules = new InfixActions(sampleRule);
             String result = rules.transformFIXMsg(TestUserDev.sampleMessage1);
+            System.out.println(StaticTestingUtils.rs(result));
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(7);
@@ -339,16 +363,6 @@ public class TestUserDev {
             Assert.fail();
         }
     }
-    // name = [InstrmtLegExecGrp], id = [555], members = [555|600|601|602
-    // name = [NestedParties], id = [539], members = [539|524|525|538],
-    // 382->555, 78->539, 79->524
-    // size: 22
-    static final String sampleMessage1 = "8=FIX.4.4" + '\u0001' + "9=10"
-        + '\u0001' + "35=8" + '\u0001' + "44=-1" + '\u0001' + "555=2"
-        + '\u0001' + "600=FOO" + '\u0001' + "601=2 " + '\u0001' + "539=1"
-        + '\u0001' + "524=STR" + '\u0001' + "538=-33" + '\u0001' + "600=FOO1"
-        + '\u0001' + "601=3" + '\u0001' + "602=4" + '\u0001' + "10=004"
-        + '\u0001';
 
     @Test
     public void t18() {
@@ -705,7 +719,8 @@ public class TestUserDev {
 
         @Override
         public void visitInfixAPI(InfixAPI infixApi) {
-            Map<String, String> myMap = new HashMap<String, String>();
+            LinkedHashMap<String, String> myMap =
+                new LinkedHashMap<String, String>();
             myMap.put("&42", "FOO");
             infixApi.putMessageDict(myMap);
         }
@@ -908,7 +923,8 @@ public class TestUserDev {
 
         @Override
         public void visitInfixAPI(InfixAPI infixApi) {
-            Map<String, String> myMap = new HashMap<String, String>();
+            LinkedHashMap<String, String> myMap =
+                new LinkedHashMap<String, String>();
             myMap.put("&8", "FIX.4.2");
             infixApi.putMessageDict(myMap);
         }
@@ -922,7 +938,8 @@ public class TestUserDev {
 
         @Override
         public void visitInfixAPI(InfixAPI infixApi) {
-            Map<String, String> myMap = new HashMap<String, String>();
+            LinkedHashMap<String, String> myMap =
+                new LinkedHashMap<String, String>();
             myMap.put("&35", "D");
             infixApi.putMessageDict(myMap);
         }
@@ -937,7 +954,8 @@ public class TestUserDev {
         // name = [NestedParties], id = [539], members = [539|524|525|538],
         @Override
         public void visitInfixAPI(InfixAPI infixApi) {
-            Map<String, String> myMap = new HashMap<String, String>();
+            LinkedHashMap<String, String> myMap =
+                new LinkedHashMap<String, String>();
             myMap.put("&555[0]->&539", "2");
             myMap.put("&555[0]->&539[1]->&524", "524");
             myMap.put("&555[0]->&539[1]->&525", "525");

@@ -51,19 +51,21 @@ public class FixContextMgr {
      * @param fixVersion The fix version that specifies what FixManager class to
      * create an instance of.
      * @return A sub-class of FixGroupMgr
-     * @throws ClassNotFoundException
-     * @throws IllegalAccessException
-     * @throws InstantiationException
+     * @throws ClassNotFoundException If the fix message contains a Fix version
+     * in tag 8 that is unrecognized the system will fail when it tries to
+     * instantiate a {@link FixGroupMgr} for that version at runtime.
+     * @throws IllegalAccessException If the class represented by the fix
+     * version or its nullary constructor is not accessible..
+     * @throws InstantiationException If the class represented by the fix
+     * version represents an abstract class, an interface, an array class, a
+     * primitive type, or void; or if the class has no nullary constructor; or
+     * if the instantiation fails for some other reason.
      */
     public FixGroupMgr getGroupMgr(String fixVersion)
         throws ClassNotFoundException, InstantiationException,
         IllegalAccessException {
         String versionIdent = fixVersion.replaceAll("[\",.]", "") + "Mgr";
         FixGroupMgr.cleanStaticData();
-        /*
-         * Class<?> c = ClassLoader.getSystemClassLoader().loadClass(
-         * "com.globalforge.infix." + versionIdent);
-         */
         Class<?> c =
             FixContextMgr.class.getClassLoader().loadClass(
                 "com.globalforge.infix." + versionIdent);

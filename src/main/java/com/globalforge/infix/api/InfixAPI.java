@@ -1,6 +1,7 @@
 package com.globalforge.infix.api;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /*-
@@ -114,12 +115,13 @@ public interface InfixAPI {
     /**
      * Insert FIX fields into the parsed message. Keys are tag numbers in action
      * syntax and values are the tag values associated with the keys. This
-     * method will replace any fields already parsed.
+     * method will replace any fields already parsed. Insert order must be
+     * preserved for the integrity of repeating groups.
      * 
-     * @param msgDict Map<String, String> The FIX fields to insert in the form
-     * of a dictionary of tag numbers in action syntax to tag values.
+     * @param msgDict LinkedHashMap<String, String> The FIX fields to insert in
+     * the form of a dictionary of tag numbers in action syntax to tag values.
      */
-    public void putMessageDict(Map<String, String> msgDict);
+    public void putMessageDict(LinkedHashMap<String, String> msgDict);
 
     /**
      * Obtain a fully formatted FIX message representing the memory state as it

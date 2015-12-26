@@ -13,6 +13,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+// import quickfix.Message;
 import com.globalforge.infix.antlr.FixRulesBaseVisitor;
 import com.globalforge.infix.antlr.FixRulesParser;
 import com.globalforge.infix.antlr.FixRulesParser.TagnumContext;
@@ -62,7 +63,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     private final SimpleDateFormat datetime = new SimpleDateFormat(
         "yyyyMMdd-HH:mm:ss.SSS");
     private final SimpleDateFormat date = new SimpleDateFormat("yyyyMMdd");
-    private String fixMessage = null;
+    private final String fixMessage;
     private boolean isStatementTrue = false;
     private final Deque<String> ctxTree = new LinkedBlockingDeque<String>();
     private final String tag8Value;
@@ -95,8 +96,16 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     public FixRulesTransformVisitor(String tag8Value, String tag35Value) {
         this.tag8Value = tag8Value;
         this.tag35Value = tag35Value;
+        this.fixMessage = null;
     }
 
+    /*-
+    public FixRulesTransformVisitor(Message msg) {
+        this.tag8Value = null;
+        this.tag35Value = null;
+        this.fixMessage = msg.toString();
+    }
+     */
     /**
      * Debug utility
      */

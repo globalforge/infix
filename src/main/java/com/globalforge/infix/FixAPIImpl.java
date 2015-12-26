@@ -1,6 +1,7 @@
 package com.globalforge.infix;
 
 import java.math.BigDecimal;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import com.globalforge.infix.api.InfixAPI;
 import com.globalforge.infix.api.InfixField;
@@ -127,7 +128,7 @@ class FixAPIImpl implements InfixAPI {
      * of a dictionary of tag numbers in rule syntax to tag values.
      */
     @Override
-    public void putMessageDict(Map<String, String> msgDict) {
+    public void putMessageDict(LinkedHashMap<String, String> msgDict) {
         String[] keys = msgDict.keySet().toArray(new String[msgDict.size()]);
         for (String k : keys) {
             String v = msgDict.get(k);

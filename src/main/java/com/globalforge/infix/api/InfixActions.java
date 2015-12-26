@@ -7,6 +7,8 @@ import java.io.UnsupportedEncodingException;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
+// import quickfix.InvalidMessage;
+// import quickfix.Message;
 import com.globalforge.infix.FixRulesErrorStrategy;
 import com.globalforge.infix.FixRulesLexerErrorListener;
 import com.globalforge.infix.FixRulesParserErrorListener;
@@ -167,6 +169,13 @@ public class InfixActions {
         return result;
     }
 
+    /*-
+    public Message transformFIXMsg(Message msg) throws InvalidMessage {
+        FixRulesTransformVisitor visitor = new FixRulesTransformVisitor(msg);
+        String result = visitor.visit(tree);
+        return new Message(result);
+    }
+     */
     /**
      * Returns an antlr rule tree for debugging.
      */

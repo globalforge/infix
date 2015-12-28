@@ -2,7 +2,7 @@
 -outjars build/distributions/infix-1.1/infix-1.1-pub.jar
 
 -libraryjars /Library/Java/JavaVirtualMachines/jdk1.7.0_55.jdk/Contents/Home/jre/lib/rt.jar
--libraryjars build/distributions/infix-1.1/antlr-4.4-complete.jar
+-libraryjars build/distributions/infix-1.1/antlr-4.5-complete.jar
 -libraryjars build/distributions/infix-1.1/slf4j-api-1.7.7.jar
 -libraryjars build/distributions/infix-1.1/slf4j-simple-1.7.7.jar
 

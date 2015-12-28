@@ -74,7 +74,7 @@ distributions {
      main {
          contents {
              from "build/libs/infix-1.1.jar"
-             from "libs/antlr-4.4-complete.jar"
+             from "libs/antlr-4.5.1-complete.jar"
              from "libs/slf4j-api-1.7.7.jar"
              from "libs/slf4j-simple-1.7.7.jar"
          }
@@ -93,7 +93,7 @@ project.ext {
 }
 
 task buildAntlr(type:Exec) {
-   commandLine 'java', '-jar', "${project.ext.libDir}/antlr-4.4-complete.jar", '-package', 'com.globalforge.infix.antlr', '-o', project.ext.outputDir, '-visitor', '-listener', "${project.ext.resourceDir}/FixRules.g4"
+   commandLine 'java', '-jar', "${project.ext.libDir}/antlr-4.5.1-complete.jar", '-package', 'com.globalforge.infix.antlr', '-o', project.ext.outputDir, '-visitor', '-listener', "${project.ext.resourceDir}/FixRules.g4"
 }
 
 task cleanAll(type: Delete) {
@@ -127,7 +127,7 @@ task cleanAll(type: Delete) {
    delete "${rootProject.projectDir}/dict/build-eclipse"
    delete "${rootProject.projectDir}/dict/build"
    delete "${rootProject.projectDir}/src/main/dist/infix-1.1.jar"
-   delete "${rootProject.projectDir}/src/main/dist/antlr-4.4-complete.jar"
+   delete "${rootProject.projectDir}/src/main/dist/antlr-4.5.1-complete.jar"
    delete "${rootProject.projectDir}/src/main/dist/slf4j-simple-1.7.7.jar"
    delete "${rootProject.projectDir}/src/main/dist/slf4j-api-1.7.7.jar"
    delete "${rootProject.projectDir}/build/distributions"

@@ -26,6 +26,7 @@ Build the App
 The first step in the pipeline is to build the data dictionaries.  This is one time operation and should never have to be done again until the FIX community releases another FIX version. Issue the below task and a data dictionary will be build for each standard FIX version.
 
 All commands issued from the project root.  
+
 ./gradlew buildXML
 
 The above command will create a series of xml files.  One file per FIX version.  The next step is generate the java source code used by InFIX from the xml files.

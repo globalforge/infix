@@ -17,9 +17,7 @@ If you care to help with any of the above, why not join the InFIX project as a d
 
 Set up the Build Environment
 ----------------------------
-Install Gradle from https://gradle.org.
-
-Infix is tested with Gradle version 1.11 and it may not work with the latest 2.x.x version.  This would be a great thing to do next.
+Install the latest Gradle 2.x.x from https://gradle.org.
 
 Build the App
 -------------

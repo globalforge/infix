@@ -33,9 +33,9 @@ The above command will create a series of xml files.  One file per FIX version. 
 
 The above command generates java source code for all the FIX data dictionaries.  The next step is to build the InFIX language recognizer and compile all the source code into a single library called infix-1.1.jar
 
-./gradlew distTar
+./gradlew build
 
-The above command will create a distribution archive called infix-1.1.tar.  Unpack the tar or zip file and proceed to the next step.
+The above command will build, test and create distributions infix/build/distributions.  Unpack the tar or zip file and proceed to "Test the App" if you want to test the sample application.
 
 ./gradlew eclipse
 

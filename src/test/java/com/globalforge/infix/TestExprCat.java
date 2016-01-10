@@ -6,7 +6,7 @@ import com.globalforge.infix.api.InfixActions;
 import com.google.common.collect.ListMultimap;
 
 public class TestExprCat {
-    static final String sampleMessage1 = "8=FIX.4.4" + '\u0001' + "9=10"
+    static final String sampleMessage1 = "8=FIX.4.4" + '\u0001' + "9=1000"
         + '\u0001' + "35=8" + '\u0001' + "43=-1" + '\u0001' + "-43=-1"
         + '\u0001' + "-44=1" + '\u0001' + "44=3.142" + '\u0001'
         + "60=20130412-19:30:00.686" + '\u0001' + "75=20130412" + '\u0001'
@@ -52,7 +52,7 @@ public class TestExprCat {
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestExprCat.sampleMessage1);
             resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals(resultStore.get(382).get(0), "10FOO");
+            Assert.assertEquals(resultStore.get(382).get(0), "1000FOO");
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();
@@ -113,7 +113,8 @@ public class TestExprCat {
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestExprCat.sampleMessage1);
             resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals(resultStore.get(375).get(1), "3.1421.51032FOO");
+            Assert.assertEquals(resultStore.get(375).get(1),
+                "3.1421.5100032FOO");
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();
@@ -127,7 +128,7 @@ public class TestExprCat {
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestExprCat.sampleMessage1);
             resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals(resultStore.get(375).get(1), "BARFOOME10");
+            Assert.assertEquals(resultStore.get(375).get(1), "BARFOOME1000");
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();

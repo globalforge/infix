@@ -6,7 +6,7 @@ import com.globalforge.infix.api.InfixActions;
 import com.google.common.collect.ListMultimap;
 
 public class TestExprSub {
-    static final String sampleMessage1 = "8=FIX.4.4" + '\u0001' + "9=10"
+    static final String sampleMessage1 = "8=FIX.4.4" + '\u0001' + "9=1000"
         + '\u0001' + "-14=2" + '\u0001' + "14=-2" + '\u0001' + "35=8"
         + '\u0001' + "43=-1" + '\u0001' + "-43=-1" + '\u0001' + "-44=1"
         + '\u0001' + "44=3.142" + '\u0001' + "60=20130412-19:30:00.686"
@@ -120,7 +120,7 @@ public class TestExprSub {
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestExprSub.sampleMessage1);
             resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals(resultStore.get(45).get(0), "-11.142");
+            Assert.assertEquals(resultStore.get(45).get(0), "-1001.142");
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();

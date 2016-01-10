@@ -67,7 +67,7 @@ public class TestExprGroupAdd {
             Assert.fail();
         }
     }
-    static final String sampleMessage1 = "8=FIX.4.4" + '\u0001' + "9=10"
+    static final String sampleMessage1 = "8=FIX.4.4" + '\u0001' + "9=1000"
         + '\u0001' + "35=8" + '\u0001' + "44=3.142" + '\u0001'
         + "60=20130412-19:30:00.686" + '\u0001' + "75=20130412" + '\u0001'
         + "45=0" + '\u0001' + "382=2" + '\u0001' + "375=1.3" + '\u0001'
@@ -256,7 +256,7 @@ public class TestExprGroupAdd {
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestExprGroupAdd.sampleMessage1);
             resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals(resultStore.get(375).get(0), "15.142");
+            Assert.assertEquals(resultStore.get(375).get(0), "1005.142");
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();

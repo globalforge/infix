@@ -10,7 +10,7 @@ import com.google.common.collect.ListMultimap;
  * <Member>452</Member>
  */
 public class TestExprDiv {
-    static final String sampleMessage1 = "8=FIX.4.4" + '\u0001' + "9=10"
+    static final String sampleMessage1 = "8=FIX.4.4" + '\u0001' + "9=1000"
         + '\u0001' + "35=D" + '\u0001' + "43=-1" + '\u0001' + "-43=-1"
         + '\u0001' + "-44=1" + '\u0001' + "44=3.142" + '\u0001'
         + "60=20130412-19:30:00.686" + '\u0001' + "75=20130412" + '\u0001'
@@ -55,7 +55,7 @@ public class TestExprDiv {
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestExprDiv.sampleMessage1);
             resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals(resultStore.get(453).get(0), "6.666667");
+            Assert.assertEquals(resultStore.get(453).get(0), "666.6667");
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();
@@ -119,7 +119,7 @@ public class TestExprDiv {
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestExprDiv.sampleMessage1);
             resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals(resultStore.get(448).get(1), "0.03491112");
+            Assert.assertEquals(resultStore.get(448).get(1), "0.0003491112");
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();

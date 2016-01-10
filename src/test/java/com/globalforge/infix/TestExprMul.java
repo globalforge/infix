@@ -33,7 +33,7 @@ public class TestExprMul {
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestExprMul.sampleMessage1);
             resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals(resultStore.get(382).get(0), "15.0");
+            Assert.assertEquals(resultStore.get(382).get(0), "1500.0");
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();
@@ -67,7 +67,7 @@ public class TestExprMul {
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestExprMul.sampleMessage1);
             resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals(resultStore.get(375).get(0), "180.0");
+            Assert.assertEquals(resultStore.get(375).get(0), "18000.0");
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();
@@ -87,13 +87,13 @@ public class TestExprMul {
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestExprMul.sampleMessage1);
             resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals(resultStore.get(375).get(1), "180.0");
+            Assert.assertEquals(resultStore.get(375).get(1), "18000.0");
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();
         }
     }
-    static final String sampleMessage1 = "8=FIX.4.4" + '\u0001' + "9=10"
+    static final String sampleMessage1 = "8=FIX.4.4" + '\u0001' + "9=1000"
         + '\u0001' + "35=8" + '\u0001' + "43=-1" + '\u0001' + "-43=-1"
         + '\u0001' + "-44=1" + '\u0001' + "44=3.142" + '\u0001'
         + "60=20130412-19:30:00.686" + '\u0001' + "75=20130412" + '\u0001'
@@ -125,7 +125,7 @@ public class TestExprMul {
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestExprMul.sampleMessage1);
             resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals(resultStore.get(382).get(0), "20");
+            Assert.assertEquals(resultStore.get(382).get(0), "2000");
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();
@@ -139,7 +139,7 @@ public class TestExprMul {
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestExprMul.sampleMessage1);
             resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals(resultStore.get(382).get(0), "15.0");
+            Assert.assertEquals(resultStore.get(382).get(0), "1500.0");
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();

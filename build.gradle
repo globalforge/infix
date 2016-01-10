@@ -4,9 +4,8 @@ allprojects {
         options.debug = false 
     }
     apply plugin: 'eclipse'
-    apply plugin: 'findbugs'
-    //apply plugin: 'jdepend'
-    apply plugin: 'pmd'
+    //apply plugin: 'findbugs'
+    //apply plugin: 'pmd'
     group = 'com.globalforge.infix'
     version = '1.1'
 
@@ -22,7 +21,7 @@ allprojects {
        mavenCentral()
     }
     dependencies {
-        testCompile "com.google.guava:guava:17.0"
+        testCompile "com.google.guava:guava:18.0"
         testCompile "junit:junit:4.11"
         compile fileTree(dir: "${rootProject.projectDir}/libs", include: '*.jar'), 'org.slf4j:slf4j-api:1.7.7'
         compile 'org.slf4j:slf4j-api:1.7.7'
@@ -35,35 +34,31 @@ allprojects {
            defaultOutputDir = file('build-eclipse')
         } 
     }
-    findbugs {
-       ignoreFailures = true
-       sourceSets = [ sourceSets.main ]
-    }
-    tasks.withType(FindBugs) {
-       exclude '**/antlr/*'
-       classes = classes.filter {
-          !it.path.contains(new File("antlr").path)
-       }
-       reports {
-          xml.enabled = false
-          html.enabled = true
-       }
-    }
-    //jdepend {
-      //toolVersion = '2.9.1'
-      //ignoreFailures = true
-    //}
-    pmd {
-       ignoreFailures = true
-       sourceSets = [ sourceSets.main ]
-    }
-    tasks.withType(Pmd) {
-       exclude '**/antlr/*'
-       reports{
-          xml.enabled = false
-          html.enabled = true
-       }
-    }
+    //findbugs {
+      // ignoreFailures = true
+      // sourceSets = [ sourceSets.main ]
+   // }
+   // tasks.withType(FindBugs) {
+     //  exclude '**/antlr/*'
+      // classes = classes.filter {
+        //  !it.path.contains(new File("antlr").path)
+      // }
+      // reports {
+       //   xml.enabled = false
+        //  html.enabled = true
+      // }
+   // }
+   // pmd {
+     //  ignoreFailures = true
+     //  sourceSets = [ sourceSets.main ]
+  //  }
+   // tasks.withType(Pmd) {
+     //  exclude '**/antlr/*'
+      // reports{
+        //  xml.enabled = false
+        //  html.enabled = true
+      // }
+  //  }
     task cleanAllProjects(dependsOn:'clean') << {
       println "Cleaning ${project.path}"
     }
@@ -73,10 +68,11 @@ apply plugin: 'distribution'
 distributions {
      main {
          contents {
-             from "build/libs/infix-1.1.jar"
+             from "libs/infix-1.1.jar"
              from "libs/antlr-4.5.1-complete.jar"
              from "libs/slf4j-api-1.7.7.jar"
              from "libs/slf4j-simple-1.7.7.jar"
+             from "libs/guava-18.0.jar"
          }
      }
 }
@@ -90,6 +86,13 @@ project.ext {
    outputDir = "${projectDir}/src/main/java/com/globalforge/infix/antlr"
    resourceDir = "${projectDir}/src/main/resources"
    libDir = "${rootProject.projectDir}/libs"
+}
+
+task(copyLib, dependsOn:assemble) {
+   copy {
+     from 'build/libs'
+     into project.ext.libDir
+   }
 }
 
 task buildAntlr(type:Exec) {
@@ -121,6 +124,7 @@ task cleanAll(type: Delete) {
    delete "${rootProject.projectDir}/src/main/resources/FIXT.1.1Mgr.xml"
    delete "${rootProject.projectDir}/libs/fix-1.1.jar"
    delete "${rootProject.projectDir}/libs/dict-1.1.jar"
+   delete "${rootProject.projectDir}/libs/infix-1.1.jar"
    delete "${rootProject.projectDir}/build-eclipse"
    delete "${rootProject.projectDir}/fix/build-eclipse"
    delete "${rootProject.projectDir}/fix/build"

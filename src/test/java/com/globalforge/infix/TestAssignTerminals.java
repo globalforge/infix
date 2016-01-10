@@ -332,7 +332,9 @@ public class TestAssignTerminals {
             sampleRule =
                 "&8=\"FIX.5.0SP2\";&1058=2;&1058[0]->&1059=1;&1058[0]->&1060=2;&1058[1]->&1059=3;&1058[1]->&1060=4"; // 1
             rules = new InfixActions(sampleRule);
+            System.out.println("before: " + TestAssignTerminals.sampleMessage1);
             result = rules.transformFIXMsg(TestAssignTerminals.sampleMessage1);
+            System.out.println("after : " + result);
             // System.out.println(StaticTestingUtils.rs(result));
             resultStore = StaticTestingUtils.parseMessage(result);
             Assert.assertEquals("1", resultStore.get(1059).get(0));
@@ -352,7 +354,8 @@ public class TestAssignTerminals {
                 "&8=\"FIX.5.0SP2\";&1058=2;&1058[0]->&1059=1;&1058[0]->&1060=2;&1058[1]->&1059=3;&1058[1]->&1060=4"; // 1
             rules = new InfixActions(sampleRule);
             InfixActions.primeEngine("FIX.5.0SP2");
-            result = rules.transformFIXMsg(TestAssignTerminals.sampleMessage1);
+            result =
+                rules.transformFIXMsg(TestAssignTerminals.sampleMessage1, true);
             // System.out.println(StaticTestingUtils.rs(result));
             resultStore = StaticTestingUtils.parseMessage(result);
             Assert.assertEquals("1", resultStore.get(1059).get(0));

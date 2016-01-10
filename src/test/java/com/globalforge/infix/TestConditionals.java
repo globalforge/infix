@@ -19,7 +19,7 @@ public class TestConditionals {
         String result = rules.transformFIXMsg(TestConditionals.sampleMessage);
         return StaticTestingUtils.parseMessage(result);
     }
-    static final String sampleMessage = "8=FIX.5.0SP2" + '\u0001' + "9=10"
+    static final String sampleMessage = "8=FIX.5.0SP2" + '\u0001' + "9=1000"
         + '\u0001' + "34=8" + '\u0001' + "35=8" + '\u0001' + "627=1" + '\u0001'
         + "628=COMPID" + '\u0001' + "629=20130412-19:30:00.686" + '\u0001'
         + "630=7" + '\u0001' + "44=3.142" + '\u0001'

@@ -180,7 +180,7 @@ public class TestGroup {
             Assert.fail();
         }
     }
-    static final String sampleMessage3 = "8=FIX.4.4" + '\u0001' + "9=10"
+    static final String sampleMessage3 = "8=FIX.4.4" + '\u0001' + "9=1000"
         + '\u0001' + "35=8" + '\u0001' + "43=-1" + '\u0001' + "382=2"
         + '\u0001' + "375=FOO" + '\u0001' + "655=2" + '\u0001' + "375=BAR"
         + '\u0001' + " 655=3 " + '\u0001' + "207=USA" + '\u0001' + "10=004";
@@ -217,14 +217,14 @@ public class TestGroup {
     // name = [NestedParties], id = [539], members = [539|524|525|538],
     // 382->555, 78->539, 79->524
     // size: 22
-    static final String sampleMessage4 = " 8=FIX.4.4 " + '\u0001' + "9=10"
+    static final String sampleMessage4 = "8=FIX.4.4" + '\u0001' + "9=1000"
         + '\u0001' + "35=8" + '\u0001' + "43=-1" + '\u0001' + "555=2"
         + '\u0001' + "600=FOO" + '\u0001' + "601=2" + '\u0001' + "539=2"
-        + '\u0001' + "524=STR" + '\u0001' + " 525=8" + '\u0001' + "538=-33"
-        + '\u0001' + "524=\"MCS\"" + '\u0001' + "525=22" + '\u0001' + "538=33"
+        + '\u0001' + "524=STR" + '\u0001' + "525=8" + '\u0001' + "538=-33"
+        + '\u0001' + "524=MCS" + '\u0001' + "525=22" + '\u0001' + "538=33"
         + '\u0001' + "600=FOO1" + '\u0001' + "601=3" + '\u0001' + "539=1"
-        + '\u0001' + "524=\"STR1\"" + '\u0001' + "525=0" + '\u0001' + "538=-34"
-        + '\u0001' + "207=USA" + '\u0001' + " 10=004 ";
+        + '\u0001' + "524=STR1" + '\u0001' + "525=0" + '\u0001' + "538=-34"
+        + '\u0001' + "207=USA" + '\u0001' + "10=004 ";
 
     @Test
     public void t8() {
@@ -287,7 +287,10 @@ public class TestGroup {
         try {
             sampleRule = "&555[1]->&218=\"STARK\"";
             rules = new InfixActions(sampleRule);
-            result = rules.transformFIXMsg(TestGroup.sampleMessage4);
+            System.out.println("before: "
+                + StaticTestingUtils.rs(TestGroup.sampleMessage4));
+            result = rules.transformFIXMsg(TestGroup.sampleMessage4, true);
+            System.out.println("after :  " + StaticTestingUtils.rs(result));
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(16);
@@ -351,7 +354,10 @@ public class TestGroup {
         try {
             sampleRule = "~&555[0]->&539[0]->&525";
             rules = new InfixActions(sampleRule);
+            System.out.println("before: "
+                + StaticTestingUtils.rs(TestGroup.sampleMessage4));
             result = rules.transformFIXMsg(TestGroup.sampleMessage4);
+            System.out.println("after : " + StaticTestingUtils.rs(result));
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(9);
@@ -685,7 +691,7 @@ public class TestGroup {
             Assert.fail();
         }
     }
-    static final String sampleMessage6 = "8=FIX.4.4" + '\u0001' + "9=10"
+    static final String sampleMessage6 = "8=FIX.4.4" + '\u0001' + "9=1000"
         + '\u0001' + "35=8" + '\u0001' + "555=2" + '\u0001' + "600=FOO"
         + '\u0001' + "601=2" + '\u0001' + "539=1" + '\u0001' + "524=STR"
         + '\u0001' + "525=8" + '\u0001' + "538=-33" + '\u0001' + "600=FOO1"
@@ -854,7 +860,7 @@ public class TestGroup {
             Assert.fail();
         }
     }
-    static final String sampleMessage8 = "8=FIX.4.4" + '\u0001' + "9=10"
+    static final String sampleMessage8 = "8=FIX.4.4" + '\u0001' + "9=1000"
         + '\u0001' + "35=8" + '\u0001' + "43=-100" + '\u0001' + "44=37.0500"
         + '\u0001'
         + "46=RefSym"
@@ -913,7 +919,7 @@ public class TestGroup {
     // --------> name = [NstdPtysSubGrp], id = [804], members = [545|805]
     // name = [ContraGrp], id = [382], members = [375|337|437|438|655]
     static final String sampleMsg9 =
-        "8=FIX.4.4\u00019=10\u000135=8\u000143=-100\u000144=37.0500\u000146=RefSym\u000149=GSCO\u000155=Symbol\u0001115=COMPID\u0001116=SUBID\u0001382=2\u0001375=FOO\u0001655=2\u0001375=BAR\u0001655=3\u0001555=2\u0001600=FOO\u0001601=2\u0001539=2\u0001524=STR\u0001525=8\u0001538=-33\u0001524=MCS\u0001525=22\u0001538=33\u0001804=2\u0001545=THEIR_ACCT1\u0001805=1\u0001545=THEIR_ACCT2\u0001805=1\u0001600=FOO1\u0001601=3\u0001539=1\u0001524=STR1\u0001525=0\u0001538=-34\u0001804=1\u0001545=THEIR_ACCT3\u0001805=2\u0001207=USA\u000110=004";
+        "8=FIX.4.4\u00019=1000\u000135=8\u000143=-100\u000144=37.0500\u000146=RefSym\u000149=GSCO\u000155=Symbol\u0001115=COMPID\u0001116=SUBID\u0001382=2\u0001375=FOO\u0001655=2\u0001375=BAR\u0001655=3\u0001555=2\u0001600=FOO\u0001601=2\u0001539=2\u0001524=STR\u0001525=8\u0001538=-33\u0001524=MCS\u0001525=22\u0001538=33\u0001804=2\u0001545=THEIR_ACCT1\u0001805=1\u0001545=THEIR_ACCT2\u0001805=1\u0001600=FOO1\u0001601=3\u0001539=1\u0001524=STR1\u0001525=0\u0001538=-34\u0001804=1\u0001545=THEIR_ACCT3\u0001805=2\u0001207=USA\u000110=004";
 
     @Test
     public void t47() {

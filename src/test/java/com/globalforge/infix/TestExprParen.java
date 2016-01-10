@@ -10,7 +10,7 @@ import com.google.common.collect.ListMultimap;
  * <Member>452</Member>
  */
 public class TestExprParen {
-    static final String sampleMessage2 = "8=FIX.4.4" + '\u0001' + "9=10"
+    static final String sampleMessage2 = "8=FIX.4.4" + '\u0001' + "9=1000"
         + '\u0001' + "35=D" + '\u0001' + "43=-1" + '\u0001' + "-43=-1"
         + '\u0001' + "-44=1" + '\u0001' + "44=3.142" + '\u0001' + "161=45.34"
         + '\u0001' + "60=20130412-19:30:00.686" + '\u0001' + "75=20130412"
@@ -129,7 +129,7 @@ public class TestExprParen {
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestExprParen.sampleMessage1);
             resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals(resultStore.get(448).get(0), "13");
+            Assert.assertEquals(resultStore.get(448).get(0), "1003");
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();
@@ -156,7 +156,7 @@ public class TestExprParen {
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestExprParen.sampleMessage3);
             resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals(resultStore.get(311).get(0), "7.000");
+            Assert.assertEquals(resultStore.get(311).get(0), "502.000");
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();
@@ -183,7 +183,7 @@ public class TestExprParen {
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestExprParen.sampleMessage3);
             resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals(resultStore.get(311).get(0), "4.137492");
+            Assert.assertEquals(resultStore.get(311).get(0), "319.2234");
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();
@@ -203,7 +203,7 @@ public class TestExprParen {
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestExprParen.sampleMessage3);
             resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals(resultStore.get(311).get(0), "7.000");
+            Assert.assertEquals(resultStore.get(311).get(0), "502.000");
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();
@@ -225,9 +225,9 @@ public class TestExprParen {
         + '\u0001';
     static final String sampleMessage3 = TestExprParen.sampleMessage1_part1
         + TestExprParen.sampleMessage2_part2;
-    static final String sampleMessage1_part1 = "8=FIX.4.4" + '\u0001' + "9=10"
-        + '\u0001' + "35=8" + '\u0001' + "43=-1" + '\u0001' + "-43=-1"
-        + '\u0001' + "-44=1" + '\u0001' + "44=3.142" + '\u0001'
+    static final String sampleMessage1_part1 = "8=FIX.4.4" + '\u0001'
+        + "9=1000" + '\u0001' + "35=8" + '\u0001' + "43=-1" + '\u0001'
+        + "-43=-1" + '\u0001' + "-44=1" + '\u0001' + "44=3.142" + '\u0001'
         + "60=20130412-19:30:00.686" + '\u0001' + "75=20130412" + '\u0001'
         + "45=0" + '\u0001';
     static final String sampleMessage2_part2 = "711=2" + '\u0001'

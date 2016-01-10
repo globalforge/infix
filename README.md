@@ -9,7 +9,7 @@ InFIX greatly reduces the number of code releases needed when on-boarding new FI
 
 Preamble
 --------
-InFIX is a Java 1.7 application built on an Apple MacBook Air running OS X version 10.10.2 but it should be buildable on any UNIX-like platform.  Work is needed to enhance the build scripts to build on windoes.  The only obstacle is a shell script called buildAntlr.sh that get's called during the build process to run Antlr.  The script should be ported to native Gradle commands.  Care to help?
+InFIX is a Java 1.8 application that is known to build on Windows and OS X but it should be buildable on any UNIX platform.
 
 The engine behind InFIX is ANTLR4 (http://antlr.org).  With a little work, InFIX can be ported to C#, Python (2 and 3) and at some point in the future C++. The language limitations are due to currently supported code generation targets by Antlr4.
 
@@ -17,15 +17,14 @@ If you care to help with any of the above, why not join the InFIX project as a d
 
 Set up the Build Environment
 ----------------------------
-Install Gradle from https://gradle.org.
-
-Infix is tested with Gradle version 1.11 and it may not work with the latest 2.x.x version.  This would be a great thing to do next.
+Install the latest Gradle 2.x.x from https://gradle.org.
 
 Build the App
 -------------
 The first step in the pipeline is to build the data dictionaries.  This is one time operation and should never have to be done again until the FIX community releases another FIX version. Issue the below task and a data dictionary will be build for each standard FIX version.
 
 All commands issued from the project root.  
+
 ./gradlew buildXML
 
 The above command will create a series of xml files.  One file per FIX version.  The next step is generate the java source code used by InFIX from the xml files.
@@ -34,9 +33,13 @@ The above command will create a series of xml files.  One file per FIX version. 
 
 The above command generates java source code for all the FIX data dictionaries.  The next step is to build the InFIX language recognizer and compile all the source code into a single library called infix-1.1.jar
 
-./gradlew distTar
+./gradlew build
 
-The above command will create a distribution archive called infix-1.1.tar.  Unpack the tar file and proceed to the next step.
+The above command will build, test and create distributions infix/build/distributions.  Unpack the tar or zip file and proceed to "Test the App" if you want to test the sample application.
+
+./gradlew eclipse
+
+The above command will create an eclipse project that you can import directly using the infix directory created during the clone as the project root.  You shouldn't have to fiddle with any of the project settings during the import.  Once imported, all the dependencies should be resolved as long as you followed the previous steps.  There should be no compilation errors.  You may have to disable project specific setting for java and use your workspace settings.  Use Java 8 if possible.
 
 Test the App
 -------------

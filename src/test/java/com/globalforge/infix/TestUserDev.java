@@ -1,5 +1,6 @@
 package com.globalforge.infix;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -20,8 +21,7 @@ public class TestUserDev {
         try {
             String sampleRule = "{com.globalforge.infix.TestUserDev$UserCtx1}";
             InfixActions rules = new InfixActions(sampleRule);
-            String result =
-                rules.transformFIXMsg(TestUserDev.sampleMessage1, true);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessage1);
             ArrayList<InfixField> myList =
                 StaticTestingUtils.parseMessageIntoList(result);
             InfixField fld = myList.get(3);
@@ -316,7 +316,7 @@ public class TestUserDev {
     // name = [NestedParties], id = [539], members = [524|525|538],
     // 382->555, 78->539, 79->524
     // size: 22
-    static final String sampleMessage1 = "8=FIX.4.4" + '\u0001' + "9=1000"
+    static final String sampleMessage1 = "8=FIX.4.4" + '\u0001' + "9=10"
         + '\u0001' + "35=8" + '\u0001' + "44=-1" + '\u0001' + "555=2"
         + '\u0001' + "600=FOO" + '\u0001' + "601=2 " + '\u0001' + "539=1"
         + '\u0001' + "524=STR" + '\u0001' + "538=-33" + '\u0001' + "600=FOO1"
@@ -687,7 +687,7 @@ public class TestUserDev {
             Assert.fail();
         }
     }
-    static final String sampleMessage2 = "8=FIX.4.4" + '\u0001' + "9=1000"
+    static final String sampleMessage2 = "8=FIX.4.4" + '\u0001' + "9=10"
         + '\u0001' + "35=8" + '\u0001' + "44=-1" + '\u0001' + "555=2"
         + '\u0001' + "600=FOO" + '\u0001' + "601=2" + '\u0001' + "539=1"
         + '\u0001' + "524=STR" + '\u0001' + "538=-33" + '\u0001' + "600=FOO1"
@@ -837,19 +837,22 @@ public class TestUserDev {
             infixApi.putContext("&555[0]->&539[0]->&524", "MCS");
             InfixField fld = infixApi.getContext("&44");
             System.out.println(fld);
-            Map<String, Integer> ctxDict = infixApi.getCtxToOrderDict();
-            Iterator<Entry<String, Integer>> it = ctxDict.entrySet().iterator();
+            Map<String, BigDecimal> ctxDict = infixApi.getCtxToOrderDict();
+            Iterator<Entry<String, BigDecimal>> it =
+                ctxDict.entrySet().iterator();
             while (it.hasNext()) {
-                Entry<String, Integer> e = it.next();
+                Entry<String, BigDecimal> e = it.next();
                 System.out.println("key=" + e.getKey() + ", val="
                     + e.getValue());
             }
-            ArrayList<InfixField> fldDict = infixApi.getOrderToFieldDict();
-            Iterator<InfixField> it2 = fldDict.iterator();
-            int idx = 0;
+            Map<BigDecimal, InfixField> fldDict =
+                infixApi.getOrderToFieldDict();
+            Iterator<Entry<BigDecimal, InfixField>> it2 =
+                fldDict.entrySet().iterator();
             while (it2.hasNext()) {
-                InfixField e = it2.next();
-                System.out.println("key=" + idx++ + ", val=" + e);
+                Entry<BigDecimal, InfixField> e = it2.next();
+                System.out.println("key=" + e.getKey() + ", val="
+                    + e.getValue());
             }
             // fldDict.put(new BigDecimal(1), new FixField(55, "FOO"));
         }
@@ -873,9 +876,10 @@ public class TestUserDev {
                     + e.getValue() + "]");
             }
             InfixField tag539 = idxDict.get("&555");
-            Map<String, Integer> ctxDict = infixApi.getCtxToOrderDict();
-            Integer val = ctxDict.get("&555");
-            ArrayList<InfixField> fldDict = infixApi.getOrderToFieldDict();
+            Map<String, BigDecimal> ctxDict = infixApi.getCtxToOrderDict();
+            BigDecimal val = ctxDict.get("&555");
+            Map<BigDecimal, InfixField> fldDict =
+                infixApi.getOrderToFieldDict();
             InfixField fld = fldDict.get(val);
             Assert.assertEquals(tag539.getTagVal(), fld.getTagVal());
             Assert.assertEquals(tag539.getTagNum(), fld.getTagNum());

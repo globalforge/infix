@@ -104,8 +104,8 @@ is_greatEq      :   tg=terminal GE  op=terminal ;
 not             :   NOT tg=terminal ;
 is              :   IS tg=terminal ;
 		
-then            :   '?' fixrules	;
-els             :   ':' fixrules	;
+then            :   ('?' action) | ('?' '[' fixrules ']');
+els             :   (':' action) | (':' '[' fixrules ']');
 
 FLP				: '<->';
 DEL             : '~'  ;

@@ -16,6 +16,8 @@ import org.slf4j.LoggerFactory;
 // import quickfix.Message;
 import com.globalforge.infix.antlr.FixRulesBaseVisitor;
 import com.globalforge.infix.antlr.FixRulesParser;
+import com.globalforge.infix.antlr.FixRulesParser.ActionContext;
+import com.globalforge.infix.antlr.FixRulesParser.FixrulesContext;
 import com.globalforge.infix.antlr.FixRulesParser.TagnumContext;
 import com.globalforge.infix.antlr.FixRulesParser.TerminalContext;
 import com.globalforge.infix.api.InfixField;
@@ -55,13 +57,13 @@ import com.globalforge.infix.api.InfixField;
  */
 public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     /** logger */
-    final static Logger logger = LoggerFactory
-        .getLogger(FixRulesTransformVisitor.class);
+    final static Logger logger =
+        LoggerFactory.getLogger(FixRulesTransformVisitor.class);
     private static final int LEFT = 0;
     private static final int RIGHT = 1;
     private FixMessageMgr msgMgr = null;
-    private final SimpleDateFormat datetime = new SimpleDateFormat(
-        "yyyyMMdd-HH:mm:ss.SSS");
+    private final SimpleDateFormat datetime =
+        new SimpleDateFormat("yyyyMMdd-HH:mm:ss.SSS");
     private final SimpleDateFormat date = new SimpleDateFormat("yyyyMMdd");
     private final String fixMessage;
     private boolean isStatementTrue = false;
@@ -120,7 +122,8 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      * {@link #visitChildren} on {@code ctx}.
      */
     @Override
-    public String visitParseRules(@NotNull FixRulesParser.ParseRulesContext ctx) {
+    public String visitParseRules(
+        @NotNull FixRulesParser.ParseRulesContext ctx) {
         try {
             if (fixMessage != null) {
                 msgMgr = new FixMessageMgr(fixMessage);
@@ -180,10 +183,9 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
             // groups differ between version or msg type.
             msgMgr = new FixMessageMgr(fixMsg);
         } catch (Exception e) {
-            FixRulesTransformVisitor.logger
-                .error(
-                    "Can not re-parse message after tag 8 or tag 35 assignment. Rolling back assignment.",
-                    e);
+            FixRulesTransformVisitor.logger.error(
+                "Can not re-parse message after tag 8 or tag 35 assignment. Rolling back assignment.",
+                e);
             // roll-back the old state
             msgMgr = oldMsgMgr;
             // roll-back the original fix version and msgType (we had to update
@@ -462,13 +464,11 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         }
         BigDecimal result = null;
         if (ctx.op.getType() == FixRulesParser.ADD) {
-            result =
-                new BigDecimal(left).add(new BigDecimal(right),
-                    MathContext.DECIMAL32);
+            result = new BigDecimal(left).add(new BigDecimal(right),
+                MathContext.DECIMAL32);
         } else {
-            result =
-                new BigDecimal(left).subtract(new BigDecimal(right),
-                    MathContext.DECIMAL32);
+            result = new BigDecimal(left).subtract(new BigDecimal(right),
+                MathContext.DECIMAL32);
         }
         return result.toString();
     }
@@ -499,13 +499,11 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         }
         BigDecimal result = null;
         if (ctx.op.getType() == FixRulesParser.MUL) {
-            result =
-                new BigDecimal(left).multiply(new BigDecimal(right),
-                    MathContext.DECIMAL32);
+            result = new BigDecimal(left).multiply(new BigDecimal(right),
+                MathContext.DECIMAL32);
         } else {
-            result =
-                new BigDecimal(left).divide(new BigDecimal(right),
-                    MathContext.DECIMAL32);
+            result = new BigDecimal(left).divide(new BigDecimal(right),
+                MathContext.DECIMAL32);
         }
         return result.toString();
     }
@@ -528,8 +526,8 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
                                                                         // right
         // subexpression
         if ((left == null) || (right == null)) {
-            FixRulesTransformVisitor.logger.warn(
-                "null field in '|'. No assignment: {}", ctx.getText());
+            FixRulesTransformVisitor.logger
+                .warn("null field in '|'. No assignment: {}", ctx.getText());
             return null;
         }
         return left + right;
@@ -614,7 +612,8 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      * boolean operators within a single action.
      */
     @Override
-    public String visitIs_greater(@NotNull FixRulesParser.Is_greaterContext ctx) {
+    public String visitIs_greater(
+        @NotNull FixRulesParser.Is_greaterContext ctx) {
         TerminalContext lVal = ctx.tg;
         TerminalContext rVal = ctx.op;
         String rResult = visit(rVal);
@@ -628,7 +627,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         return null;
     }
 
-/**
+    /**
      * Determines if a boolean "<" operation is true or false. The operation may
      * exists as part of a larger boolean expression consisting of multiple
      * boolean operators within a single action.
@@ -674,7 +673,8 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      * boolean operators within a single action.
      */
     @Override
-    public String visitIs_greatEq(@NotNull FixRulesParser.Is_greatEqContext ctx) {
+    public String visitIs_greatEq(
+        @NotNull FixRulesParser.Is_greatEqContext ctx) {
         TerminalContext lVal = ctx.tg;
         TerminalContext rVal = ctx.op;
         String rResult = visit(rVal);
@@ -735,7 +735,11 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      */
     @Override
     public String visitThen(@NotNull FixRulesParser.ThenContext ctx) {
-        if (isStatementTrue) { return visit(ctx.fixrules()); }
+        if (!isStatementTrue) { return null; }
+        ActionContext actionCtx = ctx.action();
+        FixrulesContext rulesCtx = ctx.fixrules();
+        if (actionCtx != null) { return visit(actionCtx); }
+        if (rulesCtx != null) { return visit(rulesCtx); }
         return null;
     }
 
@@ -745,7 +749,11 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      */
     @Override
     public String visitEls(@NotNull FixRulesParser.ElsContext ctx) {
-        if (!isStatementTrue) { return visit(ctx.fixrules()); }
+        if (isStatementTrue) { return null; }
+        ActionContext actionCtx = ctx.action();
+        FixrulesContext rulesCtx = ctx.fixrules();
+        if (actionCtx != null) { return visit(actionCtx); }
+        if (rulesCtx != null) { return visit(rulesCtx); }
         return null;
     }
 
@@ -813,7 +821,8 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      * 35)
      */
     @Override
-    public String visitKeepTagSet(@NotNull FixRulesParser.KeepTagSetContext ctx) {
+    public String visitKeepTagSet(
+        @NotNull FixRulesParser.KeepTagSetContext ctx) {
         List<TagnumContext> tagList = ctx.tagnum();
         Iterator<TagnumContext> it = tagList.iterator();
         Set<String> keepTags = new HashSet<String>();
@@ -845,7 +854,8 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      * @return String The right hand side of the assignment.
      */
     @Override
-    public String visitMyUserTerm(@NotNull FixRulesParser.MyUserTermContext ctx) {
+    public String visitMyUserTerm(
+        @NotNull FixRulesParser.MyUserTermContext ctx) {
         String className = ctx.userTerm().className.getText();
         return msgMgr.handleUserDefinedTerminal(className);
     }

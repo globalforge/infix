@@ -12,18 +12,15 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Keeps track of all group components that are not repeating groups.
- *
  * @author Michael
  */
 public class GroupManager {
     final static Logger logger = LoggerFactory.getLogger(GroupManager.class);
-    private final LinkedHashMap<String, RepeatingGroupBuilder> groupMap =
-        new LinkedHashMap<String, RepeatingGroupBuilder>();
+    private final LinkedHashMap<String, RepeatingGroupBuilder> groupMap = new LinkedHashMap<String, RepeatingGroupBuilder>();
 
     /**
      * The first member of every member set in a group is the goup id. The group
      * id is the only non-repeating field in a group.
-     *
      * @param groupComponentName The component name for the group
      * @param groupId The first field in the group
      */
@@ -34,7 +31,6 @@ public class GroupManager {
 
     /**
      * Adds a member to the list of fields associated with a group.
-     *
      * @param compName The component or group name.
      * @param fieldName The field name.
      */
@@ -46,7 +42,6 @@ public class GroupManager {
     /**
      * Adds a nested component name to the list of fields associated with a
      * component.
-     *
      * @param compName
      * @param nestedCompName
      */
@@ -57,7 +52,6 @@ public class GroupManager {
 
     /**
      * Returns true if argument is a group name.
-     *
      * @param referredName the group name
      * @return boolean
      */
@@ -67,7 +61,6 @@ public class GroupManager {
 
     /**
      * Returns an unmodifiable set of group names.
-     *
      * @return Set<String> group names.
      */
     public Set<String> getGroupNames() {
@@ -76,7 +69,6 @@ public class GroupManager {
 
     /**
      * Returns the group associated with a component or group name;
-     *
      * @param componentName The component name of the group
      * @return FixRepeatingGroup
      */
@@ -98,7 +90,8 @@ public class GroupManager {
             for (int i = 0; i < groupMembers.size(); i++) {
                 String memberName = groupMembers.get(i);
                 if (memSet.contains(memberName)) {
-                    throw new RuntimeException("Duplicate member: " + memberName);
+                    throw new RuntimeException(
+                        "Duplicate member: " + memberName);
                 } else {
                     memSet.add(memberName);
                 }
@@ -110,14 +103,18 @@ public class GroupManager {
      * Print all group component names along with their list of members.
      */
     public void printGroupMap() {
-        Set<Entry<String, RepeatingGroupBuilder>> compMems = groupMap.entrySet();
-        Iterator<Entry<String, RepeatingGroupBuilder>> memSetIterator = compMems.iterator();
+        Set<Entry<String, RepeatingGroupBuilder>> compMems = groupMap
+            .entrySet();
+        Iterator<Entry<String, RepeatingGroupBuilder>> memSetIterator = compMems
+            .iterator();
         GroupManager.logger.info("--- BEGIN Group Map ---");
         while (memSetIterator.hasNext()) {
-            Entry<String, RepeatingGroupBuilder> memSetEntry = memSetIterator.next();
+            Entry<String, RepeatingGroupBuilder> memSetEntry = memSetIterator
+                .next();
             String compName = memSetEntry.getKey();
             RepeatingGroupBuilder orderCtx = memSetEntry.getValue();
-            GroupManager.logger.info("\t" + compName + ": " + orderCtx.getUnmodifiableMemberList());
+            GroupManager.logger.info(
+                "\t" + compName + ": " + orderCtx.getUnmodifiableMemberList());
         }
         GroupManager.logger.info("--- END Group Map ---");
     }

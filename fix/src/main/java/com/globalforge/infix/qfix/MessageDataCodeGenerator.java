@@ -35,17 +35,20 @@ public class MessageDataCodeGenerator {
     private void initOutputStreams() throws Exception {
         String SRC_DIR = System.getenv("SRC_DIR");
         if (SRC_DIR != null) {
-            logger.info("SRC_DIR is an ENV variable: {}", SRC_DIR);
+            MessageDataCodeGenerator.logger
+                .info("SRC_DIR is an ENV variable: {}", SRC_DIR);
         } else {
             SRC_DIR = System.getProperty("SRC_DIR");
             if (SRC_DIR != null) {
-                logger.info("SRC_DIR is a System property: {}", SRC_DIR);
+                MessageDataCodeGenerator.logger
+                    .info("SRC_DIR is a System property: {}", SRC_DIR);
             } else {
                 SRC_DIR = null;
             }
         }
         if (SRC_DIR == null) {
-            logger.warn("No SRC_DIR provided.  Output stream is CONSOLE");
+            MessageDataCodeGenerator.logger
+                .warn("No SRC_DIR provided.  Output stream is CONSOLE");
             out = System.out;
         } else {
             fileNamePrefix = afixVer + "FIXMessageData";
@@ -54,7 +57,8 @@ public class MessageDataCodeGenerator {
                 + qfixverLowerCase + System.getProperty("file.separator")
                 + "auto" + System.getProperty("file.separator") + fileNamePrefix
                 + ".java");
-            logger.info("building java file: {}", fOut.getAbsolutePath());
+            MessageDataCodeGenerator.logger.info("building java file: {}",
+                fOut.getAbsolutePath());
             fOut.mkdir();
             out = new PrintStream(fOut, "UTF-8");
         }
@@ -103,7 +107,7 @@ public class MessageDataCodeGenerator {
         memSetIterator = compMems.iterator();
         while (memSetIterator.hasNext()) {
             out.println();
-            Entry<String, LinkedHashMap<String, String>> ctxEntry = (Entry<String, LinkedHashMap<String, String>>) memSetIterator
+            Entry<String, LinkedHashMap<String, String>> ctxEntry = memSetIterator
                 .next();
             String msgType = ctxEntry.getKey();
             out.println("\tprivate void initMessageType_" + msgType + "() {");

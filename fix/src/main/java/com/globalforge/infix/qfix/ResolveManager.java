@@ -11,15 +11,12 @@ import org.slf4j.LoggerFactory;
 /**
  * Resolves references to components and groups. An algorithm to convert
  * component names into an Infix like context map.
- *
  * @author Michael
  */
 public class ResolveManager {
     final static Logger logger = LoggerFactory.getLogger(ResolveManager.class);
-    private final LinkedHashMap<String, LinkedList<String>> intermidiateCompMap =
-        new LinkedHashMap<String, LinkedList<String>>();
-    private final LinkedHashMap<String, LinkedList<String>> intermidiateGroupMap =
-        new LinkedHashMap<String, LinkedList<String>>();
+    private final LinkedHashMap<String, LinkedList<String>> intermidiateCompMap = new LinkedHashMap<String, LinkedList<String>>();
+    private final LinkedHashMap<String, LinkedList<String>> intermidiateGroupMap = new LinkedHashMap<String, LinkedList<String>>();
     private final ComponentManager compMgr;
     private final GroupManager grpMgr;
     private final FieldParser fParser;
@@ -30,7 +27,8 @@ public class ResolveManager {
      * @param grpMgr {@link GroupManager}
      * @param fParser {@link FieldParser}
      */
-    public ResolveManager(ComponentManager compMgr, GroupManager grpMgr, FieldParser fParser) {
+    public ResolveManager(ComponentManager compMgr, GroupManager grpMgr,
+        FieldParser fParser) {
         this.compMgr = compMgr;
         this.grpMgr = grpMgr;
         this.fParser = fParser;
@@ -70,7 +68,8 @@ public class ResolveManager {
         Iterator<String> compMems = compMgr.getComponentNames().iterator();
         while (compMems.hasNext()) {
             String componentName = compMems.next();
-            LinkedList<String> fieldNameList = compMgr.getMemberList(componentName);
+            LinkedList<String> fieldNameList = compMgr
+                .getMemberList(componentName);
             for (int i = 0; i < fieldNameList.size(); i++) {
                 String memberName = fieldNameList.get(i);
                 int refIdx = memberName.indexOf("@");
@@ -95,7 +94,8 @@ public class ResolveManager {
         Iterator<String> grpMems = grpMgr.getGroupNames().iterator();
         while (grpMems.hasNext()) {
             String groupName = grpMems.next();
-            LinkedList<String> fieldNameList = grpMgr.getGroup(groupName).getMemberList();
+            LinkedList<String> fieldNameList = grpMgr.getGroup(groupName)
+                .getMemberList();
             for (int i = 0; i < fieldNameList.size(); i++) {
                 String memberName = fieldNameList.get(i);
                 int refIdx = memberName.indexOf("@");
@@ -114,12 +114,11 @@ public class ResolveManager {
     /**
      * Given a component name from the quick fix data dictionary, convert all
      * the member fields contained within it to infix syntax.
-     *
      * @param member The component name as defined by a quickfix dictionary.
      * @param resolveList The list of field members conververted to infix
-     * syntax.
+     *            syntax.
      * @return LinkedList<String> THe list of member fields converted to infix
-     * syntax.
+     *         syntax.
      */
     private LinkedList<String> componentNameToContext(String member,
         LinkedList<String> resolveList) {
@@ -133,8 +132,8 @@ public class ResolveManager {
             } else {
                 if (gIdx < 0) {
                     String referredName = mem.substring(cIdx + 1);
-                    resolveList
-                        .addAll(componentNameToContext(referredName, new LinkedList<String>()));
+                    resolveList.addAll(componentNameToContext(referredName,
+                        new LinkedList<String>()));
                 } else {
                     resolveList.add(mem);
                 }
@@ -152,7 +151,8 @@ public class ResolveManager {
         Iterator<String> compMems = compMgr.getComponentNames().iterator();
         while (compMems.hasNext()) {
             String key = compMems.next();
-            LinkedList<String> memList = componentNameToContext(key, new LinkedList<String>());
+            LinkedList<String> memList = componentNameToContext(key,
+                new LinkedList<String>());
             intermidiateCompMap.put(key, memList);
         }
     }
@@ -161,11 +161,10 @@ public class ResolveManager {
      * Given a group component name from the quick fix data dictionary, convert
      * all the component (excluding group components) member fields contained
      * within it to infix syntax.
-     *
      * @param member The name of the group component as defined by the quickfix
-     * data dictionary.
+     *            data dictionary.
      * @return LinkedList<String> The list of all resolved component member
-     * fields
+     *         fields
      */
     private LinkedList<String> groupNameToContext(String member) {
         LinkedList<String> instExt = grpMgr.getGroup(member).getMemberList();
@@ -175,7 +174,8 @@ public class ResolveManager {
             int cIdx = mem.indexOf("@");
             if (cIdx >= 0) {
                 String referredName = mem.substring(cIdx + 1);
-                LinkedList<String> resolvedCompList = this.intermidiateCompMap.get(referredName);
+                LinkedList<String> resolvedCompList = this.intermidiateCompMap
+                    .get(referredName);
                 resolveList.addAll(resolvedCompList);
             } else {
                 int gIdx = mem.indexOf("#");
@@ -221,12 +221,11 @@ public class ResolveManager {
      * Given a group component name from the quick fix data dictionary, convert
      * all the group component member fields contained within it to infix
      * syntax.
-     *
      * @param member The name of the group component defined in the quickfix
-     * data dictionary.
+     *            data dictionary.
      * @param grpCtx The infix context in progress.
      * @param resolveList The final list of field members of the group in infix
-     * syntax.
+     *            syntax.
      */
     private void resolveGroupsInGroup(String member, String grpCtx,
         LinkedList<String> resolveList) {
@@ -259,7 +258,8 @@ public class ResolveManager {
      * over the set of group components.
      */
     private void resolveGroupChainsInGroups() {
-        Iterator<String> compMems = this.intermidiateGroupMap.keySet().iterator();
+        Iterator<String> compMems = this.intermidiateGroupMap.keySet()
+            .iterator();
         while (compMems.hasNext()) {
             String key = compMems.next();
             LinkedList<String> memList = new LinkedList<String>();
@@ -272,20 +272,21 @@ public class ResolveManager {
      * Given a pure component (not a group) name from the quick fix data
      * dictionary, convert all the group component member fields contained
      * within it to infix syntax.
-     *
      * @param member The name of the component.
      * @param grpCtx The nested infix syntax in progress.
      * @param resolveList The final list of member fields converted to infix
-     * syntax.
+     *            syntax.
      */
-    private void resolveGroupsInComp(String member, String grpCtx, LinkedList<String> resolveList) {
+    private void resolveGroupsInComp(String member, String grpCtx,
+        LinkedList<String> resolveList) {
         LinkedList<String> instExt = this.intermidiateCompMap.get(member);
         for (int i = 0; i < instExt.size(); i++) {
             String mem = instExt.get(i);
             int cIdx = mem.indexOf("#");
             if (cIdx >= 0) {
                 String referredName = mem.substring(cIdx + 1);
-                LinkedList<String> completeGroup = ctxStore.getGroupContext(referredName);
+                LinkedList<String> completeGroup = ctxStore
+                    .getGroupContext(referredName);
                 resolveList.addAll(completeGroup);
             } else {
                 resolveList.add(mem);
@@ -299,7 +300,8 @@ public class ResolveManager {
      * infix syntax. Operates over the set of group components.
      */
     private void resolveGroupChainsInComponents() {
-        Iterator<String> compMems = this.intermidiateCompMap.keySet().iterator();
+        Iterator<String> compMems = this.intermidiateCompMap.keySet()
+            .iterator();
         while (compMems.hasNext()) {
             String key = compMems.next();
             LinkedList<String> memList = new LinkedList<String>();
@@ -333,16 +335,20 @@ public class ResolveManager {
         while (compIt.hasNext()) {
             String compKey = compIt.next();
             boolean added = ckSet.add(compKey);
-            if (!added) { throw new RuntimeException(
-                "duplicate key in complete comp map: " + compKey); }
+            if (!added) {
+                throw new RuntimeException(
+                    "duplicate key in complete comp map: " + compKey);
+            }
         }
         Set<String> groupNames = ctxStore.getGroupNameSet();
         Iterator<String> groupIt = groupNames.iterator();
         while (groupIt.hasNext()) {
             String grpKey = groupIt.next();
             boolean added = ckSet.add(grpKey);
-            if (!added) { throw new RuntimeException(
-                "duplicate key in complete group map: " + grpKey); }
+            if (!added) {
+                throw new RuntimeException(
+                    "duplicate key in complete group map: " + grpKey);
+            }
         }
     }
 
@@ -355,12 +361,14 @@ public class ResolveManager {
         Iterator<String> compMems = compNames.iterator();
         while (compMems.hasNext()) {
             String componentName = compMems.next();
-            LinkedList<String> fieldNameList = ctxStore.getComponentContext(componentName);
+            LinkedList<String> fieldNameList = ctxStore
+                .getComponentContext(componentName);
             Set<String> memSet = new HashSet<String>(fieldNameList.size());
             for (int i = 0; i < fieldNameList.size(); i++) {
                 String memberName = fieldNameList.get(i);
                 if (memSet.contains(memberName)) {
-                    throw new RuntimeException("Duplicate member: " + memberName);
+                    throw new RuntimeException(
+                        "Duplicate member: " + memberName);
                 } else {
                     memSet.add(memberName);
                 }
@@ -370,14 +378,19 @@ public class ResolveManager {
         compMems = groupNames.iterator();
         while (compMems.hasNext()) {
             String componentName = compMems.next();
-            if (ctxStore.containsComponentName(componentName)) { throw new RuntimeException(
-                "Can't have component in both comp table and group table: " + componentName); }
-            LinkedList<String> fieldNameList = ctxStore.getGroupContext(componentName);
+            if (ctxStore.containsComponentName(componentName)) {
+                throw new RuntimeException(
+                    "Can't have component in both comp table and group table: "
+                        + componentName);
+            }
+            LinkedList<String> fieldNameList = ctxStore
+                .getGroupContext(componentName);
             Set<String> memSet = new HashSet<String>(fieldNameList.size());
             for (int i = 0; i < fieldNameList.size(); i++) {
                 String memberName = fieldNameList.get(i);
                 if (memSet.contains(memberName)) {
-                    throw new RuntimeException("Duplicate member: " + memberName);
+                    throw new RuntimeException(
+                        "Duplicate member: " + memberName);
                 } else {
                     memSet.add(memberName);
                 }
@@ -394,7 +407,8 @@ public class ResolveManager {
         Iterator<String> compMems = compNames.iterator();
         while (compMems.hasNext()) {
             String compName = compMems.next();
-            LinkedList<String> fieldNameList = ctxStore.getComponentContext(compName);
+            LinkedList<String> fieldNameList = ctxStore
+                .getComponentContext(compName);
             ResolveManager.logger.info("\t" + compName + ": " + fieldNameList);
         }
         ResolveManager.logger.info("--- END COMPLETED COMPONENTS ---");
@@ -409,7 +423,8 @@ public class ResolveManager {
         Iterator<String> grpMems = groupNames.iterator();
         while (grpMems.hasNext()) {
             String groupName = grpMems.next();
-            LinkedList<String> fieldNameList = ctxStore.getGroupContext(groupName);
+            LinkedList<String> fieldNameList = ctxStore
+                .getGroupContext(groupName);
             ResolveManager.logger.info("\t" + groupName + ": " + fieldNameList);
         }
         ResolveManager.logger.info("--- END COMPLETED GROUPS ---");
@@ -424,7 +439,8 @@ public class ResolveManager {
         Iterator<String> grpMems = groupNames.iterator();
         while (grpMems.hasNext()) {
             String groupName = grpMems.next();
-            LinkedList<String> fieldNameList = intermidiateGroupMap.get(groupName);
+            LinkedList<String> fieldNameList = intermidiateGroupMap
+                .get(groupName);
             ResolveManager.logger.info("\t" + groupName + ": " + fieldNameList);
         }
         ResolveManager.logger.info("--- END INTERMEDIATE GROUPS ---");

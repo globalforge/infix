@@ -6,7 +6,6 @@ public class CodeGenerator {
         String fixVersion = null;
         MessageDataCodeGenerator msgGen = null;
         FieldOrderMapCodeGenerator fieldGen = null;
-        GroupManagerCodeGenerator groupGen = null;
         try {
             // FIX4.0
             /*

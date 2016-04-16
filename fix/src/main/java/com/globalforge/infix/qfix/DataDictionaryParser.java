@@ -32,7 +32,8 @@ import org.slf4j.LoggerFactory;
  */
 public class DataDictionaryParser {
     /** logger */
-    final static Logger logger = LoggerFactory.getLogger(DataDictionaryParser.class);
+    final static Logger logger = LoggerFactory
+        .getLogger(DataDictionaryParser.class);
     protected FieldParser fieldParser = null;
     protected HeaderParser hdrParser = null;
     protected ComponentParser componentParser = null;
@@ -62,20 +63,19 @@ public class DataDictionaryParser {
      * Make sure we know where to find the FixRepository.xml file and the
      * location on the filesystem where the user has specified the location of
      * the output files.
-     *
      * @param ver The fix version we are parsing.
      * @throws Exception When external dependencies are not recognized.
      */
     protected void setUp(String ver) throws Exception {
         String CONFIG_DIR = System.getenv("CONFIG_DIR");
         if (CONFIG_DIR != null) {
-            DataDictionaryParser.logger.info("CONFIG_DIR is an ENV variable: {}",
-                CONFIG_DIR);
+            DataDictionaryParser.logger
+                .info("CONFIG_DIR is an ENV variable: {}", CONFIG_DIR);
         } else {
             CONFIG_DIR = System.getProperty("CONFIG_DIR");
             if (CONFIG_DIR != null) {
-                DataDictionaryParser.logger.info("CONFIG_DIR is a System property: {}",
-                    CONFIG_DIR);
+                DataDictionaryParser.logger
+                    .info("CONFIG_DIR is a System property: {}", CONFIG_DIR);
             } else {
                 CONFIG_DIR = null;
             }
@@ -85,17 +85,18 @@ public class DataDictionaryParser {
                 .warn("No CONFIG_DIR provided.  Output stream is CONSOLE");
             out = System.out;
         } else {
-            File fixOut =
-                new File(CONFIG_DIR + System.getProperty("file.separator") + ver + "Mgr.xml.tmp");
+            File fixOut = new File(CONFIG_DIR
+                + System.getProperty("file.separator") + ver + "Mgr.xml.tmp");
             out = new PrintStream(fixOut, "UTF-8");
         }
         qFixVersion = ver.replace(".", "");
         String fixFileNameModified = qFixVersion + ".modified.xml";
         String tmpName = qFixVersion + ".xml";
-        InputStream is = ClassLoader.getSystemResourceAsStream(fixFileNameModified);
+        InputStream is = ClassLoader
+            .getSystemResourceAsStream(fixFileNameModified);
         if (is != null) {
-            DataDictionaryParser.logger
-                .info("Parsing fix data dictionary file: " + fixFileNameModified);
+            DataDictionaryParser.logger.info(
+                "Parsing fix data dictionary file: " + fixFileNameModified);
             fixFileName = fixFileNameModified;
             is.close();
         } else {
@@ -106,9 +107,11 @@ public class DataDictionaryParser {
                 fixFileName = tmpName;
                 is.close();
             } else {
-                DataDictionaryParser.logger
-                    .error("Could not find data dictionary xml file for fix version: " + ver);
-                throw new RuntimeException("no data dictionary found: " + tmpName);
+                DataDictionaryParser.logger.error(
+                    "Could not find data dictionary xml file for fix version: "
+                        + ver);
+                throw new RuntimeException(
+                    "no data dictionary found: " + tmpName);
             }
         }
     }
@@ -125,24 +128,30 @@ public class DataDictionaryParser {
         Object[] parserArgs = new Object[] {
             fixFileName, fieldParser };
         Constructor<?> parserArgsConstructor;
-        FIXParserDefinition = Class.forName("com.globalforge.infix.qfix."
-            + qFixVersion.toLowerCase() + "." + qFixVersion + "ComponentParser");
-        parserArgsConstructor = FIXParserDefinition.getConstructor(parserArgsClass);
-        componentParser = (ComponentParser) parserArgsConstructor.newInstance(parserArgs);
+        FIXParserDefinition = Class
+            .forName("com.globalforge.infix.qfix." + qFixVersion.toLowerCase()
+                + "." + qFixVersion + "ComponentParser");
+        parserArgsConstructor = FIXParserDefinition
+            .getConstructor(parserArgsClass);
+        componentParser = (ComponentParser) parserArgsConstructor
+            .newInstance(parserArgs);
         componentParser.parse();
     }
 
     protected void parseMessages() throws Exception {
         Class<?> FIXParserDefinition;
         Class<?>[] parserArgsClass = new Class[] {
-            String.class, FieldParser.class, HeaderParser.class, ComponentParser.class };
+            String.class, FieldParser.class, HeaderParser.class,
+            ComponentParser.class };
         Object[] parserArgs = new Object[] {
             fixFileName, fieldParser, hdrParser, componentParser };
         Constructor<?> parserArgsConstructor;
         FIXParserDefinition = Class.forName("com.globalforge.infix.qfix."
             + qFixVersion.toLowerCase() + "." + qFixVersion + "MessageParser");
-        parserArgsConstructor = FIXParserDefinition.getConstructor(parserArgsClass);
-        messageParser = (MessageParser) parserArgsConstructor.newInstance(parserArgs);
+        parserArgsConstructor = FIXParserDefinition
+            .getConstructor(parserArgsClass);
+        messageParser = (MessageParser) parserArgsConstructor
+            .newInstance(parserArgs);
         messageParser.parse();
     }
 
@@ -155,15 +164,19 @@ public class DataDictionaryParser {
         Constructor<?> parserArgsConstructor;
         int v = qFixVersion.indexOf('5');
         if (v < 0) {
-            FIXParserDefinition = Class.forName("com.globalforge.infix.qfix."
-                + qFixVersion.toLowerCase() + "." + qFixVersion + "HeaderParser");
-            parserArgsConstructor = FIXParserDefinition.getConstructor(parserArgsClass);
-            hdrParser = (HeaderParser) parserArgsConstructor.newInstance(parserArgs);
+            FIXParserDefinition = Class.forName(
+                "com.globalforge.infix.qfix." + qFixVersion.toLowerCase() + "."
+                    + qFixVersion + "HeaderParser");
+            parserArgsConstructor = FIXParserDefinition
+                .getConstructor(parserArgsClass);
+            hdrParser = (HeaderParser) parserArgsConstructor
+                .newInstance(parserArgs);
         } else {
             // versions about 5.0 get their header and trailer from FIXT11
             FieldParser fp = new FieldParser("FIXT11.xml");
             fp.parse();
-            hdrParser = new HeaderParser("FIXT11.xml", fp, componentParser.getContextStore());
+            hdrParser = new HeaderParser("FIXT11.xml", fp,
+                componentParser.getContextStore());
             // hdrParser = fixTParser.getHeaderParser();
         }
         hdrParser.parse();

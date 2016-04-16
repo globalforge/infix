@@ -43,7 +43,6 @@ package com.globalforge.infix.qfix;
  * If not, the stack is popped again. Once the stack is empty, subsequent tags
  * do not belong to repeating groups or else they indicate the start of a new
  * group.
- * 
  * @author Michael
  */
 class FixGroupInProgress {
@@ -62,11 +61,12 @@ class FixGroupInProgress {
     /**
      * The current group. If repeating, there may be more than 1 set of tags.
      * Each set of tags in a group is referred to here as the group number.
-     * 
      * @return
      */
     int getCurGroupNumber() {
-        if (nestingLevel < 0) { return 0; }
+        if (nestingLevel < 0) {
+            return 0;
+        }
         return nestingLevel;
     }
 
@@ -80,7 +80,6 @@ class FixGroupInProgress {
      * the groupId and it indicates that 1) the group is repeating when
      * encountered again or 2) the group has ended (when not encountered
      * anymore).
-     * 
      * @return
      */
     void incCurGoupNumber() {

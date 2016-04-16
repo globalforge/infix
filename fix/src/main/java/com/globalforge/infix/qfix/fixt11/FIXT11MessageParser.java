@@ -9,7 +9,8 @@ import com.globalforge.infix.qfix.fix50.FIX50MessageParser;
 
 public class FIXT11MessageParser extends FIX50MessageParser {
     /** logger */
-    final static Logger logger = LoggerFactory.getLogger(FIXT11MessageParser.class);
+    final static Logger logger = LoggerFactory
+        .getLogger(FIXT11MessageParser.class);
 
     public FIXT11MessageParser(String f, FieldParser cParser, HeaderParser h,
         ComponentParser c) throws Exception {

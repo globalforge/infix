@@ -37,17 +37,20 @@ public class GroupManagerCodeGenerator {
     private void initOutputStreams() throws Exception {
         String SRC_DIR = System.getenv("SRC_DIR");
         if (SRC_DIR != null) {
-            logger.info("SRC_DIR is an ENV variable: {}", SRC_DIR);
+            GroupManagerCodeGenerator.logger
+                .info("SRC_DIR is an ENV variable: {}", SRC_DIR);
         } else {
             SRC_DIR = System.getProperty("SRC_DIR");
             if (SRC_DIR != null) {
-                logger.info("SRC_DIR is a System property: {}", SRC_DIR);
+                GroupManagerCodeGenerator.logger
+                    .info("SRC_DIR is a System property: {}", SRC_DIR);
             } else {
                 SRC_DIR = null;
             }
         }
         if (SRC_DIR == null) {
-            logger.warn("No SRC_DIR provided.  Output stream is CONSOLE");
+            GroupManagerCodeGenerator.logger
+                .warn("No SRC_DIR provided.  Output stream is CONSOLE");
             out = System.out;
         } else {
             fileNamePrefix = afixVer + "GroupMgr";
@@ -55,7 +58,8 @@ public class GroupManagerCodeGenerator {
             File fOut = new File(SRC_DIR + System.getProperty("file.separator")
                 + qfixverLowerCase + System.getProperty("file.separator")
                 + fileNamePrefix + ".java");
-            logger.info("building java file: {}", fOut.getAbsolutePath());
+            GroupManagerCodeGenerator.logger.info("building java file: {}",
+                fOut.getAbsolutePath());
             out = new PrintStream(fOut, "UTF-8");
         }
     }
@@ -145,28 +149,10 @@ public class GroupManagerCodeGenerator {
         }
     }
 
-    private void handleHeader(String msgType,
-        Map<String, RepeatingGroupBuilder> headerGrps) {
-        if (headerGrps == null) {
-            return;
-        }
-        Iterator<String> groupIDs = headerGrps.keySet().iterator();
-        while (groupIDs.hasNext()) {
-            String tagCtx = groupIDs.next();
-            RepeatingGroupBuilder group = headerGrps.get(tagCtx);
-            LinkedList<String> members = group.getMemberList();
-            Iterator<String> itm = members.iterator();
-            while (itm.hasNext()) {
-                String em = itm.next();
-                out.println("\t\t\tmemberSet.add(\"" + em + "\");");
-            }
-        }
-    }
-
     private void writeOutGroupClass(String msgType,
         RepeatingGroupBuilder group) {
         String groupId = group.getGroupId();
-        String delim = group.getGroupDelim();
+        group.getGroupDelim();
         String groupClassName = null;
         if ("HEADER".equals(msgType)) {
             groupClassName = "Header_Group_" + groupId;

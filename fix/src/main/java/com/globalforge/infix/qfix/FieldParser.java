@@ -56,13 +56,13 @@ public class FieldParser extends AbstractXMLParser {
      * that may legally found in each Message Type. Associations include
      * repeating groups, references to repeating groups within other repeating
      * groups and block.
-     *
      * @param v The fix version we should parse (e.g., FIX.4.4)
      * @throws XMLStreamException XML file is corrupted.
      */
     @Override
     public void parse() throws XMLStreamException {
-        InputStream dictStream = ClassLoader.getSystemResourceAsStream(fixFileName);
+        InputStream dictStream = ClassLoader
+            .getSystemResourceAsStream(fixFileName);
         XMLStreamReader reader = factory.createXMLStreamReader(dictStream);
         while (reader.hasNext()) {
             int event = reader.next();

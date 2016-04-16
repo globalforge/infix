@@ -7,14 +7,14 @@ import java.util.Map.Entry;
 
 public class RepeatingGroupBuilderMap {
     /** A map of MsgType to repeating groups mapped by groupId */
-    protected final Map<String, Map<String, RepeatingGroupBuilder>> grpMap =
-        new HashMap<String, Map<String, RepeatingGroupBuilder>>();
+    protected final Map<String, Map<String, RepeatingGroupBuilder>> grpMap = new HashMap<String, Map<String, RepeatingGroupBuilder>>();
 
     public Map<String, Map<String, RepeatingGroupBuilder>> getGroupMap() {
         return grpMap;
     }
 
-    public void addAll(String msgType, Map<String, RepeatingGroupBuilder> gMap) {
+    public void addAll(String msgType,
+        Map<String, RepeatingGroupBuilder> gMap) {
         Map<String, RepeatingGroupBuilder> ctxMap = grpMap.get(msgType);
         if (ctxMap == null) {
             ctxMap = new HashMap<String, RepeatingGroupBuilder>();
@@ -25,10 +25,11 @@ public class RepeatingGroupBuilderMap {
 
     public void addAll(RepeatingGroupBuilderMap otherMap) {
         Map<String, Map<String, RepeatingGroupBuilder>> otherMessageMap = otherMap.grpMap;
-        Iterator<Entry<String, Map<String, RepeatingGroupBuilder>>> otherEntries =
-            otherMessageMap.entrySet().iterator();
+        Iterator<Entry<String, Map<String, RepeatingGroupBuilder>>> otherEntries = otherMessageMap
+            .entrySet().iterator();
         while (otherEntries.hasNext()) {
-            Entry<String, Map<String, RepeatingGroupBuilder>> otherEntry = otherEntries.next();
+            Entry<String, Map<String, RepeatingGroupBuilder>> otherEntry = otherEntries
+                .next();
             String msgType = otherEntry.getKey();
             Map<String, RepeatingGroupBuilder> cMap = otherEntry.getValue();
             addAll(msgType, cMap);

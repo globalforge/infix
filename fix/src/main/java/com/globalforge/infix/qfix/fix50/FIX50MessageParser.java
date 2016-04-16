@@ -19,12 +19,14 @@ import com.globalforge.infix.qfix.MessageParser;
 
 public class FIX50MessageParser extends MessageParser {
     /** logger */
-    final static Logger logger = LoggerFactory.getLogger(FIX50MessageParser.class);
-    private final Deque<CurrentContext> elementStack = new ArrayDeque<CurrentContext>(100);
+    final static Logger logger = LoggerFactory
+        .getLogger(FIX50MessageParser.class);
+    private final Deque<CurrentContext> elementStack = new ArrayDeque<CurrentContext>(
+        100);
     private final XMLInputFactory factory = XMLInputFactory.newInstance();
 
-    public FIX50MessageParser(String f, FieldParser p, HeaderParser h, ComponentParser c)
-        throws Exception {
+    public FIX50MessageParser(String f, FieldParser p, HeaderParser h,
+        ComponentParser c) throws Exception {
         super(f, p, h, c);
     }
 
@@ -40,7 +42,8 @@ public class FIX50MessageParser extends MessageParser {
      * Parses components block. Expects field, group, or component.
      */
     public void parseMessages() throws XMLStreamException {
-        InputStream dictStream = ClassLoader.getSystemResourceAsStream(fixFileName);
+        InputStream dictStream = ClassLoader
+            .getSystemResourceAsStream(fixFileName);
         XMLStreamReader reader = factory.createXMLStreamReader(dictStream);
         String curMessage = null;
         FIX50MessageParser.logger.info("--- BEGIN MESSAGES ---");
@@ -56,25 +59,33 @@ public class FIX50MessageParser extends MessageParser {
                     if ("message".equals(elementName)) {
                         elementStack.push(CurrentContext.MESSAGE);
                         curMessage = reader.getAttributeValue(null, "msgtype");
-                        LinkedHashMap<String, String> fieldMap = messageMap.get(curMessage);
+                        LinkedHashMap<String, String> fieldMap = messageMap
+                            .get(curMessage);
                         if (fieldMap == null) {
                             fieldMap = new LinkedHashMap<String, String>();
                             messageMap.put(curMessage, fieldMap);
                         }
                     }
-                    if ("field".equals(elementName) && (curContext == CurrentContext.MESSAGE)) {
+                    if ("field".equals(elementName)
+                        && (curContext == CurrentContext.MESSAGE)) {
                         String tagName = reader.getAttributeValue(null, "name");
                         String tagCtx = "&" + fParser.getTagNum(tagName);
-                        LinkedHashMap<String, String> fieldMap = messageMap.get(curMessage);
+                        LinkedHashMap<String, String> fieldMap = messageMap
+                            .get(curMessage);
                         fieldMap.put(tagCtx, null);
                     }
-                    if ("component".equals(elementName) && (curContext == CurrentContext.MESSAGE)) {
-                        String componentName = reader.getAttributeValue(null, "name");
-                        LinkedList<String> components = ctxStore.getComponentContext(componentName);
+                    if ("component".equals(elementName)
+                        && (curContext == CurrentContext.MESSAGE)) {
+                        String componentName = reader.getAttributeValue(null,
+                            "name");
+                        LinkedList<String> components = ctxStore
+                            .getComponentContext(componentName);
                         if (components == null) {
-                            components = ctxStore.getGroupContext(componentName);
+                            components = ctxStore
+                                .getGroupContext(componentName);
                             if (components == null) {
-                                throw new RuntimeException("No such component: " + componentName);
+                                throw new RuntimeException(
+                                    "No such component: " + componentName);
                             } else {
                                 addComponents(curMessage, components, "", null);
                             }

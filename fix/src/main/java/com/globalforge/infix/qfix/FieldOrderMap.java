@@ -7,7 +7,8 @@ import org.slf4j.LoggerFactory;
 
 public abstract class FieldOrderMap {
     /** logger */
-    protected final Logger logger = LoggerFactory.getLogger(FieldOrderMap.class);
+    protected final Logger logger = LoggerFactory
+        .getLogger(FieldOrderMap.class);
     protected final Map<String, String> msgFieldOrderMap = new HashMap<String, String>();
 
     public void putFieldOrder(String fieldCtx, String orderOfField) {

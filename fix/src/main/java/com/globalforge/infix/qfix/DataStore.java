@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Stores the FIX fields in infix syntax for all the components and group
  * components found in a FIX data dictionary.
- *
  * @author Michael
  */
 public class DataStore {
@@ -20,11 +19,13 @@ public class DataStore {
     ///////////////////////////
     // GROUP RELATED ACTIONS //
     ///////////////////////////
-    public RepeatingGroupBuilder startMessageGroup(String curMessage, String groupId) {
+    public RepeatingGroupBuilder startMessageGroup(String curMessage,
+        String groupId) {
         return groupStore.startMessageGroup(curMessage, groupId);
     }
 
-    public void addMessageGroupMember(String curMessage, String groupId, String tagNum) {
+    public void addMessageGroupMember(String curMessage, String groupId,
+        String tagNum) {
         groupStore.addMessageGroupMember(curMessage, groupId, tagNum);
     }
 
@@ -40,7 +41,8 @@ public class DataStore {
         return groupStore.isMessageGroup(curMessage, groupId);
     }
 
-    public RepeatingGroupBuilder getMessageGroup(String curMessage, String groupId) {
+    public RepeatingGroupBuilder getMessageGroup(String curMessage,
+        String groupId) {
         return groupStore.getMessageGroup(curMessage, groupId);
     }
 
@@ -48,7 +50,8 @@ public class DataStore {
         return groupStore.getRepeatingGroupMsgTypes();
     }
 
-    public Map<String, RepeatingGroupBuilder> getGroupsInMessage(String msgType) {
+    public Map<String, RepeatingGroupBuilder> getGroupsInMessage(
+        String msgType) {
         return groupStore.getGroupsInMessage(msgType);
     }
 

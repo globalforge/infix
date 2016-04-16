@@ -8,10 +8,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 public class DataGenerator {
-    private Map<String, ContextOrderMap> orderMap =
-        new HashMap<String, ContextOrderMap>();
-    private Map<String, RepeatingGroupBuilderMap> groupMap =
-        new HashMap<String, RepeatingGroupBuilderMap>();
+    private Map<String, ContextOrderMap> orderMap = new HashMap<String, ContextOrderMap>();
+    private Map<String, RepeatingGroupBuilderMap> groupMap = new HashMap<String, RepeatingGroupBuilderMap>();
 
     public ContextOrderMap getContextOrderMap(String fVersion) {
         return orderMap.get(fVersion);
@@ -42,13 +40,15 @@ public class DataGenerator {
         }
         HeaderParser hdrParser = eng.getHeaderParser();
         MessageParser msgParser = eng.getMessageParser();
-        Set<Entry<String, Map<String, String>>> compMems = msgParser.getMessageMap().entrySet();
-        Iterator<Entry<String, Map<String, String>>> memSetIterator = compMems.iterator();
+        Set<Entry<String, Map<String, String>>> compMems = msgParser
+            .getMessageMap().entrySet();
+        Iterator<Entry<String, Map<String, String>>> memSetIterator = compMems
+            .iterator();
         while (memSetIterator.hasNext()) {
             Entry<String, Map<String, String>> ctxEntry = memSetIterator.next();
             String msgType = ctxEntry.getKey();
-            LinkedHashMap<String, String> ctxOrderMap =
-                (LinkedHashMap<String, String>) ctxEntry.getValue();
+            LinkedHashMap<String, String> ctxOrderMap = (LinkedHashMap<String, String>) ctxEntry
+                .getValue();
             LinkedHashMap<String, String> ctxHdrMap = hdrParser.getContextMap();
             ctxMap.addAll(msgType, ctxHdrMap);;
             ctxMap.addAll(msgType, ctxOrderMap);
@@ -68,7 +68,8 @@ public class DataGenerator {
         Iterator<String> msgTypesIT = msgTypes.iterator();
         while (msgTypesIT.hasNext()) {
             String msgType = msgTypesIT.next();
-            Map<String, RepeatingGroupBuilder> gMap = dataStore.getGroupsInMessage(msgType);
+            Map<String, RepeatingGroupBuilder> gMap = dataStore
+                .getGroupsInMessage(msgType);
             grpMap.addAll(msgType, gMap);
         }
     }
@@ -126,15 +127,14 @@ public class DataGenerator {
 
     /**
      * Testing only
-     *
      * @param args
      */
     public static void main(String[] args) {
         DataGenerator dataGen = new DataGenerator();
         try {
             dataGen.parseFIX50SP2();
-            FieldOrderMapCodeGenerator fieldGen =
-                new FieldOrderMapCodeGenerator("FIX.5.0SP2", dataGen);
+            FieldOrderMapCodeGenerator fieldGen = new FieldOrderMapCodeGenerator(
+                "FIX.5.0SP2", dataGen);
             fieldGen.generateClass();
         } catch (Exception e) {
             e.printStackTrace();

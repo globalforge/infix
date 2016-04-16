@@ -31,17 +31,20 @@ public class FieldOrderMapCodeGenerator {
     private void initOutputStreams(String msgType) throws Exception {
         String SRC_DIR = System.getenv("SRC_DIR");
         if (SRC_DIR != null) {
-            logger.info("SRC_DIR is an ENV variable: {}", SRC_DIR);
+            FieldOrderMapCodeGenerator.logger
+                .info("SRC_DIR is an ENV variable: {}", SRC_DIR);
         } else {
             SRC_DIR = System.getProperty("SRC_DIR");
             if (SRC_DIR != null) {
-                logger.info("SRC_DIR is a System property: {}", SRC_DIR);
+                FieldOrderMapCodeGenerator.logger
+                    .info("SRC_DIR is a System property: {}", SRC_DIR);
             } else {
                 SRC_DIR = null;
             }
         }
         if (SRC_DIR == null) {
-            logger.warn("No SRC_DIR provided.  Output stream is CONSOLE");
+            FieldOrderMapCodeGenerator.logger
+                .warn("No SRC_DIR provided.  Output stream is CONSOLE");
             out = System.out;
         } else {
             fileNamePrefix = afixVer + "_" + msgType + "_" + "FieldOrderMap";
@@ -50,7 +53,8 @@ public class FieldOrderMapCodeGenerator {
                 + qfixverLowerCase + System.getProperty("file.separator")
                 + "auto" + System.getProperty("file.separator") + fileNamePrefix
                 + ".java");
-            logger.info("building java file: {}", fOut.getAbsolutePath());
+            FieldOrderMapCodeGenerator.logger.info("building java file: {}",
+                fOut.getAbsolutePath());
             fOut.mkdir();
             out = new PrintStream(fOut, "UTF-8");
         }
@@ -99,9 +103,5 @@ public class FieldOrderMapCodeGenerator {
         out.println("*/");
         out.println("class " + fileNamePrefix + " extends FieldOrderMap {");
         out.println("\t{");
-    }
-
-    private void finish() {
-        out.println("}");
     }
 }

@@ -42,9 +42,11 @@ import com.globalforge.infix.qfix.AbstractXMLParser.CurrentContext;
  */
 public class HeaderParser {
     /** logger */
-    protected final static Logger logger = LoggerFactory.getLogger(HeaderParser.class);
+    protected final static Logger logger = LoggerFactory
+        .getLogger(HeaderParser.class);
     private final LinkedHashMap<String, String> ctxMap = new LinkedHashMap<String, String>();
-    private final Deque<CurrentContext> elementStack = new ArrayDeque<CurrentContext>(100);
+    private final Deque<CurrentContext> elementStack = new ArrayDeque<CurrentContext>(
+        100);
     private final Deque<String> curGroupStack = new ArrayDeque<String>(100);
     private final Deque<String> groupCtxStack = new ArrayDeque<String>(100);
     private final XMLInputFactory factory = XMLInputFactory.newInstance();
@@ -53,7 +55,8 @@ public class HeaderParser {
     private final AtomicInteger fieldOrder = new AtomicInteger(0);
     private DataStore ctxStore;
 
-    public HeaderParser(String f, FieldParser cParser, DataStore c) throws Exception {
+    public HeaderParser(String f, FieldParser cParser, DataStore c)
+        throws Exception {
         this.fixFileName = f;
         this.fParser = cParser;
         this.ctxStore = c;
@@ -77,7 +80,8 @@ public class HeaderParser {
      * Parses components block. Expects field, group, or component.
      */
     public void parseHeader() throws XMLStreamException {
-        InputStream dictStream = ClassLoader.getSystemResourceAsStream(fixFileName);
+        InputStream dictStream = ClassLoader
+            .getSystemResourceAsStream(fixFileName);
         XMLStreamReader reader = factory.createXMLStreamReader(dictStream);
         int memberOrder = 1;
         while (reader.hasNext()) {
@@ -92,7 +96,8 @@ public class HeaderParser {
                     if ("header".equals(elementName)) {
                         elementStack.push(CurrentContext.HEADER);
                     }
-                    if ("group".equals(elementName) && (curContext == CurrentContext.HEADER)) {
+                    if ("group".equals(elementName)
+                        && (curContext == CurrentContext.HEADER)) {
                         String tagName = reader.getAttributeValue(null, "name");
                         String tagNum = fParser.getTagNum(tagName);
                         String tagCtx = "&" + tagNum;
@@ -101,26 +106,33 @@ public class HeaderParser {
                         curGroupStack.push(tagNum);
                         groupCtxStack.push(tagCtx);
                         // FIX.4.4 and below only
-                        ctxStore.startMessageGroup("HEADER", curGroupStack.peek());
+                        ctxStore.startMessageGroup("HEADER",
+                            curGroupStack.peek());
                     }
-                    if ("field".equals(elementName) && (curContext == CurrentContext.HEADER)) {
+                    if ("field".equals(elementName)
+                        && (curContext == CurrentContext.HEADER)) {
                         String tagName = reader.getAttributeValue(null, "name");
                         String tagNum = fParser.getTagNum(tagName);
                         String tagCtx = "&" + tagNum;
                         ctxMap.put(tagCtx, fieldOrder.incrementAndGet() + "");
                     }
-                    if ("component".equals(elementName) && (curContext == CurrentContext.HEADER)) {
-                        String componentName = reader.getAttributeValue(null, "name");
+                    if ("component".equals(elementName)
+                        && (curContext == CurrentContext.HEADER)) {
+                        String componentName = reader.getAttributeValue(null,
+                            "name");
                         // FIX.5.0 and above only
                         addComponents(componentName);
                     }
-                    if ("field".equals(elementName) && (curContext == CurrentContext.GROUP)) {
+                    if ("field".equals(elementName)
+                        && (curContext == CurrentContext.GROUP)) {
                         String tagName = reader.getAttributeValue(null, "name");
                         String tagNum = fParser.getTagNum(tagName);
-                        String tagCtx = groupCtxStack.peek() + "[*]->" + "&" + tagNum;
+                        String tagCtx = groupCtxStack.peek() + "[*]->" + "&"
+                            + tagNum;
                         ctxMap.put(tagCtx, fieldOrder + ".*" + memberOrder++);
                         // FIX.4.4 and below only
-                        ctxStore.addMessageGroupMember("HEADER", curGroupStack.peek(), tagNum);
+                        ctxStore.addMessageGroupMember("HEADER",
+                            curGroupStack.peek(), tagNum);
                     }
                     break;
                 case XMLStreamConstants.END_ELEMENT:
@@ -128,7 +140,8 @@ public class HeaderParser {
                     if ("header".equals(elementName)) {
                         elementStack.pop();
                     }
-                    if ("group".equals(elementName) && (curContext == CurrentContext.GROUP)) {
+                    if ("group".equals(elementName)
+                        && (curContext == CurrentContext.GROUP)) {
                         elementStack.pop();
                         groupCtxStack.pop();
                         curGroupStack.pop();
@@ -146,7 +159,9 @@ public class HeaderParser {
         if (cList == null) {
             cList = ctxStore.getGroupContext(componentName);
         }
-        if (cList == null) { throw new RuntimeException("No such component: " + componentName); }
+        if (cList == null) {
+            throw new RuntimeException("No such component: " + componentName);
+        }
         Iterator<String> i = cList.iterator();
         int memberOrder = 0;
         String curGrp = null;

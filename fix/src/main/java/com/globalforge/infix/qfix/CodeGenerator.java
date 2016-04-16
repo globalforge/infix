@@ -64,8 +64,8 @@ public class CodeGenerator {
             dataGen.parseFIX50SP2();
             msgGen = new MessageDataCodeGenerator(fixVersion, dataGen);
             msgGen.generateClass();
-            //fieldGen = new FieldOrderMapCodeGenerator(fixVersion, dataGen);
-            // fieldGen.generateClass();
+            fieldGen = new FieldOrderMapCodeGenerator(fixVersion, dataGen);
+            fieldGen.generateClass();
             //groupGen = new GroupManagerCodeGenerator(fixVersion, dataGen);
             // groupGen.generateClass();
             dataGen.clear();

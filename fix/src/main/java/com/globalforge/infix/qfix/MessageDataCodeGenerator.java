@@ -8,12 +8,11 @@ import java.util.Map.Entry;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.globalforge.infix.FixDataDictListener;
 
 public class MessageDataCodeGenerator {
     /** logger */
     private final static Logger logger = LoggerFactory
-        .getLogger(FixDataDictListener.class);
+        .getLogger(MessageDataCodeGenerator.class);
     private String fileNamePrefix = null;
     private final String afixVer;
     private String qfixverLowerCase = null;
@@ -53,8 +52,10 @@ public class MessageDataCodeGenerator {
             qfixverLowerCase = afixVer.toLowerCase();
             File fOut = new File(SRC_DIR + System.getProperty("file.separator")
                 + qfixverLowerCase + System.getProperty("file.separator")
-                + fileNamePrefix + ".java");
+                + "auto" + System.getProperty("file.separator") + fileNamePrefix
+                + ".java");
             logger.info("building java file: {}", fOut.getAbsolutePath());
+            fOut.mkdir();
             out = new PrintStream(fOut, "UTF-8");
         }
     }
@@ -65,7 +66,7 @@ public class MessageDataCodeGenerator {
      */
     private void handleStartClass() {
         out.println("package com.globalforge.infix.qfix."
-            + this.qfixverLowerCase + ";");
+            + this.qfixverLowerCase + ".auto;");
         out.println();
         out.println("import com.globalforge.infix.qfix.MessageData;");
         out.println();
@@ -75,7 +76,7 @@ public class MessageDataCodeGenerator {
         out.println(
             "* yourself coding this class then you have failed to understand how to build");
         out.println(
-            "* the tool. It would acutally be faster to do it the right way.");
+            "* the tool. It would actually be faster to do it the right way.");
         out.println("*/");
         out.println("class " + fileNamePrefix + " extends MessageData {");
         out.println("\t{");
@@ -109,7 +110,7 @@ public class MessageDataCodeGenerator {
             out.println("\t\tfieldOrderMap.put(\"" + msgType + "\", new "
                 + afixVer + "_" + msgType + "_FieldOrderMap());");
             out.println("\t\tgroupMap.put(\"" + msgType + "\", new " + afixVer
-                + "_" + msgType + "GroupMap());");
+                + "_" + msgType + "_GroupMap());");
             out.println("\t}");
         }
     }

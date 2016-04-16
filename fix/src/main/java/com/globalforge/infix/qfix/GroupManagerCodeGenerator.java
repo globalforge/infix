@@ -9,11 +9,11 @@ import java.util.Map.Entry;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.globalforge.infix.FixDataDictListener;
 
 public class GroupManagerCodeGenerator {
     /** logger */
-    private final static Logger logger = LoggerFactory.getLogger(FixDataDictListener.class);
+    private final static Logger logger = LoggerFactory
+        .getLogger(GroupManagerCodeGenerator.class);
     private String fileNamePrefix = null;
     private final String afixVer;
     private String qfixverLowerCase = null;
@@ -52,8 +52,9 @@ public class GroupManagerCodeGenerator {
         } else {
             fileNamePrefix = afixVer + "GroupMgr";
             qfixverLowerCase = afixVer.toLowerCase();
-            File fOut = new File(SRC_DIR + System.getProperty("file.separator") + qfixverLowerCase
-                + System.getProperty("file.separator") + fileNamePrefix + ".java");
+            File fOut = new File(SRC_DIR + System.getProperty("file.separator")
+                + qfixverLowerCase + System.getProperty("file.separator")
+                + fileNamePrefix + ".java");
             logger.info("building java file: {}", fOut.getAbsolutePath());
             out = new PrintStream(fOut, "UTF-8");
         }
@@ -66,7 +67,8 @@ public class GroupManagerCodeGenerator {
         msgGroups = repeatingGrpMap.getGroupMap().entrySet();
         memSetIterator = msgGroups.iterator();
         while (memSetIterator.hasNext()) {
-            Entry<String, Map<String, RepeatingGroupBuilder>> ctxEntry = memSetIterator.next();
+            Entry<String, Map<String, RepeatingGroupBuilder>> ctxEntry = memSetIterator
+                .next();
             String msgType = ctxEntry.getKey();
             if ("HEADER".equals(msgType)) {
                 continue;
@@ -84,18 +86,20 @@ public class GroupManagerCodeGenerator {
         groupIDEntrySetIter = groupIDEntrySet.iterator();
         while (groupIDEntrySetIter.hasNext()) {
             out.println();
-            Entry<String, Map<String, RepeatingGroupBuilder>> groupIDEntry =
-                groupIDEntrySetIter.next();
+            Entry<String, Map<String, RepeatingGroupBuilder>> groupIDEntry = groupIDEntrySetIter
+                .next();
             String msgType = groupIDEntry.getKey();
             if ("HEADER".equals(msgType)) {
                 continue;
             }
-            Iterator<String> groupIDIter = groupIDEntry.getValue().keySet().iterator();
+            Iterator<String> groupIDIter = groupIDEntry.getValue().keySet()
+                .iterator();
             out.println("\tprivate void initMessageType_" + msgType + "() {");
             handleInitHeader(msgType);
             while (groupIDIter.hasNext()) {
                 String groupID = groupIDIter.next();
-                RepeatingGroupBuilder group = groupIDEntry.getValue().get(groupID);
+                RepeatingGroupBuilder group = groupIDEntry.getValue()
+                    .get(groupID);
                 String gid = group.getGroupId();
                 // System.out.println("msgType=" + msgType + "group=" + group);
                 String delim = null;
@@ -107,18 +111,22 @@ public class GroupManagerCodeGenerator {
                     System.out.flush();
                     System.exit(-1);
                 }
-                String groupClassName =
-                    "Msg_" + msgType + "_" + msgType.hashCode() + "_Group_" + gid;
-                out.println("\t\tputGroup(\"" + msgType + "\", " + groupClassName
-                    + ".getInstance(\"" + gid + "\", \"" + delim + "\"));");
+                String groupClassName = "Msg_" + msgType + "_"
+                    + msgType.hashCode() + "_Group_" + gid;
+                out.println(
+                    "\t\tputGroup(\"" + msgType + "\", " + groupClassName
+                        + ".getInstance(\"" + gid + "\", \"" + delim + "\"));");
             }
             out.println("\t}");
         }
     }
 
     private void handleInitHeader(String msgType) {
-        Map<String, RepeatingGroupBuilder> headerMap = repeatingGrpMap.getGroupMap().get("HEADER");
-        if (headerMap == null) { return; }
+        Map<String, RepeatingGroupBuilder> headerMap = repeatingGrpMap
+            .getGroupMap().get("HEADER");
+        if (headerMap == null) {
+            return;
+        }
         Iterator<String> groupIDs = headerMap.keySet().iterator();
         while (groupIDs.hasNext()) {
             String groupID = groupIDs.next();
@@ -128,8 +136,8 @@ public class GroupManagerCodeGenerator {
             // String groupClassName = "Msg_" + msgType + "_" +
             // msgType.hashCode() + "_Group_" + gid;
             String groupClassName = "Header_Group_" + gid;
-            out.println("\t\tputGroup(\"" + msgType + "\", " + groupClassName + ".getInstance(\""
-                + gid + "\", \"" + delim + "\"));");
+            out.println("\t\tputGroup(\"" + msgType + "\", " + groupClassName
+                + ".getInstance(\"" + gid + "\", \"" + delim + "\"));");
             // String groupClassName = "Header_Group_" + gid;
             // out.println("\t\tputGroup(\"" + groupClassName +
             // ".getInstance(\""
@@ -137,8 +145,11 @@ public class GroupManagerCodeGenerator {
         }
     }
 
-    private void handleHeader(String msgType, Map<String, RepeatingGroupBuilder> headerGrps) {
-        if (headerGrps == null) { return; }
+    private void handleHeader(String msgType,
+        Map<String, RepeatingGroupBuilder> headerGrps) {
+        if (headerGrps == null) {
+            return;
+        }
         Iterator<String> groupIDs = headerGrps.keySet().iterator();
         while (groupIDs.hasNext()) {
             String tagCtx = groupIDs.next();
@@ -152,28 +163,34 @@ public class GroupManagerCodeGenerator {
         }
     }
 
-    private void writeOutGroupClass(String msgType, RepeatingGroupBuilder group) {
+    private void writeOutGroupClass(String msgType,
+        RepeatingGroupBuilder group) {
         String groupId = group.getGroupId();
         String delim = group.getGroupDelim();
         String groupClassName = null;
         if ("HEADER".equals(msgType)) {
             groupClassName = "Header_Group_" + groupId;
         } else {
-            groupClassName = "Msg_" + msgType + "_" + msgType.hashCode() + "_Group_" + groupId;
+            groupClassName = "Msg_" + msgType + "_" + msgType.hashCode()
+                + "_Group_" + groupId;
         }
-        out.println("\tstatic final class " + groupClassName + " extends FixRepeatingGroup {");
-        out.println("\t\tprivate static " + groupClassName + " instance = null;");
+        out.println("\tstatic final class " + groupClassName
+            + " extends FixRepeatingGroup {");
+        out.println(
+            "\t\tprivate static " + groupClassName + " instance = null;");
         out.println();
         out.println("\t\tprivate static synchronized " + groupClassName
             + " getInstance(String id, String delim) {");
         out.println("\t\t   if (instance == null) {");
-        out.println("\t\t      instance = new " + groupClassName + "(id, delim);");
+        out.println(
+            "\t\t      instance = new " + groupClassName + "(id, delim);");
         out.println("\t\t   }");
         out.println("\t\t   return instance;");
         out.println("\t\t}");
         out.println();
         // do constructors
-        out.println("\t\tprivate " + groupClassName + "(String id, String delim) {");
+        out.println(
+            "\t\tprivate " + groupClassName + "(String id, String delim) {");
         out.println("\t\t\tsuper(id, delim);");
         LinkedList<String> members = group.getMemberList();
         Iterator<String> itm = members.iterator();
@@ -193,14 +210,15 @@ public class GroupManagerCodeGenerator {
         groupIDEntrySetIter = groupIDEntrySet.iterator();
         while (groupIDEntrySetIter.hasNext()) {
             out.println();
-            Entry<String, Map<String, RepeatingGroupBuilder>> groupIDEntry =
-                groupIDEntrySetIter.next();
+            Entry<String, Map<String, RepeatingGroupBuilder>> groupIDEntry = groupIDEntrySetIter
+                .next();
             String msgType = groupIDEntry.getKey();
             Iterator<String> groupIDIter = null;
             groupIDIter = groupIDEntry.getValue().keySet().iterator();
             while (groupIDIter.hasNext()) {
                 String groupID = groupIDIter.next();
-                RepeatingGroupBuilder group = groupIDEntry.getValue().get(groupID);
+                RepeatingGroupBuilder group = groupIDEntry.getValue()
+                    .get(groupID);
                 writeOutGroupClass(msgType, group);
             }
         }
@@ -208,11 +226,11 @@ public class GroupManagerCodeGenerator {
 
     /**
      * Begin constructing the java source when this rule is invoked by antlr.
-     * 
      * @param version The fix version. Not used.
      */
     private void handleStartClass() {
-        out.println("package com.globalforge.infix.qfix." + this.qfixverLowerCase + ";");
+        out.println("package com.globalforge.infix.qfix."
+            + this.qfixverLowerCase + ";");
         out.println();
         out.println("import com.globalforge.infix.qfix.FixGroupMgr;");
         out.println("import com.globalforge.infix.qfix.FixRepeatingGroup;");
@@ -220,10 +238,13 @@ public class GroupManagerCodeGenerator {
         out.println("/**");
         out.println(
             "* This class is auto-generated. It should never be coded by hand. If you find");
-        out.println("* yourself coding this class then you have failed to understand how to build");
-        out.println("* the tool. It would acutally be faster to do it the right way.");
+        out.println(
+            "* yourself coding this class then you have failed to understand how to build");
+        out.println(
+            "* the tool. It would actually be faster to do it the right way.");
         out.println("*/");
-        out.println("public class " + fileNamePrefix + " extends FixGroupMgr {");
+        out.println(
+            "public class " + fileNamePrefix + " extends FixGroupMgr {");
         out.println("\t{");
     }
 

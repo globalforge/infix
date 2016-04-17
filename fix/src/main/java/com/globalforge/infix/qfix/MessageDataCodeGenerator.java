@@ -25,14 +25,18 @@ public class MessageDataCodeGenerator {
     }
 
     public void generateClass() throws Exception {
-        initOutputStreams();
+        initOutputStreams("Static");
         handleStartClass();
         handleConstructor();
         handleMessages();
         finish();
+        initOutputStreams("Dynamic");
+        handleStartClass();
+        handleMessages();
+        finish();
     }
 
-    private void initOutputStreams() throws Exception {
+    private void initOutputStreams(String type) throws Exception {
         String SRC_DIR = System.getenv("SRC_DIR");
         if (SRC_DIR != null) {
             MessageDataCodeGenerator.logger
@@ -51,7 +55,7 @@ public class MessageDataCodeGenerator {
                 .warn("No SRC_DIR provided.  Output stream is CONSOLE");
             out = System.out;
         } else {
-            fileNamePrefix = afixVer + "FIXMessageData";
+            fileNamePrefix = afixVer + "FIX" + type + "MessageData";
             qfixverLowerCase = afixVer.toLowerCase();
             File fOut = new File(SRC_DIR + System.getProperty("file.separator")
                 + qfixverLowerCase + System.getProperty("file.separator")
@@ -88,10 +92,10 @@ public class MessageDataCodeGenerator {
         out.println("*/");
         out.println(
             "public class " + fileNamePrefix + " extends MessageData {");
-        out.println("\t{");
     }
 
     private void handleConstructor() {
+        out.println("\t{");
         Set<Entry<String, LinkedHashMap<String, String>>> compMems = null;
         Iterator<Entry<String, LinkedHashMap<String, String>>> memSetIterator = null;
         compMems = msgCtxMap.getMessageMap().entrySet();
@@ -117,8 +121,7 @@ public class MessageDataCodeGenerator {
                 .next();
             String msgType = ctxEntry.getKey();
             String msgHashTag = msgType + "_" + msgType.hashCode();
-            out.println(
-                "\tprivate void initMessageType_" + msgHashTag + "() {");
+            out.println("\tpublic void initMessageType_" + msgHashTag + "() {");
             out.println("\t\tfieldOrderMap.put(\"" + msgType + "\", new "
                 + afixVer + "_" + msgHashTag + "_FieldOrderMap());");
             out.println("\t\tgroupMap.put(\"" + msgType + "\", new " + afixVer

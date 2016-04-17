@@ -59,7 +59,7 @@ public class MessageDataCodeGenerator {
                 + ".java");
             MessageDataCodeGenerator.logger.info("building java file: {}",
                 fOut.getAbsolutePath());
-            fOut.mkdir();
+            fOut.getParentFile().mkdirs();
             out = new PrintStream(fOut, "UTF-8");
         }
     }
@@ -73,6 +73,10 @@ public class MessageDataCodeGenerator {
             + this.qfixverLowerCase + ".auto;");
         out.println();
         out.println("import com.globalforge.infix.qfix.MessageData;");
+        out.println("import com.globalforge.infix.qfix." + qfixverLowerCase
+            + ".auto.field.*;");
+        out.println("import com.globalforge.infix.qfix." + qfixverLowerCase
+            + ".auto.group.*;");
         out.println();
         out.println("/**");
         out.println(
@@ -82,7 +86,8 @@ public class MessageDataCodeGenerator {
         out.println(
             "* the tool. It would actually be faster to do it the right way.");
         out.println("*/");
-        out.println("class " + fileNamePrefix + " extends MessageData {");
+        out.println(
+            "public class " + fileNamePrefix + " extends MessageData {");
         out.println("\t{");
     }
 
@@ -95,7 +100,8 @@ public class MessageDataCodeGenerator {
             Entry<String, LinkedHashMap<String, String>> ctxEntry = memSetIterator
                 .next();
             String msgType = ctxEntry.getKey();
-            out.println("\t\tinitMessageType_" + msgType + "();");
+            String msgHashTag = msgType + "_" + msgType.hashCode();
+            out.println("\t\tinitMessageType_" + msgHashTag + "();");
         }
         out.println("\t}");
     }
@@ -110,11 +116,13 @@ public class MessageDataCodeGenerator {
             Entry<String, LinkedHashMap<String, String>> ctxEntry = memSetIterator
                 .next();
             String msgType = ctxEntry.getKey();
-            out.println("\tprivate void initMessageType_" + msgType + "() {");
+            String msgHashTag = msgType + "_" + msgType.hashCode();
+            out.println(
+                "\tprivate void initMessageType_" + msgHashTag + "() {");
             out.println("\t\tfieldOrderMap.put(\"" + msgType + "\", new "
-                + afixVer + "_" + msgType + "_FieldOrderMap());");
+                + afixVer + "_" + msgHashTag + "_FieldOrderMap());");
             out.println("\t\tgroupMap.put(\"" + msgType + "\", new " + afixVer
-                + "_" + msgType + "_GroupMap());");
+                + "_" + msgHashTag + "_GroupMgr());");
             out.println("\t}");
         }
     }

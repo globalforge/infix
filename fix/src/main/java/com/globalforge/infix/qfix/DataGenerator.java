@@ -30,7 +30,7 @@ public class DataGenerator {
         // order for each message type and stuff it into a
         // QuickFixContextOrderMap. We also prepend the header field contexts to
         // the set of fields in each message type. The trailer contexts are
-        // post-peneded by hard-code because they are the same in each FIX
+        // post-pended by hard-code because they are the same in each FIX
         // version. At the end we have every field context listed in each
         // message type mapped to their relative order in the message.
         ContextOrderMap ctxMap = orderMap.get(fVersion);

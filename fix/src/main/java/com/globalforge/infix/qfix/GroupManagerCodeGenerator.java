@@ -127,6 +127,11 @@ public class GroupManagerCodeGenerator {
     private void handleDefineGroups(String msgType) {
         Map<String, RepeatingGroupBuilder> msgGroupMap = repeatingGrpMap
             .getGroupMap().get(msgType);
+        if (msgGroupMap == null) {
+            logger.warn("NO GROUP FOX MSG TYPE: " + msgType + ", IN FIX: "
+                + qfixverLowerCase);
+            return;
+        }
         Iterator<String> groupIDIter = msgGroupMap.keySet().iterator();
         out.println();
         while (groupIDIter.hasNext()) {

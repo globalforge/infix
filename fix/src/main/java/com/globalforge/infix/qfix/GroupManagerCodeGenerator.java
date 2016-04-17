@@ -3,6 +3,7 @@ package com.globalforge.infix.qfix;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -19,22 +20,20 @@ public class GroupManagerCodeGenerator {
     private String qfixverLowerCase = null;
     private PrintStream out = null;
     private final RepeatingGroupBuilderMap repeatingGrpMap;
+    private final ContextOrderMap msgCtxMap;
 
     public GroupManagerCodeGenerator(String fVer, DataGenerator d) {
         this.afixVer = fVer.replace(".", "");
         this.repeatingGrpMap = d.getRepeatingGroupMap(fVer);
+        this.msgCtxMap = d.getContextOrderMap(fVer);
     }
 
     public void generateClass() throws Exception {
-        initOutputStreams();
-        handleStartClass();
-        handleConstructor();
-        handleInitGroups();
-        handleDefineGroups();
+        generateCode();
         finish();
     }
 
-    private void initOutputStreams() throws Exception {
+    private void initOutputStreams(String msgType) throws Exception {
         String SRC_DIR = System.getenv("SRC_DIR");
         if (SRC_DIR != null) {
             GroupManagerCodeGenerator.logger
@@ -53,13 +52,16 @@ public class GroupManagerCodeGenerator {
                 .warn("No SRC_DIR provided.  Output stream is CONSOLE");
             out = System.out;
         } else {
-            fileNamePrefix = afixVer + "GroupMgr";
+            fileNamePrefix = afixVer + "_" + msgType + "_" + "GroupMgr";
             qfixverLowerCase = afixVer.toLowerCase();
             File fOut = new File(SRC_DIR + System.getProperty("file.separator")
                 + qfixverLowerCase + System.getProperty("file.separator")
-                + fileNamePrefix + ".java");
+                + "auto" + System.getProperty("file.separator") + "group"
+                + System.getProperty("file.separator") + fileNamePrefix
+                + ".java");
             GroupManagerCodeGenerator.logger.info("building java file: {}",
                 fOut.getAbsolutePath());
+            fOut.getParentFile().mkdirs();
             out = new PrintStream(fOut, "UTF-8");
         }
     }
@@ -83,49 +85,7 @@ public class GroupManagerCodeGenerator {
         out.println("\t}");
     }
 
-    private void handleInitGroups() {
-        Set<Entry<String, Map<String, RepeatingGroupBuilder>>> groupIDEntrySet = null;
-        Iterator<Entry<String, Map<String, RepeatingGroupBuilder>>> groupIDEntrySetIter = null;
-        groupIDEntrySet = repeatingGrpMap.getGroupMap().entrySet();
-        groupIDEntrySetIter = groupIDEntrySet.iterator();
-        while (groupIDEntrySetIter.hasNext()) {
-            out.println();
-            Entry<String, Map<String, RepeatingGroupBuilder>> groupIDEntry = groupIDEntrySetIter
-                .next();
-            String msgType = groupIDEntry.getKey();
-            if ("HEADER".equals(msgType)) {
-                continue;
-            }
-            Iterator<String> groupIDIter = groupIDEntry.getValue().keySet()
-                .iterator();
-            out.println("\tprivate void initMessageType_" + msgType + "() {");
-            handleInitHeader(msgType);
-            while (groupIDIter.hasNext()) {
-                String groupID = groupIDIter.next();
-                RepeatingGroupBuilder group = groupIDEntry.getValue()
-                    .get(groupID);
-                String gid = group.getGroupId();
-                // System.out.println("msgType=" + msgType + "group=" + group);
-                String delim = null;
-                try {
-                    delim = group.getGroupDelim();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.out.println("msgType=" + msgType + "group=" + gid);
-                    System.out.flush();
-                    System.exit(-1);
-                }
-                String groupClassName = "Msg_" + msgType + "_"
-                    + msgType.hashCode() + "_Group_" + gid;
-                out.println(
-                    "\t\tputGroup(\"" + msgType + "\", " + groupClassName
-                        + ".getInstance(\"" + gid + "\", \"" + delim + "\"));");
-            }
-            out.println("\t}");
-        }
-    }
-
-    private void handleInitHeader(String msgType) {
+    private void handleInitHeader() {
         Map<String, RepeatingGroupBuilder> headerMap = repeatingGrpMap
             .getGroupMap().get("HEADER");
         if (headerMap == null) {
@@ -137,15 +97,9 @@ public class GroupManagerCodeGenerator {
             RepeatingGroupBuilder group = headerMap.get(groupID);
             String gid = group.getGroupId();
             String delim = group.getGroupDelim();
-            // String groupClassName = "Msg_" + msgType + "_" +
-            // msgType.hashCode() + "_Group_" + gid;
             String groupClassName = "Header_Group_" + gid;
-            out.println("\t\tputGroup(\"" + msgType + "\", " + groupClassName
+            out.println("\t\tputGroup(\"" + gid + "\", " + groupClassName
                 + ".getInstance(\"" + gid + "\", \"" + delim + "\"));");
-            // String groupClassName = "Header_Group_" + gid;
-            // out.println("\t\tputGroup(\"" + groupClassName +
-            // ".getInstance(\""
-            // + gid + "\", \"" + delim + "\"));");
         }
     }
 
@@ -154,13 +108,13 @@ public class GroupManagerCodeGenerator {
         String groupId = group.getGroupId();
         group.getGroupDelim();
         String groupClassName = null;
+        String msgHashTag = msgType + "_" + msgType.hashCode();
         if ("HEADER".equals(msgType)) {
             groupClassName = "Header_Group_" + groupId;
         } else {
-            groupClassName = "Msg_" + msgType + "_" + msgType.hashCode()
-                + "_Group_" + groupId;
+            groupClassName = "Msg_" + msgHashTag + "_Group_" + groupId;
         }
-        out.println("\tstatic final class " + groupClassName
+        out.println("\tstatic final public class " + groupClassName
             + " extends FixRepeatingGroup {");
         out.println(
             "\t\tprivate static " + groupClassName + " instance = null;");
@@ -189,24 +143,15 @@ public class GroupManagerCodeGenerator {
         out.println();
     }
 
-    private void handleDefineGroups() {
-        Set<Entry<String, Map<String, RepeatingGroupBuilder>>> groupIDEntrySet = null;
-        Iterator<Entry<String, Map<String, RepeatingGroupBuilder>>> groupIDEntrySetIter = null;
-        groupIDEntrySet = repeatingGrpMap.getGroupMap().entrySet();
-        groupIDEntrySetIter = groupIDEntrySet.iterator();
-        while (groupIDEntrySetIter.hasNext()) {
-            out.println();
-            Entry<String, Map<String, RepeatingGroupBuilder>> groupIDEntry = groupIDEntrySetIter
-                .next();
-            String msgType = groupIDEntry.getKey();
-            Iterator<String> groupIDIter = null;
-            groupIDIter = groupIDEntry.getValue().keySet().iterator();
-            while (groupIDIter.hasNext()) {
-                String groupID = groupIDIter.next();
-                RepeatingGroupBuilder group = groupIDEntry.getValue()
-                    .get(groupID);
-                writeOutGroupClass(msgType, group);
-            }
+    private void handleDefineGroups(String msgType) {
+        Map<String, RepeatingGroupBuilder> msgGroupMap = repeatingGrpMap
+            .getGroupMap().get(msgType);
+        Iterator<String> groupIDIter = msgGroupMap.keySet().iterator();
+        out.println();
+        while (groupIDIter.hasNext()) {
+            String groupID = groupIDIter.next();
+            RepeatingGroupBuilder group = msgGroupMap.get(groupID);
+            writeOutGroupClass(msgType, group);
         }
     }
 
@@ -216,7 +161,7 @@ public class GroupManagerCodeGenerator {
      */
     private void handleStartClass() {
         out.println("package com.globalforge.infix.qfix."
-            + this.qfixverLowerCase + ";");
+            + this.qfixverLowerCase + ".auto.group;");
         out.println();
         out.println("import com.globalforge.infix.qfix.FixGroupMgr;");
         out.println("import com.globalforge.infix.qfix.FixRepeatingGroup;");
@@ -235,6 +180,55 @@ public class GroupManagerCodeGenerator {
     }
 
     private void finish() {
-        out.println("}");
+        //out.println("}");
+        out.flush();
+        boolean isError = out.checkError();
+        if (isError) {
+            throw new RuntimeException(
+                "IO Error during Group Code Generation!");
+        }
+    }
+
+    private void generateCode() throws Exception {
+        Set<Entry<String, LinkedHashMap<String, String>>> compMems = null;
+        Iterator<Entry<String, LinkedHashMap<String, String>>> memSetIterator = null;
+        compMems = msgCtxMap.getMessageMap().entrySet();
+        memSetIterator = compMems.iterator();
+        while (memSetIterator.hasNext()) {
+            Entry<String, LinkedHashMap<String, String>> ctxEntry = memSetIterator
+                .next();
+            String msgType = ctxEntry.getKey();
+            String msgHashTag = msgType + "_" + msgType.hashCode();
+            // Each message type get's it's own class file.
+            initOutputStreams(msgHashTag);
+            handleStartClass();
+            // Each class file needs the common header groups.
+            handleInitHeader();
+            Map<String, RepeatingGroupBuilder> grpMap = repeatingGrpMap
+                .getGroupMap().get(msgType);
+            if (grpMap != null) {
+                Iterator<String> groupIDIter = grpMap.keySet().iterator();
+                // Loop through all the groups found in a message type.
+                // This loop also completes the constructor for the message class.
+                while (groupIDIter.hasNext()) {
+                    String groupID = groupIDIter.next();
+                    RepeatingGroupBuilder group = grpMap.get(groupID);
+                    String gid = group.getGroupId();
+                    String delim = group.getGroupDelim();
+                    String groupClassName = "Msg_" + msgHashTag + "_Group_"
+                        + gid;
+                    out.println("\t\tputGroup(\"" + gid + "\", "
+                        + groupClassName + ".getInstance(\"" + gid + "\", \""
+                        + delim + "\"));");
+                }
+            }
+            out.println("\t}");
+            // Define the static classes represented by each group.
+            handleDefineGroups("HEADER");
+            if (grpMap != null) {
+                handleDefineGroups(msgType);
+            }
+            out.println("}");
+        }
     }
 }

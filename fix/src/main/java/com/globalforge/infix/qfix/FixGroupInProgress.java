@@ -43,7 +43,7 @@ package com.globalforge.infix.qfix;
  * If not, the stack is popped again. Once the stack is empty, subsequent tags
  * do not belong to repeating groups or else they indicate the start of a new
  * group.
- * @author Michael
+ * @author Michael C. Starkie
  */
 class FixGroupInProgress {
     private int nestingLevel = -1;

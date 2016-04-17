@@ -6,6 +6,7 @@ public class CodeGenerator {
         String fixVersion = null;
         MessageDataCodeGenerator msgGen = null;
         FieldOrderMapCodeGenerator fieldGen = null;
+        GroupManagerCodeGenerator groupGen = null;
         try {
             // FIX4.0
             /*
@@ -65,8 +66,8 @@ public class CodeGenerator {
             msgGen.generateClass();
             fieldGen = new FieldOrderMapCodeGenerator(fixVersion, dataGen);
             fieldGen.generateClass();
-            //groupGen = new GroupManagerCodeGenerator(fixVersion, dataGen);
-            // groupGen.generateClass();
+            groupGen = new GroupManagerCodeGenerator(fixVersion, dataGen);
+            groupGen.generateClass();
             dataGen.clear();
         } catch (Exception e) {
             e.printStackTrace();

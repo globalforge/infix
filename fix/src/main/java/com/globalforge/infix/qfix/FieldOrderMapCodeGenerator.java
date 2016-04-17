@@ -51,11 +51,12 @@ public class FieldOrderMapCodeGenerator {
             qfixverLowerCase = afixVer.toLowerCase();
             File fOut = new File(SRC_DIR + System.getProperty("file.separator")
                 + qfixverLowerCase + System.getProperty("file.separator")
-                + "auto" + System.getProperty("file.separator") + fileNamePrefix
+                + "auto" + System.getProperty("file.separator") + "field"
+                + System.getProperty("file.separator") + fileNamePrefix
                 + ".java");
             FieldOrderMapCodeGenerator.logger.info("building java file: {}",
                 fOut.getAbsolutePath());
-            fOut.mkdir();
+            fOut.getParentFile().mkdirs();
             out = new PrintStream(fOut, "UTF-8");
         }
     }
@@ -69,7 +70,8 @@ public class FieldOrderMapCodeGenerator {
             Entry<String, LinkedHashMap<String, String>> ctxEntry = memSetIterator
                 .next();
             String msgType = ctxEntry.getKey();
-            initOutputStreams(msgType);
+            String msgHashTag = msgType + "_" + msgType.hashCode();
+            initOutputStreams(msgHashTag);
             handleStartClass();
             Iterator<String> ctxSet = ctxEntry.getValue().keySet().iterator();
             while (ctxSet.hasNext()) {
@@ -89,7 +91,7 @@ public class FieldOrderMapCodeGenerator {
      */
     private void handleStartClass() {
         out.println("package com.globalforge.infix.qfix."
-            + this.qfixverLowerCase + ".auto;");
+            + this.qfixverLowerCase + ".auto.field;");
         out.println();
         out.println("import com.globalforge.infix.qfix.FieldOrderMap;");
         out.println();
@@ -101,7 +103,8 @@ public class FieldOrderMapCodeGenerator {
         out.println(
             "* the tool. It would actually be faster to do it the right way.");
         out.println("*/");
-        out.println("class " + fileNamePrefix + " extends FieldOrderMap {");
+        out.println(
+            "public class " + fileNamePrefix + " extends FieldOrderMap {");
         out.println("\t{");
     }
 }

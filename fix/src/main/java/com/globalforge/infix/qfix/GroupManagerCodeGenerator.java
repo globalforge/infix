@@ -66,25 +66,6 @@ public class GroupManagerCodeGenerator {
         }
     }
 
-    private void handleConstructor() {
-        ////
-        Set<Entry<String, Map<String, RepeatingGroupBuilder>>> msgGroups = null;
-        Iterator<Entry<String, Map<String, RepeatingGroupBuilder>>> memSetIterator = null;
-        msgGroups = repeatingGrpMap.getGroupMap().entrySet();
-        memSetIterator = msgGroups.iterator();
-        while (memSetIterator.hasNext()) {
-            Entry<String, Map<String, RepeatingGroupBuilder>> ctxEntry = memSetIterator
-                .next();
-            String msgType = ctxEntry.getKey();
-            if ("HEADER".equals(msgType)) {
-                continue;
-            }
-            out.println("\t\tinitMessageType_" + msgType + "();");
-        }
-        ///
-        out.println("\t}");
-    }
-
     private void handleInitHeader() {
         Map<String, RepeatingGroupBuilder> headerMap = repeatingGrpMap
             .getGroupMap().get("HEADER");

@@ -21,12 +21,10 @@ import com.globalforge.infix.qfix.ResolveManager;
 
 public class FIX50ComponentParser extends ComponentParser {
     @SuppressWarnings("unused")
-    final private static Logger logger = LoggerFactory
-        .getLogger(FIX50ComponentParser.class);
+    final private static Logger logger = LoggerFactory.getLogger(FIX50ComponentParser.class);
     protected Document doc = null;
 
-    public FIX50ComponentParser(String f, FieldParser cParser)
-        throws Exception {
+    public FIX50ComponentParser(String f, FieldParser cParser) throws Exception {
         this.fParser = cParser;
         this.fixFileName = f;
         this.componentMgr = new ComponentManager();
@@ -44,10 +42,8 @@ public class FIX50ComponentParser extends ComponentParser {
         this.ctxStore = resolveMgr.getContextStore();
     }
 
-    protected void buildDocument()
-        throws ParserConfigurationException, SAXException, IOException {
-        InputStream dictStream = ClassLoader
-            .getSystemResourceAsStream(fixFileName);
+    protected void buildDocument() throws ParserConfigurationException, SAXException, IOException {
+        InputStream dictStream = ClassLoader.getSystemResourceAsStream(fixFileName);
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         doc = dBuilder.parse(dictStream);
@@ -80,16 +76,14 @@ public class FIX50ComponentParser extends ComponentParser {
                 String attrName = element.getAttribute("name");
                 if ("field".equals(elementName)) {
                     componentMgr.addMember(compName, attrName);
-                } else
-                    if ("group".equals(elementName)) {
-                        // refer to the outer component name, not the name attribute
-                        // of the group
-                        groupMgr.setGroupId(compName, attrName);
-                        parseGroupElements(compChild, compName);
-                    } else
-                        if ("component".equals(elementName)) {
-                            componentMgr.addNestedComponent(compName, attrName);
-                        }
+                } else if ("group".equals(elementName)) {
+                    // refer to the outer component name, not the name attribute
+                    // of the group
+                    groupMgr.setGroupId(compName, attrName);
+                    parseGroupElements(compChild, compName);
+                } else if ("component".equals(elementName)) {
+                    componentMgr.addNestedComponent(compName, attrName);
+                }
             }
         }
     }
@@ -104,15 +98,12 @@ public class FIX50ComponentParser extends ComponentParser {
                 String attrName = element.getAttribute("name");
                 if ("field".equals(elementName)) {
                     groupMgr.addMember(componentName, attrName);
-                } else
-                    if ("component".equals(elementName)) {
-                        groupMgr.addNestedComponent(componentName, attrName);
-                    } else
-                        if ("group".equals(elementName)) {
-                            throw new RuntimeException(
-                                "Nested groups not handled for this fix version: "
-                                    + elementName);
-                        }
+                } else if ("component".equals(elementName)) {
+                    groupMgr.addNestedComponent(componentName, attrName);
+                } else if ("group".equals(elementName)) {
+                    throw new RuntimeException(
+                        "Nested groups not handled for this fix version: " + elementName);
+                }
             }
         }
     }

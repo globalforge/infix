@@ -1,9 +1,12 @@
 package com.globalforge.infix;
 
+import com.globalforge.infix.qfix.FixGroupMgr;
+import com.globalforge.infix.qfix.MessageData;
+
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2015 Global Forge LLC
+ Copyright (c) 2016 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -61,14 +64,13 @@ public class FixContextMgr {
      * primitive type, or void; or if the class has no nullary constructor; or
      * if the instantiation fails for some other reason.
      */
-    public FixGroupMgr getGroupMgr(String fixVersion)
-        throws ClassNotFoundException, InstantiationException,
-        IllegalAccessException {
-        String versionIdent = fixVersion.replaceAll("[\",.]", "") + "Mgr";
-        FixGroupMgr.cleanStaticData();
-        Class<?> c =
-            FixContextMgr.class.getClassLoader().loadClass(
-                "com.globalforge.infix." + versionIdent);
-        return (FixGroupMgr) c.newInstance();
+    public MessageData getMessageData(String fixVersion)
+        throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+        String upperCaseVer = fixVersion.replaceAll("[\",.]", "");
+        String lowerCaseVer = upperCaseVer.toLowerCase();
+        String messageDataStr = "com.globalforge.infix.qfix." + lowerCaseVer + ".auto."
+            + upperCaseVer + "DynamicMessageData";
+        Class<?> c = FixContextMgr.class.getClassLoader().loadClass(messageDataStr);
+        return (MessageData) c.newInstance();
     }
 }

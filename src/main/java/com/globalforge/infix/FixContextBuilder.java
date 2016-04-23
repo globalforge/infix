@@ -5,11 +5,12 @@ import java.util.Iterator;
 import java.util.concurrent.LinkedBlockingDeque;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.globalforge.infix.qfix.FixGroupMgr;
 
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2015 Global Forge LLC
+ Copyright (c) 2016 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -37,11 +38,15 @@ import org.slf4j.LoggerFactory;
  */
 final class FixContextBuilder {
     /** logger */
-    final static Logger logger = LoggerFactory
-        .getLogger(FixContextBuilder.class);
+    final static Logger logger =
+        LoggerFactory.getLogger(FixContextBuilder.class);
     public static final String REF = "->";
     private LinkedBlockingDeque<String> ctxs = null;
     private String tagNum = null;
+
+    public FixContextBuilder(String ctx) {
+        parseContext(ctx);
+    }
 
     /**
      * Converts a tag reference in rule sytax to a stack of context strings to
@@ -52,7 +57,7 @@ final class FixContextBuilder {
      * @see FixAPIImpl#putContext(String, String)
      * @param ctx A tag reference in rule syntax.
      */
-    void parseContext(String ctx) {
+    private void parseContext(String ctx) {
         LinkedBlockingDeque<String> stack = new LinkedBlockingDeque<String>();
         tagNum = ctx.substring(ctx.lastIndexOf("&") + 1);
         stack.push(ctx);
@@ -190,19 +195,33 @@ final class FixContextBuilder {
      * @param args
      */
     public static void main(String[] args) {
-        FixContextBuilder ctxBldr = new FixContextBuilder();
         String ctx = "&555[0]->&539[3]->&525";
-        ctxBldr.parseContext(ctx);
+        FixContextBuilder ctxBldr = new FixContextBuilder(ctx);
         System.out.println("-------------");
         String out = ctxBldr.toString();
         System.out.println(out);
         ctx = "&555";
-        ctxBldr.parseContext(ctx);
+        ctxBldr = new FixContextBuilder(ctx);
         System.out.println("-------------");
         out = ctxBldr.toString();
         System.out.println(out);
         ctx = "&555[0]->&539";
-        ctxBldr.parseContext(ctx);
+        ctxBldr = new FixContextBuilder(ctx);
+        System.out.println("-------------");
+        out = ctxBldr.toString();
+        System.out.println(out);
+        ctx = "&555[1]->&539";
+        ctxBldr = new FixContextBuilder(ctx);
+        System.out.println("-------------");
+        out = ctxBldr.toString();
+        System.out.println(out);
+        ctx = "&555[2]->&539[3]->&525";
+        ctxBldr = new FixContextBuilder(ctx);
+        System.out.println("-------------");
+        out = ctxBldr.toString();
+        System.out.println(out);
+        ctx = "&555[3]->&444";
+        ctxBldr = new FixContextBuilder(ctx);
         System.out.println("-------------");
         out = ctxBldr.toString();
         System.out.println(out);

@@ -1,5 +1,7 @@
 package com.globalforge.infix;
 
+import com.globalforge.infix.qfix.FixRepeatingGroup;
+
 /*-
  The MIT License (MIT)
 

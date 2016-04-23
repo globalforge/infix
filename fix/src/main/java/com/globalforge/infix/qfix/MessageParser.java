@@ -22,18 +22,18 @@ public abstract class MessageParser {
     final static Logger logger = LoggerFactory.getLogger(MessageParser.class);
     // the precision is based on the largest repeating group. there should be no
     // group with more than 1000 members (000-999).
-    private static MathContext mathCtx = new MathContext(3,
-        RoundingMode.HALF_EVEN);
-    protected final LinkedHashMap<String, LinkedHashMap<String, String>> messageMap = new LinkedHashMap<String, LinkedHashMap<String, String>>();
-    private final LinkedHashMap<String, LinkedHashMap<String, Integer>> groupMap = new LinkedHashMap<String, LinkedHashMap<String, Integer>>();
+    private static MathContext mathCtx = new MathContext(3, RoundingMode.HALF_EVEN);
+    protected final LinkedHashMap<String, LinkedHashMap<String, String>> messageMap =
+        new LinkedHashMap<String, LinkedHashMap<String, String>>();
+    private final LinkedHashMap<String, LinkedHashMap<String, Integer>> groupMap =
+        new LinkedHashMap<String, LinkedHashMap<String, Integer>>();
     protected final HeaderParser headerParser;
     protected final ComponentParser cParser;
     protected final FieldParser fParser;
     protected final String fixFileName;
     protected final DataStore ctxStore;
 
-    public MessageParser(String f, FieldParser cParser, HeaderParser h,
-        ComponentParser c) {
+    public MessageParser(String f, FieldParser cParser, HeaderParser h, ComponentParser c) {
         this.headerParser = h;
         this.fixFileName = f;
         this.fParser = cParser;
@@ -60,13 +60,11 @@ public abstract class MessageParser {
     }
 
     private String getMantissaHash(int memberPos, int groupSize) {
-        BigDecimal dividend = new BigDecimal(memberPos + 1.0,
-            MathContext.DECIMAL32);
-        BigDecimal divisor = new BigDecimal(groupSize + 1.0,
-            MathContext.DECIMAL32);
+        BigDecimal dividend = new BigDecimal(memberPos + 1.0, MathContext.DECIMAL32);
+        BigDecimal divisor = new BigDecimal(groupSize + 1.0, MathContext.DECIMAL32);
         // --
-        BigDecimal memberHash = dividend.divide(divisor, MessageParser.mathCtx)
-            .stripTrailingZeros();
+        BigDecimal memberHash =
+            dividend.divide(divisor, MessageParser.mathCtx).stripTrailingZeros();
         String locationHash = memberHash.toPlainString();
         int decimalPoint = locationHash.indexOf('.');
         String mantissa = locationHash.substring(decimalPoint + 1);
@@ -82,8 +80,7 @@ public abstract class MessageParser {
         return groupIdCtx;
     }
 
-    protected LinkedHashMap<String, String> orderMessage(String msgName,
-        int fOrder) {
+    protected LinkedHashMap<String, String> orderMessage(String msgName, int fOrder) {
         HashMap<Integer, String> nestMap = new HashMap<Integer, String>();
         LinkedHashMap<String, String> newMsgFieldMap = new LinkedHashMap<String, String>();
         LinkedHashMap<String, String> msgFields = messageMap.get(msgName);
@@ -121,19 +118,15 @@ public abstract class MessageParser {
     }
 
     protected void orderAllMessages() {
-        LinkedHashMap<String, LinkedHashMap<String, String>> newMessageMap = new LinkedHashMap<String, LinkedHashMap<String, String>>();
-        Set<Entry<String, LinkedHashMap<String, String>>> compMems = messageMap
-            .entrySet();
-        Iterator<Entry<String, LinkedHashMap<String, String>>> memSetIterator = compMems
-            .iterator();
+        LinkedHashMap<String, LinkedHashMap<String, String>> newMessageMap =
+            new LinkedHashMap<String, LinkedHashMap<String, String>>();
+        Set<Entry<String, LinkedHashMap<String, String>>> compMems = messageMap.entrySet();
+        Iterator<Entry<String, LinkedHashMap<String, String>>> memSetIterator = compMems.iterator();
         while (memSetIterator.hasNext()) {
-            AtomicInteger fOrder = new AtomicInteger(
-                headerParser.getCurFieldOrder());
-            Entry<String, LinkedHashMap<String, String>> ctxEntry = memSetIterator
-                .next();
+            AtomicInteger fOrder = new AtomicInteger(headerParser.getCurFieldOrder());
+            Entry<String, LinkedHashMap<String, String>> ctxEntry = memSetIterator.next();
             String msgName = ctxEntry.getKey();
-            LinkedHashMap<String, String> newMsgFieldMap = orderMessage(msgName,
-                fOrder.get());
+            LinkedHashMap<String, String> newMsgFieldMap = orderMessage(msgName, fOrder.get());
             newMessageMap.put(msgName, newMsgFieldMap);
             // nestMap.clear();
         }
@@ -142,13 +135,10 @@ public abstract class MessageParser {
     }
 
     protected void calcMemberSizes() {
-        Set<Entry<String, LinkedHashMap<String, String>>> compMems = messageMap
-            .entrySet();
-        Iterator<Entry<String, LinkedHashMap<String, String>>> memSetIterator = compMems
-            .iterator();
+        Set<Entry<String, LinkedHashMap<String, String>>> compMems = messageMap.entrySet();
+        Iterator<Entry<String, LinkedHashMap<String, String>>> memSetIterator = compMems.iterator();
         while (memSetIterator.hasNext()) {
-            Entry<String, LinkedHashMap<String, String>> ctxEntry = memSetIterator
-                .next();
+            Entry<String, LinkedHashMap<String, String>> ctxEntry = memSetIterator.next();
             String msgName = ctxEntry.getKey();
             LinkedHashMap<String, String> msgMembers = ctxEntry.getValue();
             LinkedHashMap<String, Integer> grpOrderMap = groupMap.get(msgName);
@@ -156,8 +146,8 @@ public abstract class MessageParser {
                 grpOrderMap = new LinkedHashMap<String, Integer>();
                 groupMap.put(msgName, grpOrderMap);
             }
-            ListIterator<String> iter = new ArrayList<String>(
-                msgMembers.keySet()).listIterator(msgMembers.size());
+            ListIterator<String> iter =
+                new ArrayList<String>(msgMembers.keySet()).listIterator(msgMembers.size());
             while (iter.hasPrevious()) {
                 String ctx = iter.previous();
                 int brackIdx = ctx.lastIndexOf('[');
@@ -177,6 +167,7 @@ public abstract class MessageParser {
 
     /**
      * Number after last '&'
+     * 
      * @param ctxString Full context of field reference.
      * @return String a tag number
      */
@@ -197,16 +188,15 @@ public abstract class MessageParser {
         return ctxStore.getComponentGroup(groupId);
     }
 
-    private RepeatingGroupBuilder getMessageGroup(String curMessage,
-        String groupId) {
+    private RepeatingGroupBuilder getMessageGroup(String curMessage, String groupId) {
         if (ctxStore.isMessageGroup(curMessage, groupId)) {
             return ctxStore.getMessageGroup(curMessage, groupId);
         }
         return null;
     }
 
-    protected void addComponents(String curMessage,
-        LinkedList<String> components, String preCtx, String groupId) {
+    protected void addComponents(String curMessage, LinkedList<String> components, String preCtx,
+        String groupId) {
         RepeatingGroupBuilder curGroup = null;
         if (groupId != null) {
             curGroup = getMessageGroup(curMessage, groupId);
@@ -223,11 +213,12 @@ public abstract class MessageParser {
                 groupId = tagNum;
                 curGroup = getComponentGroup(groupId);
                 ctxStore.startMessageGroup(curMessage, groupId);
-            } else
-                if (curGroup != null) {
-                    ctxStore.addMessageGroupMember(curMessage, groupId, tagNum);
-                }
-            fieldMap.put(preCtx + compCtx, null);
+                fieldMap.put(preCtx + compCtx, null);
+                // preCtx = preCtx + compCtx + "[*]->";
+            } else if (curGroup != null) {
+                ctxStore.addMessageGroupMember(curMessage, groupId, tagNum);
+                fieldMap.put(preCtx + compCtx, null);
+            }
         }
     }
 
@@ -262,17 +253,13 @@ public abstract class MessageParser {
     }
      */
     protected void printMembers() {
-        Set<Entry<String, LinkedHashMap<String, String>>> compMems = messageMap
-            .entrySet();
-        Iterator<Entry<String, LinkedHashMap<String, String>>> memSetIterator = compMems
-            .iterator();
+        Set<Entry<String, LinkedHashMap<String, String>>> compMems = messageMap.entrySet();
+        Iterator<Entry<String, LinkedHashMap<String, String>>> memSetIterator = compMems.iterator();
         while (memSetIterator.hasNext()) {
-            Entry<String, LinkedHashMap<String, String>> ctxEntry = memSetIterator
-                .next();
+            Entry<String, LinkedHashMap<String, String>> ctxEntry = memSetIterator.next();
             String msgName = ctxEntry.getKey();
             Iterator<String> ctxSet = ctxEntry.getValue().keySet().iterator();
-            MessageParser.logger
-                .info("--- BEGIN MESSAGE:  " + msgName + " ---");
+            MessageParser.logger.info("--- BEGIN MESSAGE:  " + msgName + " ---");
             while (ctxSet.hasNext()) {
                 String tagCtx = ctxSet.next();
                 String orderCtx = ctxEntry.getValue().get(tagCtx);
@@ -283,17 +270,14 @@ public abstract class MessageParser {
     }
 
     protected void printMembersReverse() {
-        Set<Entry<String, LinkedHashMap<String, String>>> compMems = messageMap
-            .entrySet();
-        Iterator<Entry<String, LinkedHashMap<String, String>>> memSetIterator = compMems
-            .iterator();
+        Set<Entry<String, LinkedHashMap<String, String>>> compMems = messageMap.entrySet();
+        Iterator<Entry<String, LinkedHashMap<String, String>>> memSetIterator = compMems.iterator();
         while (memSetIterator.hasNext()) {
-            Entry<String, LinkedHashMap<String, String>> ctxEntry = memSetIterator
-                .next();
+            Entry<String, LinkedHashMap<String, String>> ctxEntry = memSetIterator.next();
             String msgName = ctxEntry.getKey();
             LinkedHashMap<String, String> msgMembers = ctxEntry.getValue();
-            ListIterator<String> iter = new ArrayList<String>(
-                msgMembers.keySet()).listIterator(msgMembers.size());
+            ListIterator<String> iter =
+                new ArrayList<String>(msgMembers.keySet()).listIterator(msgMembers.size());
             System.out.println("MESSAGE NAME: " + msgName);
             while (iter.hasPrevious()) {
                 String ctx = iter.previous();
@@ -303,24 +287,20 @@ public abstract class MessageParser {
     }
 
     protected void printGroupIds() {
-        Set<Entry<String, LinkedHashMap<String, Integer>>> compMems = groupMap
-            .entrySet();
-        Iterator<Entry<String, LinkedHashMap<String, Integer>>> memSetIterator = compMems
-            .iterator();
+        Set<Entry<String, LinkedHashMap<String, Integer>>> compMems = groupMap.entrySet();
+        Iterator<Entry<String, LinkedHashMap<String, Integer>>> memSetIterator =
+            compMems.iterator();
         while (memSetIterator.hasNext()) {
-            Entry<String, LinkedHashMap<String, Integer>> ctxEntry = memSetIterator
-                .next();
+            Entry<String, LinkedHashMap<String, Integer>> ctxEntry = memSetIterator.next();
             String msgName = ctxEntry.getKey();
             Iterator<String> ctxSet = ctxEntry.getValue().keySet().iterator();
-            MessageParser.logger
-                .info("--- BEGIN GROUP ORDERS:  " + msgName + " ---");
+            MessageParser.logger.info("--- BEGIN GROUP ORDERS:  " + msgName + " ---");
             while (ctxSet.hasNext()) {
                 String tagCtx = ctxSet.next();
                 Integer orderCtx = ctxEntry.getValue().get(tagCtx);
                 MessageParser.logger.info(tagCtx + ", " + orderCtx);
             }
-            MessageParser.logger
-                .info("--- END GROUP ORDERS:  " + msgName + " ---");
+            MessageParser.logger.info("--- END GROUP ORDERS:  " + msgName + " ---");
         }
     }
 }

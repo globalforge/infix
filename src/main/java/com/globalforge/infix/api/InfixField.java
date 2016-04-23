@@ -1,9 +1,11 @@
 package com.globalforge.infix.api;
 
+import java.io.Serializable;
+
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2015 Global Forge LLC
+ Copyright (c) 2016 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +30,8 @@ package com.globalforge.infix.api;
  * 
  * @author Michael Starkie
  */
-public final class InfixField {
+public final class InfixField implements Serializable {
+    private static final long serialVersionUID = 1L;
     private final int tagNum;
     private final String tagVal;
 
@@ -40,6 +43,11 @@ public final class InfixField {
      */
     public InfixField(int num, String val) {
         tagNum = num;
+        tagVal = val;
+    }
+
+    public InfixField(String num, String val) {
+        tagNum = Integer.parseInt(num);
         tagVal = val;
     }
 

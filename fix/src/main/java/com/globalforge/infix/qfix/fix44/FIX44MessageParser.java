@@ -19,16 +19,14 @@ import com.globalforge.infix.qfix.MessageParser;
 
 public class FIX44MessageParser extends MessageParser {
     /** logger */
-    final static Logger logger = LoggerFactory
-        .getLogger(FIX44MessageParser.class);
-    private final Deque<CurrentContext> elementStack = new ArrayDeque<CurrentContext>(
-        100);
+    final static Logger logger = LoggerFactory.getLogger(FIX44MessageParser.class);
+    private final Deque<CurrentContext> elementStack = new ArrayDeque<CurrentContext>(100);
     private final Deque<String> groupCtxStack = new ArrayDeque<String>(100);
     private final Deque<String> curGroupStack = new ArrayDeque<String>(100);
     private final XMLInputFactory factory = XMLInputFactory.newInstance();
 
-    public FIX44MessageParser(String f, FieldParser p, HeaderParser h,
-        ComponentParser c) throws Exception {
+    public FIX44MessageParser(String f, FieldParser p, HeaderParser h, ComponentParser c)
+        throws Exception {
         super(f, p, h, c);
     }
 
@@ -44,8 +42,7 @@ public class FIX44MessageParser extends MessageParser {
      * Parses components block. Expects field, group, or component.
      */
     public void parseMessages() throws XMLStreamException {
-        InputStream dictStream = ClassLoader
-            .getSystemResourceAsStream(fixFileName);
+        InputStream dictStream = ClassLoader.getSystemResourceAsStream(fixFileName);
         XMLStreamReader reader = factory.createXMLStreamReader(dictStream);
         String curMessage = null;
         FIX44MessageParser.logger.info("--- BEGIN MESSAGES ---");
@@ -61,84 +58,69 @@ public class FIX44MessageParser extends MessageParser {
                     if ("message".equals(elementName)) {
                         elementStack.push(CurrentContext.MESSAGE);
                         curMessage = reader.getAttributeValue(null, "msgtype");
-                        LinkedHashMap<String, String> fieldMap = messageMap
-                            .get(curMessage);
+                        LinkedHashMap<String, String> fieldMap = messageMap.get(curMessage);
                         if (fieldMap == null) {
                             fieldMap = new LinkedHashMap<String, String>();
                             messageMap.put(curMessage, fieldMap);
                         }
                     }
-                    if ("field".equals(elementName)
-                        && (curContext == CurrentContext.MESSAGE)) {
+                    if ("field".equals(elementName) && (curContext == CurrentContext.MESSAGE)) {
                         String tagName = reader.getAttributeValue(null, "name");
                         String tagCtx = "&" + fParser.getTagNum(tagName);
-                        LinkedHashMap<String, String> fieldMap = messageMap
-                            .get(curMessage);
+                        LinkedHashMap<String, String> fieldMap = messageMap.get(curMessage);
                         fieldMap.put(tagCtx, null);
                     }
                     // No components before FIX 4.3 - but it's ok here. Never
                     // get's called.
-                    if ("component".equals(elementName)
-                        && (curContext == CurrentContext.MESSAGE)) {
-                        String componentName = reader.getAttributeValue(null,
-                            "name");
-                        LinkedList<String> components = ctxStore
-                            .getComponentContext(componentName);
+                    if ("component".equals(elementName) && (curContext == CurrentContext.MESSAGE)) {
+                        String componentName = reader.getAttributeValue(null, "name");
+                        LinkedList<String> components = ctxStore.getComponentContext(componentName);
                         addComponents(curMessage, components, "", null);
                     }
-                    if ("group".equals(elementName)
-                        && (curContext == CurrentContext.MESSAGE)) {
+                    if ("group".equals(elementName) && (curContext == CurrentContext.MESSAGE)) {
                         elementStack.push(CurrentContext.GROUP);
                         String tagName = reader.getAttributeValue(null, "name");
                         String tagNum = fParser.getTagNum(tagName);
                         curGroupStack.push(tagNum);
                         String tagCtx = "&" + tagNum;
-                        LinkedHashMap<String, String> fieldMap = messageMap
-                            .get(curMessage);
+                        LinkedHashMap<String, String> fieldMap = messageMap.get(curMessage);
                         fieldMap.put(tagCtx, null);
                         groupCtxStack.push(tagCtx);
-                        ctxStore.startMessageGroup(curMessage,
-                            curGroupStack.peek());
+                        ctxStore.startMessageGroup(curMessage, curGroupStack.peek());
                     }
-                    if ("field".equals(elementName)
-                        && (curContext == CurrentContext.GROUP)) {
+                    if ("field".equals(elementName) && (curContext == CurrentContext.GROUP)) {
                         String tagName = reader.getAttributeValue(null, "name");
                         String tagNum = fParser.getTagNum(tagName);
-                        String tagCtx = groupCtxStack.peek() + "[*]->" + "&"
-                            + tagNum;
-                        LinkedHashMap<String, String> fieldMap = messageMap
-                            .get(curMessage);
+                        String tagCtx = groupCtxStack.peek() + "[*]->" + "&" + tagNum;
+                        LinkedHashMap<String, String> fieldMap = messageMap.get(curMessage);
                         fieldMap.put(tagCtx, null);
-                        ctxStore.addMessageGroupMember(curMessage,
-                            curGroupStack.peek(), tagNum);
+                        ctxStore.addMessageGroupMember(curMessage, curGroupStack.peek(), tagNum);
                     }
                     // No components before FIX 4.3 - but it's ok here. Never
                     // get's called.
-                    if ("component".equals(elementName)
-                        && (curContext == CurrentContext.GROUP)) {
-                        String componentName = reader.getAttributeValue(null,
-                            "name");
-                        LinkedList<String> components = ctxStore
-                            .getComponentContext(componentName);
-                        addComponents(curMessage, components,
-                            groupCtxStack.peek() + "[*]->",
+                    if ("component".equals(elementName) && (curContext == CurrentContext.GROUP)) {
+                        String componentName = reader.getAttributeValue(null, "name");
+                        if ("E".equals(curMessage) && "NestedParties".equals(componentName)) {
+                            System.out.println();
+                        }
+                        LinkedList<String> components = ctxStore.getComponentContext(componentName);
+                        addComponents(curMessage, components, groupCtxStack.peek() + "[*]->",
                             curGroupStack.peek());
                     }
-                    if ("group".equals(elementName)
-                        && (curContext == CurrentContext.GROUP)) {
+                    if ("group".equals(elementName) && (curContext == CurrentContext.GROUP)) {
                         String tagName = reader.getAttributeValue(null, "name");
                         String tagNum = fParser.getTagNum(tagName);
+                        if ("E".equals(curMessage) && "78".equals(tagNum)) {
+                            System.out.println();
+                        }
                         curGroupStack.push(tagNum);
                         String tagCtx = "&" + tagNum;
-                        String curGrpCtx = groupCtxStack.peek() + "[*]->"
-                            + tagCtx;
+                        String curGrpCtx = groupCtxStack.peek() + "[*]->" + tagCtx;
                         groupCtxStack.push(curGrpCtx);
-                        LinkedHashMap<String, String> fieldMap = messageMap
-                            .get(curMessage);
-                        fieldMap.put(tagCtx, null);
+                        LinkedHashMap<String, String> fieldMap = messageMap.get(curMessage);
+                        fieldMap.put(curGrpCtx, null);
                         elementStack.push(CurrentContext.GROUP);
-                        ctxStore.startMessageGroup(curMessage,
-                            curGroupStack.peek());
+                        ctxStore.startMessageGroup(curMessage, curGroupStack.peek());
                     }
                     break;
                 case XMLStreamConstants.END_ELEMENT:
@@ -147,8 +129,7 @@ public class FIX44MessageParser extends MessageParser {
                         elementStack.pop();
                         curMessage = null;
                     }
-                    if ("group".equals(elementName)
-                        && (curContext == CurrentContext.GROUP)) {
+                    if ("group".equals(elementName) && (curContext == CurrentContext.GROUP)) {
                         elementStack.pop();
                         groupCtxStack.pop();
                         curGroupStack.pop();

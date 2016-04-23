@@ -8,9 +8,9 @@ import com.globalforge.infix.api.InfixActions;
 import com.globalforge.infix.api.InfixField;
 
 public class TestCkSumBodyLen {
-    static final String sampleMessage1 = "8=FIX.4.4" + '\u0001' + "9=1000000"
-        + '\u0001' + "35=8" + '\u0001' + "43=1" + '\u0001' + "207=USA"
-        + '\u0001' + "10=000";
+    static final String sampleMessage1 =
+        "8=FIX.4.4" + '\u0001' + "9=1000000" + '\u0001' + "35=8" + '\u0001'
+            + "43=1" + '\u0001' + "207=USA" + '\u0001' + "10=000";
     InfixActions rules = null;
     String sampleRule = null;
     String result = null;
@@ -22,7 +22,7 @@ public class TestCkSumBodyLen {
     @Test
     public void test() {
         try {
-            sampleRule = "&35=8";
+            sampleRule = "&43=8";
             rules = new InfixActions(sampleRule);
             result =
                 rules.transformFIXMsg(TestCkSumBodyLen.sampleMessage1, true);
@@ -37,7 +37,7 @@ public class TestCkSumBodyLen {
             Assert.assertEquals("18", fld.getTagVal());
             fld = myList.get(5);
             Assert.assertEquals(10, fld.getTagNum());
-            Assert.assertEquals("117", fld.getTagVal());
+            Assert.assertEquals("124", fld.getTagVal());
             System.out.println(StaticTestingUtils.rs(result));
             System.out.println(StaticTestingUtils.ck(result));
         } catch (Exception e) {

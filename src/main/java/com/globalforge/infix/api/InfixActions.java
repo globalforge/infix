@@ -19,7 +19,7 @@ import com.globalforge.infix.antlr.FixRulesParser;
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2015 Global Forge LLC
+ Copyright (c) 2016 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -82,8 +82,7 @@ public class InfixActions {
      * @throws UnsupportedEncodingException
      * @throws IOException
      */
-    public InfixActions(String ruleInput) throws UnsupportedEncodingException,
-        IOException {
+    public InfixActions(String ruleInput) throws UnsupportedEncodingException, IOException {
         this(new ByteArrayInputStream(ruleInput.getBytes("UTF-8")));
     }
 
@@ -97,9 +96,8 @@ public class InfixActions {
     public static void primeEngine(String fixVersion) {
         if ((fixVersion != null) && !fixVersion.isEmpty()) {
             try {
-                final String sampleMessage1 =
-                    "8=" + fixVersion + '\u0001' + "9=10" + '\u0001' + "35=8"
-                        + '\u0001' + "45=1" + '\u0001' + "10=004";
+                final String sampleMessage1 = "8=" + fixVersion + '\u0001' + "9=10" + '\u0001'
+                    + "35=8" + '\u0001' + "45=1" + '\u0001' + "10=004";
                 InfixActions rules = new InfixActions("&45=2");
                 rules.transformFIXMsg(sampleMessage1);
             } catch (Exception e) {
@@ -124,8 +122,7 @@ public class InfixActions {
      * @return String the transformed fix message.
      */
     public String transformFIXMsg(String fixMessage, boolean printDictionary) {
-        FixRulesTransformVisitor visitor =
-            new FixRulesTransformVisitor(fixMessage);
+        FixRulesTransformVisitor visitor = new FixRulesTransformVisitor(fixMessage);
         String transform = visitor.visit(tree);
         if (printDictionary) {
             visitor.printDictionary();
@@ -141,8 +138,7 @@ public class InfixActions {
      * @return String the transformed fix message.
      */
     public String transformFIXMsg(String fixMessage) {
-        FixRulesTransformVisitor visitor =
-            new FixRulesTransformVisitor(fixMessage);
+        FixRulesTransformVisitor visitor = new FixRulesTransformVisitor(fixMessage);
         String result = visitor.visit(tree);
         return result;
     }
@@ -163,8 +159,7 @@ public class InfixActions {
      * @return String the transformed fix message.
      */
     public String transformFIXMsg(String tag8Value, String tag35Value) {
-        FixRulesTransformVisitor visitor =
-            new FixRulesTransformVisitor(tag8Value, tag35Value);
+        FixRulesTransformVisitor visitor = new FixRulesTransformVisitor(tag8Value, tag35Value);
         String result = visitor.visit(tree);
         return result;
     }

@@ -1,24 +1,25 @@
 package com.globalforge.infix;
 
 import java.math.BigDecimal;
-import java.util.Deque;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.globalforge.infix.api.InfixAPI;
 import com.globalforge.infix.api.InfixField;
+import com.globalforge.infix.api.InfixFieldInfo;
 import com.globalforge.infix.api.InfixUserContext;
 import com.globalforge.infix.api.InfixUserTerminal;
+import com.globalforge.infix.qfix.FixGroupMgr;
+import com.globalforge.infix.qfix.MessageData;
 
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2015 Global Forge LLC
+ Copyright (c) 2016 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -54,18 +55,15 @@ public class FixMessageMgr {
     /** logger */
     final static Logger logger = LoggerFactory.getLogger(FixMessageMgr.class);
     /** maps a tag in rule syntax to a relative point in the message */
-    private final Map<String, BigDecimal> ctxDict =
-        new HashMap<String, BigDecimal>();
-    /** maps the point in the message to a FixField */
-    private final Map<BigDecimal, InfixField> fldDict =
-        new TreeMap<BigDecimal, InfixField>();
+    private Map<String, InfixFieldInfo> msgMap = new HashMap<String, InfixFieldInfo>();
     /** a cache of user defined impl by class name */
     private final Map<String, InfixUserContext> userContextMap =
         new HashMap<String, InfixUserContext>();
     /** a cache of user defined impl by class name */
     private final Map<String, InfixUserTerminal> userAssignMap =
         new HashMap<String, InfixUserTerminal>();
-    private FixGroupMgr grpMgr = null;
+    private MessageData msgData = null;
+    private FixFieldOrderHash posGen = null;
 
     /**
      * Test if string is an integer. It allows for negative field numbers. Yes,
@@ -92,31 +90,11 @@ public class FixMessageMgr {
      * in tag 8 that is unrecognized the system will fail when it tries to
      * instantiate a {@link FixGroupMgr} for that version at runtime.
      */
-    public FixMessageMgr(String baseMsg) throws ClassNotFoundException,
-        InstantiationException, IllegalAccessException {
+    public FixMessageMgr(String baseMsg)
+        throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         parseMessage(baseMsg);
     }
 
-    /*-
-     * Parses a QuickFix message, assigns context, and keeps state.
-     * 
-     * @param baseMsg The input message
-     * @throws IllegalAccessException If the class represented by the fix
-     * version or its nullary constructor is not accessible..
-     * @throws InstantiationException If the class represented by the fix
-     * version represents an abstract class, an interface, an array class, a
-     * primitive type, or void; or if the class has no nullary constructor; or
-     * if the instantiation fails for some other reason.
-     * @throws ClassNotFoundException If the fix message contains a Fix version
-     * in tag 8 that is unrecognized the system will fail when it tries to
-     * instantiate a {@link FixGroupMgr} for that version at runtime.
-     
-    public FixMessageMgr(Message msg) throws ClassNotFoundException,
-        InstantiationException, IllegalAccessException {
-        parseMessage(msg.toString());
-    }
-    
-     */
     /**
      * Sets up a base message with Fix Version and MsgType specief. The rest of
      * the fields may be added via a callback to InfixAPI. See User Defined
@@ -135,65 +113,12 @@ public class FixMessageMgr {
      */
     public FixMessageMgr(String tag8Value, String tag35Value) throws Exception {
         init(tag8Value);
-        putFieldFromMsgParse("8", tag8Value);
-        putFieldFromMsgParse("35", tag35Value);
+        putField(8, tag8Value);
+        putField(35, tag35Value);
     }
 
-    /**
-     * Obtain a view into the context dictionary.
-     * 
-     * @return Map<String, BigDecimal> A map of immutable objects. The key is
-     * the tag number in rule syntax. The value is the unique decimal which
-     * describes the order the fix field appears in the fix message.
-     */
-    public Map<String, BigDecimal> getCtxToOrderDict() {
-        return new HashMap<String, BigDecimal>(ctxDict);
-    }
-
-    /**
-     * Obtain a view into the field dictionary
-     * 
-     * @return Map<BigDecimal, FixField> A map of immutable objects. They key is
-     * the unique place or order in which the fix field appears in the fix
-     * message and value represents the fix field containing both tag number and
-     * tag value.
-     */
-    public Map<BigDecimal, InfixField> getOrderToFieldDict() {
-        return new HashMap<BigDecimal, InfixField>(fldDict);
-    }
-
-    /**
-     * Obtain a mapping of tag num if rule context to FixField
-     * 
-     * @return Map<String, FixField>. The key is the tag number in rule syntax
-     * and the value is the fix data wrapped in {@link InfixField}.
-     */
-    public Map<String, InfixField> getCtxToFieldDict() {
-        Map<String, InfixField> retMap = new HashMap<String, InfixField>();
-        String[] keySet = ctxDict.keySet().toArray(new String[ctxDict.size()]);
-        for (String ctx : keySet) {
-            BigDecimal bd = ctxDict.get(ctx);
-            InfixField ff = fldDict.get(bd);
-            retMap.put(ctx, ff);
-        }
-        return retMap;
-    }
-
-    /**
-     * Obtain a mapping of tag number to FixField
-     * 
-     * @return Map<Integer, FixField>. The key is the tag number and the value
-     * is the fix data wrapped in {@link InfixField}.
-     */
-    public Map<Integer, InfixField> getTagNumToFieldDict() {
-        Map<Integer, InfixField> retMap = new HashMap<Integer, InfixField>();
-        String[] keySet = ctxDict.keySet().toArray(new String[ctxDict.size()]);
-        for (String ctx : keySet) {
-            BigDecimal bd = ctxDict.get(ctx);
-            InfixField ff = fldDict.get(bd);
-            retMap.put(ff.getTagNum(), ff);
-        }
-        return retMap;
+    public Map<String, InfixFieldInfo> getInfixMessageMap() {
+        return msgMap;
     }
 
     /**
@@ -210,10 +135,9 @@ public class FixMessageMgr {
      * in tag 8 that is unrecognized the system will fail when it tries to
      * instantiate a {@link FixGroupMgr} for that version at runtime.
      */
-    private void parseMessage(String baseMsg) throws ClassNotFoundException,
-        InstantiationException, IllegalAccessException {
-        ctxDict.clear();
-        fldDict.clear();
+    private void parseMessage(String baseMsg)
+        throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+        msgMap.clear();
         int p = 0;
         int prev = 0;
         String field = null;
@@ -247,15 +171,22 @@ public class FixMessageMgr {
      * in tag 8 that is unrecognized the system will fail when it tries to
      * instantiate a {@link FixGroupMgr} for that version at runtime.
      */
-    private void parseField(String fixField) throws ClassNotFoundException,
-        InstantiationException, IllegalAccessException {
+    private void parseField(String fixField)
+        throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         int index = fixField.indexOf('=');
-        String tagNum = fixField.substring(0, index);
+        String tagStr = fixField.substring(0, index);
         String tagVal = fixField.substring(index + 1);
-        if (tagNum.equals("8")) {
+        if (tagStr.equals("8")) {
             init(tagVal);
         }
-        putFieldFromMsgParse(tagNum, tagVal);
+        int tagNum = 0;
+        try {
+            tagNum = Integer.parseInt(tagStr);
+        } catch (NumberFormatException e) {
+            logger.warn("Dropping non-numeric tag number: " + tagNum);
+            return;
+        }
+        putField(tagNum, tagVal);
     }
 
     /**
@@ -274,9 +205,11 @@ public class FixMessageMgr {
      * primitive type, or void; or if the class has no nullary constructor; or
      * if the instantiation fails for some other reason.
      */
-    private void init(String fixVersion) throws ClassNotFoundException,
-        InstantiationException, IllegalAccessException {
-        grpMgr = FixContextMgr.getInstance().getGroupMgr(fixVersion);
+    private void init(String fixVersion)
+        throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+        String simpleFixVersion = fixVersion.replaceAll("[\",.]", "");
+        msgData = FixContextMgr.getInstance().getMessageData(simpleFixVersion);
+        posGen = new FixFieldOrderHash(msgData);
     }
 
     /**
@@ -286,21 +219,11 @@ public class FixMessageMgr {
      */
     private String getMsgType() {
         String tagVal = null;
-        InfixField msgType = getField(35);
+        InfixFieldInfo msgType = getField(35);
         if (msgType != null) {
-            tagVal = msgType.getTagVal();
+            tagVal = msgType.getField().getTagVal();
         }
         return tagVal;
-    }
-
-    /**
-     * The method to use when putting a field during a message parse.
-     * 
-     * @param tagNum The tag number associated with a fix field.
-     * @param tagVal The tag value associated with a fix field.
-     */
-    private void putFieldFromMsgParse(String tagNum, String tagVal) {
-        putField(tagNum, tagVal, true);
     }
 
     /**
@@ -309,10 +232,9 @@ public class FixMessageMgr {
      * @param tagNum The tag number associated with a fix field.
      * @param tagVal The tag value associated with a fix field.
      */
-    void putFieldFromPostMsgParse(String tagNum, String tagVal) {
-        putField(tagNum, tagVal, false);
-    }
-
+    // void putFieldFromPostMsgParse(String tagNum, String tagVal) {
+    // putField(tagNum, tagVal, false);
+    // }
     /**
      * Inserts a fix field into the mapping. Converts a tag number and value
      * into a rule context and inserts the context and associated field data
@@ -320,95 +242,37 @@ public class FixMessageMgr {
      * 
      * @param tagNum The tag number
      * @param tagVal The tag value
-     * @param rememberGroups Whether to keep track of repeating groups.
      */
-    private void putField(String tagNum, String tagVal, boolean rememberGroups) {
-        if (!FixMessageMgr.isInteger(tagNum)) {
-            FixMessageMgr.logger.warn("Dropping non-numeric field: " + tagNum);
-            return;
-        }
-        FixFieldContext f =
-            grpMgr.getContext(getMsgType(), tagNum, tagVal, rememberGroups);
-        String ctx = f.getKey();
-        if (containsContext(ctx)) {
-            BigDecimal ordinal = ctxDict.get(ctx);
-            InfixField fld =
-                new InfixField(fldDict.get(ordinal).getTagNum(), tagVal);
-            fldDict.put(ordinal, fld);
+    private void putField(int tagNum, String tagVal) {
+        String tagStr = Integer.toString(tagNum);
+        String msgType = getMsgType();
+        String ctx = null;
+        if (msgType == null) {
+            ctx = "&" + tagNum;
         } else {
-            ctxDict.put(f.getKey(), f.getValue());
-            fldDict.put(f.getValue(), new InfixField(Integer.parseInt(tagNum),
-                tagVal));
+            ctx = msgData.getGroupMgr(msgType).getContext(tagStr);
         }
+        BigDecimal pos = posGen.getFieldPosition(msgType, ctx);
+        msgMap.put(ctx, new InfixFieldInfo(tagStr, tagVal, pos));
     }
 
-    /**
-     * Maps a tag number to a tag value.<br>
-     * Insertion of a repeating tag requires location information.<br>
-     * A stack of tag contexts is provided to help with the task of identifying
-     * where in memory to insert a repeating tag. Example: Insert tag 524 with
-     * value "FOO". <br>
-     * Tag 524 is a member of the NestedParites repeating group inside an
-     * execution report. <br>
-     * NestedParties itself is nested inside the InstrmtLegExecGrp repeating
-     * group.<br>
-     * The user may wisih to assign a value to the 2nd nesting of
-     * InstrmtLegExecGrp inside the first nesting of NestedParites and will
-     * indicate this using the rule context: &555[0]->&539[1]->&524 <br>
-     * If the user is simply replacing the value of this tag then the
-     * <code> &555[0]->&539[1]->&524 </code> context will already exist in
-     * memory. <br>
-     * If the tag doesn't exist in the 2nd nesting but other tags in the 2nd
-     * nesting do exists then then 524 should come after the last tag in the 2nd
-     * nesting. That location is referenced by the context
-     * <code> &555[0]->&539[1]-> </code>. <br>
-     * What if the user is starting a brand new nesting of NestedParites? In
-     * that case the correct order is after the last tag of the previous nesting
-     * whose location can be referenced by <code> &555[0]->&539[0]-> </code> The
-     * below information is provided for every repeating group which represents
-     * a complete logical hierarchy of locations to check for completeness even
-     * though the correct location will be found before the bottom of the stack
-     * is reached in the example given. It can be thought of as follows: <br>
-     * <code>
-     * &555[0]->&539[1]->&525 (if not here look below)
-     * &555[0]->&539[0]-> (if not here look below)
-     * &555[0]->&539 (if not here look below)
-     * &555[0]-> (if not here look below)
-     * &555 (look here)
-     * </code> <br>
-     * One of the elements on the stack will always point to a reference in
-     * memory that holds the point after which the tag should be inserted as
-     * long as the rules are used correctly.<br>
-     * The parser builds this information naturally during a rule parse reducing
-     * it's cost in terms of performance. The stack is ordered by most "likely
-     * first" reducing the iteration loops needed to identify the location.
-     * 
-     * @param contexts A stack of rule contexts describing potential insertion
-     * points.
-     * @param tagNum The tagnum to insert
-     * @param tagVal The tagval to insert
-     */
-    void putContext(Deque<String> contexts, String tagNum, String tagVal) {
-        if (!FixMessageMgr.isInteger(tagNum)) {
-            FixMessageMgr.logger.warn("Dropping non-numeric field: " + tagNum);
+    // todo: handle non-numeric tag
+    void putContext(String ctx, String tagVal) {
+        InfixFieldInfo fldPos = msgMap.get(ctx);
+        if (fldPos != null) {
+            msgMap.put(ctx, new InfixFieldInfo(fldPos.getField().getTagNum() + "", tagVal,
+                fldPos.getPosition()));
             return;
         }
-        String fullContext = contexts.pop();
-        if (containsContext(fullContext)) {
-            BigDecimal ordinal = ctxDict.get(fullContext);
-            InfixField fld =
-                new InfixField(fldDict.get(ordinal).getTagNum(), tagVal);
-            fldDict.put(ordinal, fld);
+        String tagNum = FixFieldOrderHash.getTagNumber(ctx);
+        try {
+            Integer.parseInt(tagNum);
+        } catch (NumberFormatException e) {
+            logger.warn("Dropping non-numeric tag number: " + tagNum);
             return;
         }
-        BigDecimal grpLocation = grpMgr.getCxtPosition(contexts);
-        if (grpLocation != null) {
-            ctxDict.put(fullContext, grpLocation);
-            fldDict.put(grpLocation, new InfixField(Integer.parseInt(tagNum),
-                tagVal));
-        } else {
-            putFieldFromPostMsgParse(tagNum, tagVal);
-        }
+        BigDecimal pos = posGen.getFieldPosition(getMsgType(), ctx);
+        msgMap.put(ctx, new InfixFieldInfo(tagNum, tagVal, pos));
     }
 
     /**
@@ -417,7 +281,7 @@ public class FixMessageMgr {
      * @param tagNum The tag number to look up.
      * @return The FixField mapped to the tag number.
      */
-    private InfixField getField(int tagNum) {
+    private InfixFieldInfo getField(int tagNum) {
         return getContext("&" + tagNum);
     }
 
@@ -428,11 +292,8 @@ public class FixMessageMgr {
      * @param ctx The tag number to look up in rule syntax (e.g., &35).
      * @return The FixField mapped to the tag number.
      */
-    InfixField getContext(String ctx) {
-        if (!ctxDict.containsKey(ctx)) { return null; }
-        BigDecimal ordinal = ctxDict.get(ctx);
-        InfixField fld = fldDict.get(ordinal);
-        return fld;
+    InfixFieldInfo getContext(String ctx) {
+        return msgMap.get(ctx);
     }
 
     /**
@@ -440,14 +301,8 @@ public class FixMessageMgr {
      * 
      * @param ctx The tag context to remove.
      */
-    private void remove(String ctx) {
-        BigDecimal ordinal = ctxDict.remove(ctx);
-        if (ordinal == null) {
-            // logger.error(
-            // "no context found (if group member, check syntax): {}", ctx);
-            return;
-        }
-        fldDict.remove(ordinal);
+    private InfixFieldInfo remove(String ctx) {
+        return msgMap.remove(ctx);
     }
 
     /**
@@ -456,78 +311,18 @@ public class FixMessageMgr {
      * @param ctx The tag number in rule syntax.
      */
     void removeContext(String ctx) {
-        if (ctx.equals("&8")) {
-            FixMessageMgr.logger.info("Context not allowed for deletion: "
-                + ctx);
+        if (ctx.equals("&8") || ctx.equals("&35")) {
+            FixMessageMgr.logger.info("Context not allowed for deletion: " + ctx);
             return;
         }
         remove(ctx);
-        grpMgr.removeCtxPosition(ctx);
         int idxOfTagRef = ctx.lastIndexOf("&");
         String tagNum = ctx.substring(idxOfTagRef + 1);
-        boolean isGroupId = FixGroupMgr.containsGrpId(getMsgType(), tagNum);
+        boolean isGroupId = msgData.getGroupMgr(getMsgType()).containsGrpId(tagNum);
         if (isGroupId) {
-            String[] keySet =
-                ctxDict.keySet().toArray(new String[ctxDict.size()]);
-            for (String key : keySet) {
+            for (String key : msgMap.keySet().toArray(new String[msgMap.size()])) {
                 if (key.startsWith(ctx)) {
                     remove(key);
-                    idxOfTagRef = key.lastIndexOf("&");
-                    String tagRef = key.substring(0, idxOfTagRef);
-                    grpMgr.removeCtxPosition(tagRef);
-                }
-            }
-        }
-    }
-
-    /**
-     * Removes a set of Fix fields given a set of tag numbers in rule syntax.
-     * Group IDs in the provided set will remove all member tags associated with
-     * the group.
-     * 
-     * @param removeTags The set of tags to remove.
-     */
-    void removeContext(Set<String> removeTags) {
-        String[] keySet = ctxDict.keySet().toArray(new String[ctxDict.size()]);
-        for (String ctx : keySet) {
-            Iterator<String> removeSet = removeTags.iterator();
-            while (removeSet.hasNext()) {
-                String removeTag = removeSet.next();
-                if (ctx.equals(removeTag) || ctx.startsWith(removeTag + "[")) {
-                    removeContext(ctx);
-                    break;
-                }
-            }
-        }
-    }
-
-    /**
-     * Removes all the tags except those in the given set. Tags 8 (FixVersion)
-     * and 35 (MsgType) can not be removed. Group IDs provided in the set will
-     * presere the entire set of member tags within the group.
-     * 
-     * @param keepTags The set of tags to keep.
-     */
-    void keepContext(Set<String> keepTags) {
-        Iterator<String> ctxSet = ctxDict.keySet().iterator();
-        while (ctxSet.hasNext()) {
-            String ctx = ctxSet.next();
-            Iterator<String> keepSet = keepTags.iterator();
-            boolean keep = false;
-            while (keepSet.hasNext()) {
-                String keepTag = keepSet.next();
-                if (ctx.equals(keepTag) || ctx.startsWith(keepTag + "[")
-                    || ctx.equals("&8")) {
-                    keep = true;
-                    break;
-                }
-            }
-            if (!keep) {
-                BigDecimal ordinal = ctxDict.get(ctx);
-                if (ordinal != null) {
-                    ctxSet.remove();
-                    fldDict.remove(ordinal);
-                    grpMgr.removeCtxPosition(ctx);
                 }
             }
         }
@@ -540,42 +335,19 @@ public class FixMessageMgr {
      * @return boolean true if tag is present.
      */
     boolean containsContext(String ctx) {
-        return ctxDict.containsKey(ctx);
+        return msgMap.containsKey(ctx);
     }
 
     /**
      * Debug method to print out the dictionaries.
      */
     void printDict() {
-        FixMessageMgr.logger.info("--- Ctx Dictionary ---");
-        Iterator<String> iter = ctxDict.keySet().iterator();
-        int chksum = 0;
+        FixMessageMgr.logger.info("--- InfixMessageMap ---");
+        Iterator<String> iter = msgMap.keySet().iterator();
         while (iter.hasNext()) {
-            String k = iter.next();
-            if (k.equals("&10")) {
-                FixMessageMgr.logger.info("Key: {}, Value: {} (ignore chksum)",
-                    k, ctxDict.get(k));
-                chksum = ctxDict.get(k).intValue();
-            } else {
-                FixMessageMgr.logger.info("Key: {}, Value: {}", k,
-                    ctxDict.get(k));
-            }
+            String fldCtx = iter.next();
+            FixMessageMgr.logger.info("Key: {}, Value: {}", fldCtx, msgMap.get(fldCtx));
         }
-        FixMessageMgr.logger.info("--- Fld Dictionary ---");
-        Iterator<Entry<BigDecimal, InfixField>> it =
-            fldDict.entrySet().iterator();
-        while (it.hasNext()) {
-            Entry<BigDecimal, InfixField> entry = it.next();
-            BigDecimal k = entry.getKey();
-            if (k.intValue() == chksum) {
-                FixMessageMgr.logger.info("Key: {}, Value: {} (ignore chksum)",
-                    entry.getKey(), entry.getValue());
-            } else {
-                FixMessageMgr.logger.info("Key: {}, Value: {}", entry.getKey(),
-                    entry.getValue());
-            }
-        }
-        grpMgr.printMarks();
     }
 
     /**
@@ -587,37 +359,33 @@ public class FixMessageMgr {
     public String toString() {
         StringBuilder str = new StringBuilder();
         int bodyLength = 0;
-        Iterator<Entry<BigDecimal, InfixField>> it =
-            fldDict.entrySet().iterator();
+        ArrayList<InfixFieldInfo> orderedFields = new ArrayList<InfixFieldInfo>(msgMap.values());
+        Collections.sort(orderedFields);
         String fieldStr = null;
-        while (it.hasNext()) {
-            Entry<BigDecimal, InfixField> entry = it.next();
-            InfixField field = entry.getValue();
-            if ((field.getTagNum() == 8) || (field.getTagNum() == 9)
-                || (field.getTagNum() == 10)) {
+        for (InfixFieldInfo fieldInfo : orderedFields) {
+            InfixField field = fieldInfo.getField();
+            if ((field.getTagNum() == 8) || (field.getTagNum() == 9) || (field.getTagNum() == 10)) {
                 continue;
             }
             fieldStr = field.toString() + '\u0001';
             bodyLength += fieldStr.length();
             str.append(fieldStr);
         }
-        putFieldFromPostMsgParse(Integer.toString(9),
-            Integer.toString(bodyLength));
-        InfixField bodyLen = getField(9);
-        fieldStr = bodyLen.toString() + '\u0001';
+        putField(9, Integer.toString(bodyLength));
+        InfixFieldInfo bodyLen = getContext("&9");
+        fieldStr = bodyLen.getField().toString() + '\u0001';
         str.insert(0, fieldStr);
-        InfixField version = getField(8);
-        fieldStr = version.toString() + '\u0001';
+        InfixFieldInfo version = getContext("&8");
+        fieldStr = version.getField().toString() + '\u0001';
         str.insert(0, fieldStr);
         char[] inputChars = str.toString().toCharArray();
         int checkSum = 0;
         for (int aChar : inputChars) {
             checkSum += aChar;
         }
-        putField(Integer.toString(10), String.format("%03d", checkSum % 256),
-            false);
-        InfixField chksum = getField(10);
-        str.append(chksum).append('\u0001');
+        putField(10, String.format("%03d", checkSum % 256));
+        InfixFieldInfo chksum = getContext("&10");
+        str.append(chksum.getField()).append('\u0001');
         return str.toString();
     }
 
@@ -636,17 +404,14 @@ public class FixMessageMgr {
         try {
             parseMessage(newMsg);
         } catch (Throwable e) {
-            FixMessageMgr.logger
-                .error(
-                    "Could not parse new msg. Attempting to recover original msg. [bad msg: {}]",
-                    newMsg, e);
+            FixMessageMgr.logger.error(
+                "Could not parse new msg. Attempting to recover original msg. [bad msg: {}]",
+                newMsg, e);
             try {
                 parseMessage(curMsg);
             } catch (Throwable e1) {
-                FixMessageMgr.logger
-                    .error(
-                        "Could not recover original msg. Abandon All Hope. [orig msg: {}]",
-                        curMsg, e);
+                FixMessageMgr.logger.error(
+                    "Could not recover original msg. Abandon All Hope. [orig msg: {}]", curMsg, e);
                 return;
             }
             FixMessageMgr.logger.info("Recovered original msg: {}", curMsg);
@@ -700,8 +465,7 @@ public class FixMessageMgr {
             } else if (methodName.equals("visitInfixAPI")) {
                 handleCallVisitAPI(userCtx);
             } else {
-                throw new IllegalArgumentException("No such method: "
-                    + methodName);
+                throw new IllegalArgumentException("No such method: " + methodName);
             }
         }
     }

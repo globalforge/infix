@@ -7,7 +7,7 @@ import com.globalforge.infix.api.InfixUserContext;
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2015 Global Forge LLC
+ Copyright (c) 2016 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +35,9 @@ import com.globalforge.infix.api.InfixUserContext;
 public class ExampleUserContext implements InfixUserContext {
     @Override
     /**
-     * User defined but the message returned must be legal for the fix version otherwise the behavior is undefined.
+     * User defined but the message returned must be legal for the fix version
+     * otherwise the behavior is undefined.
+     * 
      * @param fixMessage The message to manipulate with java code
      * @return String The new message to return to the parser.
      */

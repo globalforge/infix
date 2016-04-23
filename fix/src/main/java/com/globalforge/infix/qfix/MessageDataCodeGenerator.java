@@ -55,7 +55,7 @@ public class MessageDataCodeGenerator {
                 .warn("No SRC_DIR provided.  Output stream is CONSOLE");
             out = System.out;
         } else {
-            fileNamePrefix = afixVer + "FIX" + type + "MessageData";
+            fileNamePrefix = afixVer + type + "MessageData";
             qfixverLowerCase = afixVer.toLowerCase();
             File fOut = new File(SRC_DIR + System.getProperty("file.separator")
                 + qfixverLowerCase + System.getProperty("file.separator")

@@ -41,14 +41,11 @@ import com.globalforge.infix.qfix.ResolveManager;
  */
 public class FIX44ComponentParser extends ComponentParser {
     /** logger */
-    final static Logger logger = LoggerFactory
-        .getLogger(FIX44ComponentParser.class);
-    private final Deque<CurrentContext> elementStack = new ArrayDeque<CurrentContext>(
-        100);
+    final static Logger logger = LoggerFactory.getLogger(FIX44ComponentParser.class);
+    private final Deque<CurrentContext> elementStack = new ArrayDeque<CurrentContext>(100);
     private final XMLInputFactory factory = XMLInputFactory.newInstance();
 
-    public FIX44ComponentParser(String f, FieldParser cParser)
-        throws Exception {
+    public FIX44ComponentParser(String f, FieldParser cParser) throws Exception {
         this.fixFileName = f;
         this.fParser = cParser;
         this.componentMgr = new ComponentManager();
@@ -69,8 +66,7 @@ public class FIX44ComponentParser extends ComponentParser {
      * Parses components block. Expects field, group, or component.
      */
     public void parseComponents() throws XMLStreamException {
-        InputStream dictStream = ClassLoader
-            .getSystemResourceAsStream(fixFileName);
+        InputStream dictStream = ClassLoader.getSystemResourceAsStream(fixFileName);
         XMLStreamReader reader = factory.createXMLStreamReader(dictStream);
         String curComponent = null;
         // String curGroup = null;
@@ -86,62 +82,55 @@ public class FIX44ComponentParser extends ComponentParser {
                     String elementName = reader.getLocalName();
                     if ("components".equals(elementName)) {
                         elementStack.push(CurrentContext.COMPONENTS);
-                    } else
-                        if ("component".equals(elementName)
-                            && (curContext == CurrentContext.COMPONENTS)) {
-                            // new component
-                            elementStack.push(CurrentContext.COMPONENT);
-                            String name = reader.getAttributeValue(0);
-                            curComponent = name;
-                            componentMgr.initializeComponent(name);
-                        } else
-                            if ("component".equals(elementName)
-                                && (curContext == CurrentContext.COMPONENT)) {
-                                // component within a component
-                                elementStack.push(CurrentContext.COMPONENT);
-                                String componentName = reader
-                                    .getAttributeValue(0);
-                                componentMgr.addNestedComponent(curComponent,
-                                    componentName);
-                            } else
-                                if ("group".equals(elementName)
-                                    && ((curContext == CurrentContext.COMPONENT)
-                                        || (curContext == CurrentContext.GROUP))) {
-                                    // group within a component or group within a group
-                                    elementStack.push(CurrentContext.GROUP);
-                                    String groupName = reader
-                                        .getAttributeValue(0);
-                                    groupMgr.setGroupId(groupName, groupName);
-                                    componentMgr.addNestedComponent(
-                                        curComponent, groupName);
-                                    curGroupName = groupName;
-                                } else
-                                    if ("field".equals(elementName)
-                                        && (curContext == CurrentContext.COMPONENT)) {
-                                        // field within a component
-                                        String fieldName = reader
-                                            .getAttributeValue(0);
-                                        componentMgr.addMember(curComponent,
-                                            fieldName);
-                                    } else
-                                        if ("component".equals(elementName)
-                                            && (curContext == CurrentContext.GROUP)) {
-                                            // component within a group
-                                            elementStack
-                                                .push(CurrentContext.COMPONENT);
-                                            String componentName = reader
-                                                .getAttributeValue(0);
-                                            groupMgr.addNestedComponent(
-                                                curGroupName, componentName);
-                                        } else
-                                            if ("field".equals(elementName)
-                                                && (curContext == CurrentContext.GROUP)) {
-                                                // field within a group
-                                                String fieldName = reader
-                                                    .getAttributeValue(0);
-                                                groupMgr.addMember(curGroupName,
-                                                    fieldName);
-                                            }
+                    } else if ("component".equals(elementName)
+                        && (curContext == CurrentContext.COMPONENTS)) {
+                        // new component
+                        elementStack.push(CurrentContext.COMPONENT);
+                        String name = reader.getAttributeValue(0);
+                        curComponent = name;
+                        if ("NestedParties".equals(curComponent)) {
+                            System.out.println();
+                        }
+                        componentMgr.initializeComponent(name);
+                    } else if ("component".equals(elementName)
+                        && (curContext == CurrentContext.COMPONENT)) {
+                        // component within a component
+                        elementStack.push(CurrentContext.COMPONENT);
+                        String componentName = reader.getAttributeValue(0);
+                        componentMgr.addNestedComponent(curComponent, componentName);
+                    } else if ("group".equals(elementName)
+                        && (curContext == CurrentContext.COMPONENT)) {
+                        // group within a component or group within a group
+                        elementStack.push(CurrentContext.GROUP);
+                        String groupName = reader.getAttributeValue(0);
+                        groupMgr.setGroupId(groupName, groupName);
+                        componentMgr.addNestedComponent(curComponent, groupName);
+                        curGroupName = groupName;
+                    } else if ("group".equals(elementName)
+                        && (curContext == CurrentContext.GROUP)) {
+                        // group within a component or group within a group
+                        elementStack.push(CurrentContext.GROUP);
+                        String groupName = reader.getAttributeValue(0);
+                        groupMgr.setGroupId(groupName, groupName);
+                        groupMgr.addNestedGroup(curGroupName, groupName);
+                        curGroupName = groupName;
+                    } else if ("field".equals(elementName)
+                        && (curContext == CurrentContext.COMPONENT)) {
+                        // field within a component
+                        String fieldName = reader.getAttributeValue(0);
+                        componentMgr.addMember(curComponent, fieldName);
+                    } else if ("component".equals(elementName)
+                        && (curContext == CurrentContext.GROUP)) {
+                        // component within a group
+                        elementStack.push(CurrentContext.COMPONENT);
+                        String componentName = reader.getAttributeValue(0);
+                        groupMgr.addNestedComponent(curGroupName, componentName);
+                    } else if ("field".equals(elementName)
+                        && (curContext == CurrentContext.GROUP)) {
+                        // field within a group
+                        String fieldName = reader.getAttributeValue(0);
+                        groupMgr.addMember(curGroupName, fieldName);
+                    }
                     break;
                 case XMLStreamConstants.END_ELEMENT:
                     elementName = reader.getLocalName();
@@ -156,17 +145,14 @@ public class FIX44ComponentParser extends ComponentParser {
                         && (curContext == CurrentContext.COMPONENT)) {
                         elementStack.pop();
                     }
-                    if ("component".equals(elementName)
-                        && (curContext == CurrentContext.GROUP)) {
+                    if ("component".equals(elementName) && (curContext == CurrentContext.GROUP)) {
                         elementStack.pop();
                     }
-                    if ("group".equals(elementName)
-                        && (curContext == CurrentContext.GROUP)) {
+                    if ("group".equals(elementName) && (curContext == CurrentContext.GROUP)) {
                         elementStack.pop();
                         curGroupName = null;
                     }
-                    if ("group".equals(elementName)
-                        && (curContext == CurrentContext.COMPONENT)) {
+                    if ("group".equals(elementName) && (curContext == CurrentContext.COMPONENT)) {
                         elementStack.pop();
                         curGroupName = null;
                     }

@@ -36,7 +36,7 @@ public class TestUnary {
             result = rules.transformFIXMsg(TestUnary.sampleMessage1);
             resultStore = StaticTestingUtils.parseMessage(result);
             List<String> msgType = resultStore.get(35);
-            Assert.assertTrue(msgType.isEmpty());
+            Assert.assertFalse(msgType.isEmpty());
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();
@@ -333,7 +333,7 @@ public class TestUnary {
             val = resultStore.get(9);
             Assert.assertTrue(val.size() == 1);
             val = resultStore.get(35);
-            Assert.assertTrue(val.size() == 0);
+            Assert.assertTrue(val.size() == 1);
             val = resultStore.get(44);
             Assert.assertTrue(val.size() == 0);
             val = resultStore.get(43);

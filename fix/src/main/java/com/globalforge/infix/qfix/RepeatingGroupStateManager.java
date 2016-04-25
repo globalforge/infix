@@ -1,10 +1,12 @@
 package com.globalforge.infix.qfix;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Map;
 
 public class RepeatingGroupStateManager {
     private ComponentContextState transitionState = ComponentContextState.FREE_FIELD;
-    private String groupInProgess;
+    private final Deque<String> groupInProgess = new ArrayDeque<String>(100);
     private final DataStore dataStore;
     private final Map<String, String> fieldMap;
 
@@ -17,9 +19,9 @@ public class RepeatingGroupStateManager {
         this.fieldMap = f;
     }
 
-    public void setStartGroupState(String groupId) {
-        transitionState = ComponentContextState.GROUP_START;
-        groupInProgess = groupId;
+    public void setGroupInProgressState(String groupId) {
+        transitionState = ComponentContextState.GROUP_MEMBER;
+        groupInProgess.push(groupId);
     }
 
     public ComponentContextState getState() {
@@ -38,12 +40,14 @@ public class RepeatingGroupStateManager {
             throw new RuntimeException(
                 "State Transition Error moving from a group member to free field");
         }
-        String groupIdCtx = "&" + groupInProgess;
-        int idx = compCtx.indexOf(groupIdCtx + "[*]->");
-        if (idx >= 0) {
-            return false;
+        while (!groupInProgess.isEmpty()) {
+            String groupIdCtx = "&" + groupInProgess.peek() + "[*]->";
+            int idx = compCtx.indexOf(groupIdCtx);
+            if (idx >= 0) {
+                return false;
+            }
+            groupInProgess.pop();
         }
-        groupInProgess = null;
         fieldMap.put(compCtx, null);
         transitionState = ComponentContextState.FREE_FIELD;
         return true;
@@ -56,8 +60,9 @@ public class RepeatingGroupStateManager {
         }
         String tagNum = MessageParser.getTagNumber(compCtx);
         if (isComponentGroup(tagNum)) {
-            groupInProgess = MessageParser.getTagNumber(compCtx);
-            dataStore.startMessageGroup(curMessage, groupInProgess);
+            dataStore.addMessageGroupReference(curMessage, groupInProgess.peek(), tagNum);
+            groupInProgess.push(MessageParser.getTagNumber(compCtx));
+            dataStore.startMessageGroup(curMessage, groupInProgess.peek());
             transitionState = ComponentContextState.GROUP_START;
             fieldMap.put(compCtx, null);
             return true;
@@ -73,7 +78,7 @@ public class RepeatingGroupStateManager {
             return;
         }
         String tagNum = MessageParser.getTagNumber(compCtx);
-        dataStore.addMessageGroupMember(curMessage, groupInProgess, tagNum);
+        dataStore.addMessageGroupMember(curMessage, groupInProgess.peek(), tagNum);
         fieldMap.put(compCtx, null);
     }
 
@@ -82,13 +87,18 @@ public class RepeatingGroupStateManager {
             throw new RuntimeException(
                 "State Transition Error moving from a group ID to group member");
         }
-        String groupIdCtx = "&" + groupInProgess;
-        int idx = compCtx.indexOf(groupIdCtx + "[*]->");
+        String groupIdCtx = "&" + groupInProgess.peek() + "[*]->";
+        int idx = compCtx.indexOf(groupIdCtx);
         if (idx < 0) {
             throw new RuntimeException("State Transition Error.  No members following a Group ID.");
         }
         String tagNum = MessageParser.getTagNumber(compCtx);
-        dataStore.addMessageGroupMember(curMessage, groupInProgess, tagNum);
+        if (isComponentGroup(tagNum)) {
+            String help =
+                "msg=" + curMessage + ", tag=" + tagNum + ", grpInPrgress=" + groupInProgess.peek();
+            throw new RuntimeException("Can't have consecutive GroupIDs. " + help);
+        }
+        dataStore.addMessageGroupMember(curMessage, groupInProgess.peek(), tagNum);
         fieldMap.put(compCtx, null);
         transitionState = ComponentContextState.GROUP_MEMBER;
     }
@@ -100,8 +110,8 @@ public class RepeatingGroupStateManager {
         }
         String tagNum = MessageParser.getTagNumber(compCtx);
         if (isComponentGroup(tagNum)) {
-            groupInProgess = MessageParser.getTagNumber(compCtx);
-            dataStore.startMessageGroup(curMessage, groupInProgess);
+            groupInProgess.push(MessageParser.getTagNumber(compCtx));
+            dataStore.startMessageGroup(curMessage, groupInProgess.peek());
             transitionState = ComponentContextState.GROUP_START;
         }
         fieldMap.put(compCtx, null);

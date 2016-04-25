@@ -29,20 +29,23 @@ import java.util.Set;
  */
 /**
  * The definition of a repeating group.
+ * 
  * @author Michael
  */
 public class FixRepeatingGroup {
     protected final String groupId;
     protected final String groupDelim;
     protected final LinkedHashSet<String> memberSet = new LinkedHashSet<String>();
+    protected final LinkedHashSet<String> referenceSet = new LinkedHashSet<String>();
 
     /**
      * A repeating group is defined principally by it's id and delimiter.
+     * 
      * @param id The tag in the fix spec that is used to indicate the number of
-     *            groups present in a particular repeating group (e.g.,
-     *            NoContraBrokers (Tag = 382)).
+     * groups present in a particular repeating group (e.g., NoContraBrokers
+     * (Tag = 382)).
      * @param delim The first tag in the repeating group. Used to determine when
-     *            a group repeats (e.g., ContraGroup (Tag = 375)).
+     * a group repeats (e.g., ContraGroup (Tag = 375)).
      */
     public FixRepeatingGroup(String id, String delim) {
         groupId = id;
@@ -51,8 +54,8 @@ public class FixRepeatingGroup {
 
     /**
      * @return String The tag in the fix spec that is used to indicate the
-     *         number of groups present in a particular repeating group (e.g.,
-     *         NoContraBrokers (Tag = 382)).
+     * number of groups present in a particular repeating group (e.g.,
+     * NoContraBrokers (Tag = 382)).
      */
     public String getId() {
         return groupId;
@@ -60,7 +63,7 @@ public class FixRepeatingGroup {
 
     /**
      * @return String The first tag in the repeating group. Used to determine
-     *         when a group repeats (e.g., ContraGroup (Tag = 375)).
+     * when a group repeats (e.g., ContraGroup (Tag = 375)).
      */
     public String getDelimiter() {
         return groupDelim;
@@ -68,6 +71,7 @@ public class FixRepeatingGroup {
 
     /**
      * Determines if a tag is part of this repeating group.
+     * 
      * @param tagNum The tag to check
      * @return boolean if true.
      */
@@ -75,15 +79,21 @@ public class FixRepeatingGroup {
         return memberSet.contains(tagNum);
     }
 
-    // public int getMemberPos(String tagNum) {
-    // return memberSet.indexOf(tagNum);
-    // }
+    public boolean containsReference(String tagNum) {
+        return referenceSet.contains(tagNum);
+    }
+
     /**
      * Returns the set of all members of a repeating group. This does not
      * include the id tag but does include the delimiter tag.
+     * 
      * @return Set<String> The tag members belonging to this group.
      */
     public Set<String> getMemberSet() {
         return Collections.unmodifiableSet(memberSet);
+    }
+
+    public Set<String> getReferenceSet() {
+        return Collections.unmodifiableSet(referenceSet);
     }
 }

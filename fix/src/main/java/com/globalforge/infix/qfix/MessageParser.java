@@ -207,7 +207,7 @@ public abstract class MessageParser {
         LinkedHashMap<String, String> fieldMap = messageMap.get(curMessage);
         RepeatingGroupStateManager stateMgr = new RepeatingGroupStateManager(ctxStore, fieldMap);
         if (groupId != null) {
-            stateMgr.setStartGroupState(groupId);
+            stateMgr.setGroupInProgressState(groupId);
         }
         Iterator<String> compMems = components.iterator();
         while (compMems.hasNext()) {

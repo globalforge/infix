@@ -43,6 +43,7 @@ public class FIX44ComponentParser extends ComponentParser {
     /** logger */
     final static Logger logger = LoggerFactory.getLogger(FIX44ComponentParser.class);
     private final Deque<CurrentContext> elementStack = new ArrayDeque<CurrentContext>(100);
+    private final Deque<String> curGroupStack = new ArrayDeque<String>(100);
     private final XMLInputFactory factory = XMLInputFactory.newInstance();
 
     public FIX44ComponentParser(String f, FieldParser cParser) throws Exception {
@@ -69,8 +70,6 @@ public class FIX44ComponentParser extends ComponentParser {
         InputStream dictStream = ClassLoader.getSystemResourceAsStream(fixFileName);
         XMLStreamReader reader = factory.createXMLStreamReader(dictStream);
         String curComponent = null;
-        // String curGroup = null;
-        String curGroupName = null;
         while (reader.hasNext()) {
             int event = reader.next();
             CurrentContext curContext = null;
@@ -88,7 +87,7 @@ public class FIX44ComponentParser extends ComponentParser {
                         elementStack.push(CurrentContext.COMPONENT);
                         String name = reader.getAttributeValue(0);
                         curComponent = name;
-                        if ("NestedParties".equals(curComponent)) {
+                        if ("UnderlyingInstrument".equals(curComponent)) {
                             System.out.println();
                         }
                         componentMgr.initializeComponent(name);
@@ -105,15 +104,15 @@ public class FIX44ComponentParser extends ComponentParser {
                         String groupName = reader.getAttributeValue(0);
                         groupMgr.setGroupId(groupName, groupName);
                         componentMgr.addNestedComponent(curComponent, groupName);
-                        curGroupName = groupName;
+                        curGroupStack.push(groupName);
                     } else if ("group".equals(elementName)
                         && (curContext == CurrentContext.GROUP)) {
                         // group within a component or group within a group
                         elementStack.push(CurrentContext.GROUP);
                         String groupName = reader.getAttributeValue(0);
                         groupMgr.setGroupId(groupName, groupName);
-                        groupMgr.addNestedGroup(curGroupName, groupName);
-                        curGroupName = groupName;
+                        groupMgr.addNestedGroup(curGroupStack.peek(), groupName);
+                        curGroupStack.push(groupName);
                     } else if ("field".equals(elementName)
                         && (curContext == CurrentContext.COMPONENT)) {
                         // field within a component
@@ -124,12 +123,12 @@ public class FIX44ComponentParser extends ComponentParser {
                         // component within a group
                         elementStack.push(CurrentContext.COMPONENT);
                         String componentName = reader.getAttributeValue(0);
-                        groupMgr.addNestedComponent(curGroupName, componentName);
+                        groupMgr.addNestedComponent(curGroupStack.peek(), componentName);
                     } else if ("field".equals(elementName)
                         && (curContext == CurrentContext.GROUP)) {
                         // field within a group
                         String fieldName = reader.getAttributeValue(0);
-                        groupMgr.addMember(curGroupName, fieldName);
+                        groupMgr.addMember(curGroupStack.peek(), fieldName);
                     }
                     break;
                 case XMLStreamConstants.END_ELEMENT:
@@ -150,11 +149,11 @@ public class FIX44ComponentParser extends ComponentParser {
                     }
                     if ("group".equals(elementName) && (curContext == CurrentContext.GROUP)) {
                         elementStack.pop();
-                        curGroupName = null;
+                        curGroupStack.pop();
                     }
                     if ("group".equals(elementName) && (curContext == CurrentContext.COMPONENT)) {
                         elementStack.pop();
-                        curGroupName = null;
+                        curGroupStack.pop();
                     }
                     break;
                 default:

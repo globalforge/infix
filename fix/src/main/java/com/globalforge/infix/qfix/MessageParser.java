@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.xml.stream.XMLStreamException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.globalforge.infix.qfix.RepeatingGroupStateManager.ComponentContextState;
 
 public abstract class MessageParser {
     final static Logger logger = LoggerFactory.getLogger(MessageParser.class);
@@ -177,24 +178,58 @@ public abstract class MessageParser {
         return tagNum;
     }
 
+    /*-
     private boolean isComponentGroup(String groupId) {
         if (ctxStore.isComponentGroup(groupId)) {
             return true;
         }
         return false;
     }
-
+    
     private RepeatingGroupBuilder getComponentGroup(String groupId) {
         return ctxStore.getComponentGroup(groupId);
     }
-
+    
     private RepeatingGroupBuilder getMessageGroup(String curMessage, String groupId) {
         if (ctxStore.isMessageGroup(curMessage, groupId)) {
             return ctxStore.getMessageGroup(curMessage, groupId);
         }
         return null;
     }
+    */
+    protected void addFieldContextKeyToOrderMap(String msgType, String fieldCtx) {
+        LinkedHashMap<String, String> fieldMap = messageMap.get(msgType);
+        fieldMap.put(fieldCtx, null);
+    }
 
+    protected void addComponents(String curMessage, LinkedList<String> components, String preCtx,
+        String groupId) {
+        LinkedHashMap<String, String> fieldMap = messageMap.get(curMessage);
+        RepeatingGroupStateManager stateMgr = new RepeatingGroupStateManager(ctxStore, fieldMap);
+        if (groupId != null) {
+            stateMgr.setStartGroupState(groupId);
+        }
+        Iterator<String> compMems = components.iterator();
+        while (compMems.hasNext()) {
+            String compCtx = preCtx + compMems.next();
+            ComponentContextState curState = stateMgr.getState();
+            switch (curState) {
+                case FREE_FIELD:
+                    stateMgr.fieldToGroupIDStateTransition(curMessage, compCtx);
+                    break;
+                case GROUP_START:
+                    stateMgr.groupIdToMemberStateTransition(curMessage, compCtx);
+                    break;
+                case GROUP_MEMBER:
+                    stateMgr.memberStateTransition(curMessage, compCtx);
+                    break;
+                default:
+                    throw new RuntimeException("Unrecognized state: " + curState);
+            }
+        }
+    }
+
+    /*-
     protected void addComponents(String curMessage, LinkedList<String> components, String preCtx,
         String groupId) {
         RepeatingGroupBuilder curGroup = null;
@@ -221,7 +256,7 @@ public abstract class MessageParser {
             }
         }
     }
-
+    */
     /*-
     protected void addComponents(String curMessage, LinkedList<String> components, String preCtx,
         String gId) {

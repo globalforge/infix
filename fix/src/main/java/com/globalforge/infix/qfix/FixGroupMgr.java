@@ -36,7 +36,7 @@ public abstract class FixGroupMgr {
             FixGroupInProgress gip = grpStack.peek();
             if (gip != null) {
                 FixRepeatingGroup curGrp = gip.getGroup();
-                if (!curGrp.containsMember(tagNum)) {
+                if (!curGrp.containsMember(tagNum) && !curGrp.containsReference(tagNum)) {
                     // 2 repeating groups, side by side (not nested). We're done
                     // with the current group.
                     grpStack.pop();
@@ -61,6 +61,10 @@ public abstract class FixGroupMgr {
                 gip.incCurGoupNumber();
             }
             ctxString = getCurrentGoupContext() + ctxString;
+            // } else if (curGrp.containsReference(tagNum)) {
+            // ctxString = getCurrentGoupContext() + ctxString;
+            // gip = new FixGroupInProgress(group);
+            // grpStack.push(gip);
         } else {
             grpStack.pop();
             ctxString = getContext(tagNum);

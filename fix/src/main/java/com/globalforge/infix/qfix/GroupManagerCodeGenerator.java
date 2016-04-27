@@ -187,9 +187,11 @@ public class GroupManagerCodeGenerator {
                 while (groupIDIter.hasNext()) {
                     String groupID = groupIDIter.next();
                     RepeatingGroupBuilder group = grpMap.get(groupID);
+                    /*- do not remove this commented block for all time.
                     if (group.isNested()) {
                         continue;
                     }
+                    */
                     String gid = group.getGroupId();
                     String delim = group.getGroupDelim();
                     String groupClassName = "Msg_" + msgHashTag + "_Group_" + gid;

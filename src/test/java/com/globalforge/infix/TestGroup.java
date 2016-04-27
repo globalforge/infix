@@ -36,18 +36,14 @@ public class TestGroup {
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestGroup.sampleMessage1);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(5);
-            Assert.assertEquals("1", fld.getTagVal());
-            Assert.assertEquals(382, fld.getTagNum());
-            fld = myList.get(6);
-            Assert.assertEquals("1", fld.getTagVal());
-            Assert.assertEquals(375, fld.getTagNum());
-            fld = myList.get(7);
-            Assert.assertEquals("2", fld.getTagVal());
-            Assert.assertEquals(655, fld.getTagNum());
-            fld = myList.get(8);
-            Assert.assertEquals("4", fld.getTagVal());
-            Assert.assertEquals(218, fld.getTagNum());
+            int wasDone = myList.indexOf(new InfixField(382, "1"));
+            Assert.assertTrue(wasDone >= 0);
+            wasDone = myList.indexOf(new InfixField(375, "1"));
+            Assert.assertTrue(wasDone >= 0);
+            wasDone = myList.indexOf(new InfixField(655, "2"));
+            Assert.assertTrue(wasDone >= 0);
+            wasDone = myList.indexOf(new InfixField(218, "4"));
+            Assert.assertTrue(wasDone >= 0);
             Assert.assertEquals(10, myList.size());
             // System.out.println(StaticTestingUtils.rs(result));
         } catch (Exception e) {
@@ -221,9 +217,8 @@ public class TestGroup {
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(StaticTestingUtils.FIX_44_NEW_ORDER_CROSS);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(19);
-            Assert.assertEquals("STARK", fld.getTagVal());
-            Assert.assertEquals(448, fld.getTagNum());
+            int wasDone = myList.indexOf(new InfixField(448, "STARK"));
+            Assert.assertTrue(wasDone >= 0);
             Assert.assertEquals(36, myList.size());
             // System.out.println(TestResultsStore.rs(result));
         } catch (Exception e) {
@@ -239,10 +234,9 @@ public class TestGroup {
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(StaticTestingUtils.FIX_44_NEW_ORDER_CROSS);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(22);
-            Assert.assertEquals("STARK", fld.getTagVal());
-            Assert.assertEquals(448, fld.getTagNum());
-            // System.out.println(TestResultsStore.rs(result));
+            int wasDone = myList.indexOf(new InfixField(448, "STARK"));
+            Assert.assertTrue(wasDone >= 0);
+            System.out.println(StaticTestingUtils.rs(result));
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();
@@ -256,9 +250,8 @@ public class TestGroup {
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(StaticTestingUtils.FIX_44_NEW_ORDER_CROSS);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(17);
-            Assert.assertEquals("STARK", fld.getTagVal());
-            Assert.assertEquals(54, fld.getTagNum());
+            int wasDone = myList.indexOf(new InfixField(54, "STARK"));
+            Assert.assertTrue(wasDone >= 0);
             Assert.assertEquals(36, myList.size());
             // System.out.println(TestResultsStore.rs(result));
         } catch (Exception e) {
@@ -277,9 +270,8 @@ public class TestGroup {
             result = rules.transformFIXMsg(StaticTestingUtils.FIX_44_NEW_ORDER_CROSS, true);
             System.out.println("after :  " + StaticTestingUtils.rs(result));
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(26);
-            Assert.assertEquals("STARK", fld.getTagVal());
-            Assert.assertEquals(54, fld.getTagNum());
+            int wasDone = myList.indexOf(new InfixField(54, "STARK"));
+            Assert.assertTrue(wasDone >= 0);
             Assert.assertEquals(36, myList.size());
             // System.out.println(TestResultsStore.rs(result));
         } catch (Exception e) {
@@ -295,12 +287,12 @@ public class TestGroup {
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(StaticTestingUtils.FIX_44_NEW_ORDER_CROSS);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(17);
-            Assert.assertEquals("STARK", fld.getTagVal());
-            Assert.assertEquals(54, fld.getTagNum());
-            fld = myList.get(26);
-            Assert.assertEquals("STARK", fld.getTagVal());
-            Assert.assertEquals(54, fld.getTagNum());
+            int wasDone = myList.indexOf(new InfixField(54, "STARK"));
+            Assert.assertTrue(wasDone >= 0);
+            int wasDoneAgain = myList.lastIndexOf(new InfixField(54, "STARK"));
+            Assert.assertTrue(wasDone >= 0);
+            Assert.assertTrue(wasDoneAgain >= 0);
+            Assert.assertTrue(wasDoneAgain >= wasDone);
             Assert.assertEquals(36, myList.size());
             // System.out.println(TestResultsStore.rs(result));
         } catch (Exception e) {
@@ -316,12 +308,10 @@ public class TestGroup {
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(StaticTestingUtils.FIX_44_NEW_ORDER_CROSS);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(19);
-            Assert.assertEquals("998", fld.getTagVal());
-            Assert.assertEquals(448, fld.getTagNum());
-            fld = myList.get(23);
-            Assert.assertEquals("WAS", fld.getTagVal());
-            Assert.assertEquals(447, fld.getTagNum());
+            int wasDone = myList.indexOf(new InfixField(448, "998"));
+            Assert.assertTrue(wasDone >= 0);
+            wasDone = myList.indexOf(new InfixField(447, "WAS"));
+            Assert.assertTrue(wasDone >= 0);
             Assert.assertEquals(36, myList.size());
             // System.out.println(TestResultsStore.rs(result));
         } catch (Exception e) {
@@ -340,9 +330,8 @@ public class TestGroup {
             result = rules.transformFIXMsg(StaticTestingUtils.FIX_44_NEW_ORDER_CROSS);
             System.out.println("after : " + StaticTestingUtils.rs(result));
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(19);
-            Assert.assertEquals("D", fld.getTagVal());
-            Assert.assertEquals(447, fld.getTagNum());
+            int wasDone = myList.indexOf(new InfixField(447, "D"));
+            Assert.assertTrue(wasDone >= 0);
             Assert.assertEquals(35, myList.size());
             // System.out.println(TestResultsStore.rs(result));
         } catch (Exception e) {
@@ -361,6 +350,10 @@ public class TestGroup {
             InfixField fld = myList.get(22);
             Assert.assertEquals("D", fld.getTagVal());
             Assert.assertEquals(447, fld.getTagNum());
+            int wasDone = myList.indexOf(new InfixField(448, "AAA35777"));
+            Assert.assertTrue(wasDone < 0);
+            wasDone = myList.indexOf(new InfixField(447, "D"));
+            Assert.assertTrue(wasDone > 0);
             Assert.assertEquals(35, myList.size());
             // System.out.println(TestResultsStore.rs(result));
         } catch (Exception e) {
@@ -376,9 +369,10 @@ public class TestGroup {
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(StaticTestingUtils.FIX_44_NEW_ORDER_CROSS);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(22);
-            Assert.assertEquals("999.91", fld.getTagVal());
-            Assert.assertEquals(448, fld.getTagNum());
+            int wasDone = myList.indexOf(new InfixField(448, "999.91"));
+            Assert.assertTrue(wasDone >= 0);
+            wasDone = myList.indexOf(new InfixField(448, "AAA35777"));
+            Assert.assertTrue(wasDone < 0);
             Assert.assertEquals(36, myList.size());
             // System.out.println(TestResultsStore.rs(result));
         } catch (Exception e) {
@@ -394,9 +388,10 @@ public class TestGroup {
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(StaticTestingUtils.FIX_44_NEW_ORDER_CROSS);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(22);
-            Assert.assertEquals("sender", fld.getTagVal());
-            Assert.assertEquals(448, fld.getTagNum());
+            int wasDone = myList.indexOf(new InfixField(448, "AAA35777"));
+            Assert.assertTrue(wasDone < 0);
+            wasDone = myList.indexOf(new InfixField(448, "sender"));
+            Assert.assertTrue(wasDone > 0);
             Assert.assertEquals(36, myList.size());
         } catch (Exception e) {
             e.printStackTrace();
@@ -428,21 +423,18 @@ public class TestGroup {
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(StaticTestingUtils.FIX_44_NEW_ORDER_CROSS);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(18);
-            Assert.assertEquals("4", fld.getTagVal());
-            Assert.assertEquals(453, fld.getTagNum());
-            fld = myList.get(25);
-            Assert.assertEquals("111", fld.getTagVal());
-            Assert.assertEquals(448, fld.getTagNum());
-            fld = myList.get(26);
-            Assert.assertEquals("222", fld.getTagVal());
-            Assert.assertEquals(447, fld.getTagNum());
-            fld = myList.get(27);
-            Assert.assertEquals("333", fld.getTagVal());
-            Assert.assertEquals(448, fld.getTagNum());
-            fld = myList.get(28);
-            Assert.assertEquals("444", fld.getTagVal());
-            Assert.assertEquals(447, fld.getTagNum());
+            ///
+            int wasDone = myList.indexOf(new InfixField(453, "4"));
+            Assert.assertTrue(wasDone > 0);
+            wasDone = myList.indexOf(new InfixField(448, "111"));
+            Assert.assertTrue(wasDone > 0);
+            wasDone = myList.indexOf(new InfixField(447, "222"));
+            Assert.assertTrue(wasDone > 0);
+            wasDone = myList.lastIndexOf(new InfixField(448, "333"));
+            Assert.assertTrue(wasDone > 0);
+            wasDone = myList.lastIndexOf(new InfixField(447, "444"));
+            Assert.assertTrue(wasDone > 0);
+            ///
             Assert.assertEquals(40, myList.size());
             // System.out.println(TestResultsStore.rs(result));
         } catch (Exception e) {
@@ -459,18 +451,14 @@ public class TestGroup {
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(StaticTestingUtils.FIX_44_NEW_ORDER_CROSS);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(18);
-            Assert.assertEquals("1", fld.getTagVal());
-            Assert.assertEquals(453, fld.getTagNum());
-            fld = myList.get(19);
-            Assert.assertEquals("FOO", fld.getTagVal());
-            Assert.assertEquals(448, fld.getTagNum());
-            fld = myList.get(20);
-            Assert.assertEquals("12", fld.getTagVal());
-            Assert.assertEquals(447, fld.getTagNum());
-            fld = myList.get(21);
-            Assert.assertEquals("13", fld.getTagVal());
-            Assert.assertEquals(452, fld.getTagNum());
+            int wasDone = myList.lastIndexOf(new InfixField(453, "1"));
+            Assert.assertTrue(wasDone > 0);
+            wasDone = myList.lastIndexOf(new InfixField(448, "FOO"));
+            Assert.assertTrue(wasDone > 0);
+            wasDone = myList.lastIndexOf(new InfixField(447, "12"));
+            Assert.assertTrue(wasDone > 0);
+            wasDone = myList.lastIndexOf(new InfixField(452, "13"));
+            Assert.assertTrue(wasDone > 0);
             Assert.assertEquals(33, myList.size());
             // System.out.println(StaticTestingUtils.rs(result));
         } catch (Exception e) {
@@ -621,9 +609,8 @@ public class TestGroup {
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(StaticTestingUtils.FIX_44_NEW_ORDER_CROSS);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(19);
-            Assert.assertEquals("XYZ", fld.getTagVal());
-            Assert.assertEquals(448, fld.getTagNum());
+            int wasDone = myList.indexOf(new InfixField(448, "XYZ"));
+            Assert.assertTrue(wasDone > 0);
             // System.out.println(StaticTestingUtils.rs(result));
         } catch (Exception e) {
             e.printStackTrace();
@@ -645,10 +632,8 @@ public class TestGroup {
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(StaticTestingUtils.FIX_44_NEW_ORDER_LIST);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(15);
-            // System.out.println(StaticTestingUtils.rs(result));
-            Assert.assertEquals("XYZ", fld.getTagVal());
-            Assert.assertEquals(538, fld.getTagNum());
+            int wasDone = myList.indexOf(new InfixField(538, "XYZ"));
+            Assert.assertTrue(wasDone > 0);
             Assert.assertEquals(45, myList.size());
         } catch (Exception e) {
             e.printStackTrace();

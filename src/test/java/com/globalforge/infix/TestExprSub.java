@@ -6,13 +6,12 @@ import com.globalforge.infix.api.InfixActions;
 import com.google.common.collect.ListMultimap;
 
 public class TestExprSub {
-    static final String sampleMessage1 = "8=FIX.4.4" + '\u0001' + "9=1000"
-        + '\u0001' + "-14=2" + '\u0001' + "14=-2" + '\u0001' + "35=8"
-        + '\u0001' + "43=-1" + '\u0001' + "-43=-1" + '\u0001' + "-44=1"
-        + '\u0001' + "44=3.142" + '\u0001' + "60=20130412-19:30:00.686"
-        + '\u0001' + "75=20130412" + '\u0001' + "45=0" + '\u0001' + "382=2"
-        + '\u0001' + "375=FOO" + '\u0001' + "337=eb8cd" + '\u0001' + "375=BAR"
-        + '\u0001' + "337=8dhosb" + '\u0001' + "10=004";
+    static final String sampleMessage1 =
+        "8=FIX.4.4" + '\u0001' + "9=1000" + '\u0001' + "35=8" + '\u0001' + "-14=2" + '\u0001'
+            + "14=-2" + '\u0001' + "43=-1" + '\u0001' + "-43=-1" + '\u0001' + "-44=1" + '\u0001'
+            + "44=3.142" + '\u0001' + "60=20130412-19:30:00.686" + '\u0001' + "75=20130412"
+            + '\u0001' + "45=0" + '\u0001' + "382=2" + '\u0001' + "375=FOO" + '\u0001' + "337=eb8cd"
+            + '\u0001' + "375=BAR" + '\u0001' + "337=8dhosb" + '\u0001' + "10=004";
     static StaticTestingUtils msgStore = null;
     InfixActions rules = null;
     String sampleRule = null;

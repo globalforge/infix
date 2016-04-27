@@ -62,7 +62,7 @@ public class RepeatingGroupStateManager {
         if (isComponentGroup(tagNum)) {
             dataStore.addMessageGroupReference(curMessage, groupInProgess.peek(), tagNum);
             groupInProgess.push(MessageParser.getTagNumber(compCtx));
-            dataStore.startMessageGroup(curMessage, groupInProgess.peek());
+            dataStore.startMessageGroup(curMessage, groupInProgess.peek(), true);
             transitionState = ComponentContextState.GROUP_START;
             fieldMap.put(compCtx, null);
             return true;
@@ -109,6 +109,9 @@ public class RepeatingGroupStateManager {
                 "State Transition Error moving from a free field to group ID");
         }
         String tagNum = MessageParser.getTagNumber(compCtx);
+        if (!groupInProgess.isEmpty()) {
+            throw new RuntimeException("how could there be a group in progess here?");
+        }
         if (isComponentGroup(tagNum)) {
             groupInProgess.push(MessageParser.getTagNumber(compCtx));
             dataStore.startMessageGroup(curMessage, groupInProgess.peek());

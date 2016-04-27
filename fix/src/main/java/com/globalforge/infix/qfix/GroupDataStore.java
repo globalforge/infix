@@ -37,6 +37,19 @@ public class GroupDataStore {
         return false;
     }
 
+    public boolean isMessageGroupReference(String curMessage, String groupId, String tagNum) {
+        Map<String, RepeatingGroupBuilder> rgmap = messageGroups.get(curMessage);
+        if (rgmap == null) {
+            return false;
+        }
+        if (rgmap.containsKey(groupId)) {
+            if (rgmap.get(groupId).containsReference(tagNum)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public RepeatingGroupBuilder startMessageGroup(String curMessage, String groupId) {
         Map<String, RepeatingGroupBuilder> rm = messageGroups.get(curMessage);
         if (rm == null) {
@@ -45,6 +58,13 @@ public class GroupDataStore {
         }
         RepeatingGroupBuilder rg = new RepeatingGroupBuilder(groupId);
         rm.put(groupId, rg);
+        return rg;
+    }
+
+    public RepeatingGroupBuilder startMessageGroup(String curMessage, String groupId,
+        boolean isNested) {
+        RepeatingGroupBuilder rg = this.startMessageGroup(curMessage, groupId);
+        rg.setNested(isNested);
         return rg;
     }
 

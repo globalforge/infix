@@ -24,6 +24,11 @@ public class DataStore {
         return groupStore.startMessageGroup(curMessage, groupId);
     }
 
+    public RepeatingGroupBuilder startMessageGroup(String curMessage, String groupId,
+        boolean isNested) {
+        return groupStore.startMessageGroup(curMessage, groupId, isNested);
+    }
+
     public void addMessageGroupMember(String curMessage, String groupId, String tagNum) {
         groupStore.addMessageGroupMember(curMessage, groupId, tagNum);
     }
@@ -62,6 +67,10 @@ public class DataStore {
 
     public void addComponentGroupMember(String grpId, String mem) {
         groupStore.addComponentGroupMember(grpId, mem);
+    }
+
+    public boolean isGroupReference(String curMessage, String groupId, String tagNum) {
+        return groupStore.isMessageGroupReference(curMessage, groupId, tagNum);
     }
 
     ///////////////////////////

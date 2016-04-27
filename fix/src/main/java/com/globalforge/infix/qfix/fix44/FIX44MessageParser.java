@@ -100,8 +100,7 @@ public class FIX44MessageParser extends MessageParser {
                     // get's called.
                     if ("component".equals(elementName) && (curContext == CurrentContext.GROUP)) {
                         String componentName = reader.getAttributeValue(null, "name");
-                        if ("6".equals(curMessage)
-                            && "UnderlyingInstrument".equals(componentName)) {
+                        if ("R".equals(curMessage) && "Stipulations".equals(componentName)) {
                             System.out.println();
                         }
                         LinkedList<String> components = ctxStore.getComponentContext(componentName);

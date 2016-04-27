@@ -13,6 +13,7 @@ public class RepeatingGroupBuilder {
     protected final String groupId;
     protected final LinkedList<String> memberList = new LinkedList<String>();
     protected final LinkedList<String> referenceList = new LinkedList<String>();
+    protected boolean isNested = false;
 
     public RepeatingGroupBuilder(String groupId) {
         this.groupId = groupId;
@@ -49,6 +50,14 @@ public class RepeatingGroupBuilder {
         referenceList.add(groupId);
     }
 
+    public boolean isNested() {
+        return isNested;
+    }
+
+    public void setNested(boolean n) {
+        isNested = n;
+    }
+
     /**
      * Determines if a tag is part of this repeating group.
      * 
@@ -57,6 +66,10 @@ public class RepeatingGroupBuilder {
      */
     public boolean containsMember(String tagNum) {
         return memberList.contains(tagNum);
+    }
+
+    public boolean containsReference(String tagNum) {
+        return referenceList.contains(tagNum);
     }
 
     /**

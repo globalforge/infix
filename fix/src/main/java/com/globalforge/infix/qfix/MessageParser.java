@@ -229,64 +229,6 @@ public abstract class MessageParser {
         }
     }
 
-    /*-
-    protected void addComponents(String curMessage, LinkedList<String> components, String preCtx,
-        String groupId) {
-        RepeatingGroupBuilder curGroup = null;
-        if (groupId != null) {
-            curGroup = getMessageGroup(curMessage, groupId);
-            if (curGroup == null) {
-                curGroup = ctxStore.startMessageGroup(curMessage, groupId);
-            }
-        }
-        LinkedHashMap<String, String> fieldMap = messageMap.get(curMessage);
-        Iterator<String> compMems = components.iterator();
-        while (compMems.hasNext()) {
-            String compCtx = compMems.next();
-            String tagNum = MessageParser.getTagNumber(compCtx);
-            if (isComponentGroup(tagNum)) {
-                groupId = tagNum;
-                curGroup = getComponentGroup(groupId);
-                ctxStore.startMessageGroup(curMessage, groupId);
-                fieldMap.put(preCtx + compCtx, null);
-                // preCtx = preCtx + compCtx + "[*]->";
-            } else if (curGroup != null) {
-                ctxStore.addMessageGroupMember(curMessage, groupId, tagNum);
-                fieldMap.put(preCtx + compCtx, null);
-            }
-        }
-    }
-    */
-    /*-
-    protected void addComponents(String curMessage, LinkedList<String> components, String preCtx,
-        String gId) {
-        LinkedHashMap<String, String> fieldMap = messageMap.get(curMessage);
-        Iterator<String> compMems = components.iterator();
-        ResolveManager rMgr = cParser.getResolveMgr();
-        String groupId = null;
-        QuickFixRepeatingGroup curGroup = null;
-        if (gId != null) {
-            groupId = gId;
-            if (!ctxStore.isGroup(curMessage, groupId)) {
-                curGroup = ctxStore.startGroup(curMessage, groupId);
-            } else {
-                curGroup = ctxStore.getGroup(curMessage, groupId);
-            }
-        }
-        while (compMems.hasNext()) {
-            String compCtx = compMems.next();
-            String tagNum = getTagNumber(compCtx);
-            if (rMgr.isGroupId(tagNum)) {
-                groupId = tagNum;
-                curGroup = rMgr.getRepeatingGroup(groupId);
-                ctxStore.startGroup(curMessage, groupId);
-            } else if (curGroup != null) {
-                ctxStore.addGroupMember(curMessage, groupId, tagNum);
-            }
-            fieldMap.put(preCtx + compCtx, null);
-        }
-    }
-     */
     protected void printMembers() {
         Set<Entry<String, LinkedHashMap<String, String>>> compMems = messageMap.entrySet();
         Iterator<Entry<String, LinkedHashMap<String, String>>> memSetIterator = compMems.iterator();

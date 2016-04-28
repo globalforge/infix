@@ -100,7 +100,7 @@ public class FIX44MessageParser extends MessageParser {
                     // get's called.
                     if ("component".equals(elementName) && (curContext == CurrentContext.GROUP)) {
                         String componentName = reader.getAttributeValue(null, "name");
-                        if ("R".equals(curMessage) && "Stipulations".equals(componentName)) {
+                        if ("E".equals(curMessage) && "Stipulations".equals(componentName)) {
                             System.out.println();
                         }
                         LinkedList<String> components = ctxStore.getComponentContext(componentName);
@@ -113,6 +113,7 @@ public class FIX44MessageParser extends MessageParser {
                         if ("E".equals(curMessage) && "78".equals(tagNum)) {
                             System.out.println();
                         }
+                        ctxStore.addMessageGroupReference(curMessage, curGroupStack.peek(), tagNum);
                         curGroupStack.push(tagNum);
                         String tagCtx = "&" + tagNum;
                         String curGrpCtx = groupCtxStack.peek() + "[*]->" + tagCtx;

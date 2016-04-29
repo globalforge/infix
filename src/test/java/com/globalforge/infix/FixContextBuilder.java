@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.concurrent.LinkedBlockingDeque;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.globalforge.infix.FixMessageMgr;
 import com.globalforge.infix.qfix.FixGroupMgr;
 
 /*-
@@ -38,8 +39,7 @@ import com.globalforge.infix.qfix.FixGroupMgr;
  */
 final class FixContextBuilder {
     /** logger */
-    final static Logger logger =
-        LoggerFactory.getLogger(FixContextBuilder.class);
+    final static Logger logger = LoggerFactory.getLogger(FixContextBuilder.class);
     public static final String REF = "->";
     private LinkedBlockingDeque<String> ctxs = null;
     private String tagNum = null;
@@ -112,8 +112,7 @@ final class FixContextBuilder {
             // strip off the tag ref, push what is lef onto the stack and
             // return;
             int refIdx = top.lastIndexOf(FixContextBuilder.REF);
-            String nextTop =
-                top.substring(0, refIdx + FixContextBuilder.REF.length());
+            String nextTop = top.substring(0, refIdx + FixContextBuilder.REF.length());
             contexts.push(nextTop);
         }
         buildContext(contexts);
@@ -146,10 +145,8 @@ final class FixContextBuilder {
      * @param stack The context of the context indicators.
      * @return LinkedBlockingDeque<String> A reversal of the parameter.
      */
-    private LinkedBlockingDeque<String> reverseStack(
-        LinkedBlockingDeque<String> stack) {
-        LinkedBlockingDeque<String> reversedStack =
-            new LinkedBlockingDeque<String>();
+    private LinkedBlockingDeque<String> reverseStack(LinkedBlockingDeque<String> stack) {
+        LinkedBlockingDeque<String> reversedStack = new LinkedBlockingDeque<String>();
         Iterator<String> it = stack.iterator();
         while (it.hasNext()) {
             String ctx = it.next();

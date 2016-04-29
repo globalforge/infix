@@ -51,7 +51,7 @@ public class TestFixFieldOrderHash {
         double d2 = pos.doubleValue();
         org.junit.Assert.assertTrue(d1 < d2);
         System.out.println(pos);
-        org.junit.Assert.assertEquals("90", pos.toString());
+        org.junit.Assert.assertEquals("105", pos.toString());
         pos = orderHash.getFieldPosition("AS", "&555[0]->&600");
         d1 = pos.doubleValue();
         System.out.println(pos);

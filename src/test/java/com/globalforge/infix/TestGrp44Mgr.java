@@ -2,25 +2,32 @@ package com.globalforge.infix;
 
 import org.junit.Assert;
 import org.junit.Test;
-import com.globalforge.infix.FIX44Mgr.ContraGrp;
-import com.globalforge.infix.FIX44Mgr.UndInstrmtGrp;
+import com.globalforge.infix.qfix.FixGroupMgr;
+import com.globalforge.infix.qfix.FixRepeatingGroup;
+import com.globalforge.infix.qfix.fix44.auto.group.FIX44_3_51_GroupMgr;
+import com.globalforge.infix.qfix.fix44.auto.group.FIX44_8_56_GroupMgr;
+import com.globalforge.infix.qfix.fix44.auto.group.FIX44_8_56_GroupMgr.Msg_8_56_Group_382;
+import com.globalforge.infix.qfix.fix44.auto.group.FIX44_8_56_GroupMgr.Msg_8_56_Group_711;
+import com.globalforge.infix.qfix.fix44.auto.group.FIX44_AS_2098_GroupMgr;
+import com.globalforge.infix.qfix.fix44.auto.group.FIX44_D_68_GroupMgr;
+import com.globalforge.infix.qfix.fix44.auto.group.FIX44_E_69_GroupMgr;
 
-public class TestGrpMgr {
-    FIX44Mgr grpMgr = new FIX44Mgr();
-
+public class TestGrp44Mgr {
     /**
      * Test to make sure that a given message type contains expected group.
      */
     @Test
     public void testContainsGrpId() {
-        boolean containsGrpId = grpMgr.containsGrpId("3", "382");
+        FixGroupMgr grpMgr = new FIX44_3_51_GroupMgr();
+        boolean containsGrpId = grpMgr.containsGrpId("382");
         Assert.assertFalse(containsGrpId);
-        containsGrpId = grpMgr.containsGrpId("8", "382");
+        grpMgr = new FIX44_8_56_GroupMgr();
+        containsGrpId = grpMgr.containsGrpId("382");
         Assert.assertTrue(containsGrpId);
-        containsGrpId = grpMgr.containsGrpId("8", "539");
+        containsGrpId = grpMgr.containsGrpId("539");
         Assert.assertTrue(containsGrpId);
         // nested group
-        containsGrpId = grpMgr.containsGrpId("8", "804");
+        containsGrpId = grpMgr.containsGrpId("804");
         Assert.assertTrue(containsGrpId);
     }
 
@@ -29,9 +36,11 @@ public class TestGrpMgr {
      */
     @Test
     public void testGetGroup() {
-        FixRepeatingGroup grp = grpMgr.getGroup("8", "382");
-        Assert.assertTrue(grp instanceof ContraGrp);
-        grp = grpMgr.getGroup("D", "382");
+        FixGroupMgr grpMgr = new FIX44_8_56_GroupMgr();
+        FixRepeatingGroup grp = grpMgr.getGroup("382");
+        Assert.assertTrue(grp instanceof Msg_8_56_Group_382);
+        grpMgr = new FIX44_D_68_GroupMgr();
+        grp = grpMgr.getGroup("382");
         Assert.assertNull(grp);
     }
 
@@ -43,10 +52,10 @@ public class TestGrpMgr {
      */
     @Test
     public void testGetComponenentMemberFromGroup() {
-        FixRepeatingGroup grp = grpMgr.getGroup("8", "711");
-        Assert.assertTrue(grp instanceof UndInstrmtGrp);
+        FixGroupMgr grpMgr = new FIX44_8_56_GroupMgr();
+        FixRepeatingGroup grp = grpMgr.getGroup("711");
+        Assert.assertTrue(grp instanceof Msg_8_56_Group_711);
         Assert.assertTrue(grp.containsMember("311"));
-        Assert.assertEquals(grp.getMemberPos("311"), 0);
     }
 
     /**
@@ -54,7 +63,8 @@ public class TestGrpMgr {
      */
     @Test
     public void testGetContext1() {
-        String ctx = grpMgr.getContext("D", "42");
+        FixGroupMgr grpMgr = new FIX44_D_68_GroupMgr();
+        String ctx = grpMgr.getContext("42");
         Assert.assertEquals(ctx, "&42");
     }
 
@@ -63,143 +73,146 @@ public class TestGrpMgr {
      */
     @Test
     public void testGetContext2() {
-        String ctx = grpMgr.getContext("AS", "555");
+        FixGroupMgr grpMgr = new FIX44_AS_2098_GroupMgr();
+        String ctx = grpMgr.getContext("555");
         Assert.assertEquals(ctx, "&555");
-        ctx = grpMgr.getContext("AS", "38");
+        ctx = grpMgr.getContext("38");
         Assert.assertEquals(ctx, "&38");
     }
 
     @Test
     public void testGetContext3() {
-        String ctx = grpMgr.getContext("AS", "555");
+        FixGroupMgr grpMgr = new FIX44_AS_2098_GroupMgr();
+        String ctx = grpMgr.getContext("555");
         Assert.assertEquals(ctx, "&555");
-        ctx = grpMgr.getContext("AS", "600");
+        ctx = grpMgr.getContext("600");
         Assert.assertEquals(ctx, "&555[0]->&600");
-        ctx = grpMgr.getContext("AS", "601");
+        ctx = grpMgr.getContext("601");
         Assert.assertEquals(ctx, "&555[0]->&601");
-        ctx = grpMgr.getContext("AS", "604");
+        ctx = grpMgr.getContext("604");
         Assert.assertEquals(ctx, "&555[0]->&604");
-        ctx = grpMgr.getContext("AS", "605");
+        ctx = grpMgr.getContext("605");
         Assert.assertEquals(ctx, "&555[0]->&604[0]->&605");
-        ctx = grpMgr.getContext("AS", "606");
+        ctx = grpMgr.getContext("606");
         Assert.assertEquals(ctx, "&555[0]->&604[0]->&606");
-        ctx = grpMgr.getContext("AS", "605");
+        ctx = grpMgr.getContext("605");
         Assert.assertEquals(ctx, "&555[0]->&604[1]->&605");
-        ctx = grpMgr.getContext("AS", "606");
+        ctx = grpMgr.getContext("606");
         Assert.assertEquals(ctx, "&555[0]->&604[1]->&606");
-        ctx = grpMgr.getContext("AS", "942");
+        ctx = grpMgr.getContext("942");
         Assert.assertEquals(ctx, "&555[0]->&942");
-        ctx = grpMgr.getContext("AS", "600");
+        ctx = grpMgr.getContext("600");
         Assert.assertEquals(ctx, "&555[1]->&600");
-        ctx = grpMgr.getContext("AS", "604");
+        ctx = grpMgr.getContext("604");
         Assert.assertEquals(ctx, "&555[1]->&604");
-        ctx = grpMgr.getContext("AS", "605");
+        ctx = grpMgr.getContext("605");
         Assert.assertEquals(ctx, "&555[1]->&604[0]->&605");
-        ctx = grpMgr.getContext("AS", "606");
+        ctx = grpMgr.getContext("606");
         Assert.assertEquals(ctx, "&555[1]->&604[0]->&606");
-        ctx = grpMgr.getContext("AS", "605");
+        ctx = grpMgr.getContext("605");
         Assert.assertEquals(ctx, "&555[1]->&604[1]->&605");
-        ctx = grpMgr.getContext("AS", "606");
+        ctx = grpMgr.getContext("606");
         Assert.assertEquals(ctx, "&555[1]->&604[1]->&606");
-        ctx = grpMgr.getContext("AS", "942");
+        ctx = grpMgr.getContext("942");
         Assert.assertEquals(ctx, "&555[1]->&942");
-        ctx = grpMgr.getContext("AS", "38");
+        ctx = grpMgr.getContext("38");
         Assert.assertEquals(ctx, "&38");
     }
 
     @Test
     public void testGetContext5() {
-        String ctx = grpMgr.getContext("E", "35");
+        FixGroupMgr grpMgr = new FIX44_E_69_GroupMgr();
+        String ctx = grpMgr.getContext("35");
         Assert.assertEquals(ctx, "&35");
-        ctx = grpMgr.getContext("E", "66");
+        ctx = grpMgr.getContext("66");
         Assert.assertEquals(ctx, "&66");
-        ctx = grpMgr.getContext("E", "394");
+        ctx = grpMgr.getContext("394");
         Assert.assertEquals(ctx, "&394");
-        ctx = grpMgr.getContext("E", "73");
+        ctx = grpMgr.getContext("73");
         Assert.assertEquals(ctx, "&73");
-        ctx = grpMgr.getContext("E", "11");
+        ctx = grpMgr.getContext("11");
         Assert.assertEquals(ctx, "&73[0]->&11");
-        ctx = grpMgr.getContext("E", "67");
+        ctx = grpMgr.getContext("67");
         Assert.assertEquals(ctx, "&73[0]->&67");
-        ctx = grpMgr.getContext("E", "78");
+        ctx = grpMgr.getContext("78");
         Assert.assertEquals(ctx, "&73[0]->&78");
-        ctx = grpMgr.getContext("E", "79");
+        ctx = grpMgr.getContext("79");
         Assert.assertEquals(ctx, "&73[0]->&78[0]->&79");
         //
-        ctx = grpMgr.getContext("E", "661");
+        ctx = grpMgr.getContext("661");
         Assert.assertEquals(ctx, "&73[0]->&78[0]->&661");
-        ctx = grpMgr.getContext("E", "736");
+        ctx = grpMgr.getContext("736");
         Assert.assertEquals(ctx, "&73[0]->&78[0]->&736");
-        ctx = grpMgr.getContext("E", "467");
+        ctx = grpMgr.getContext("467");
         Assert.assertEquals(ctx, "&73[0]->&78[0]->&467");
-        ctx = grpMgr.getContext("E", "539");
+        ctx = grpMgr.getContext("539");
         Assert.assertEquals(ctx, "&73[0]->&78[0]->&539");
-        ctx = grpMgr.getContext("E", "524");
+        ctx = grpMgr.getContext("524");
         Assert.assertEquals(ctx, "&73[0]->&78[0]->&539[0]->&524");
-        ctx = grpMgr.getContext("E", "538");
+        ctx = grpMgr.getContext("538");
         Assert.assertEquals(ctx, "&73[0]->&78[0]->&539[0]->&538");
-        ctx = grpMgr.getContext("E", "524");
+        ctx = grpMgr.getContext("524");
         Assert.assertEquals(ctx, "&73[0]->&78[0]->&539[1]->&524");
-        ctx = grpMgr.getContext("E", "525");
+        ctx = grpMgr.getContext("525");
         Assert.assertEquals(ctx, "&73[0]->&78[0]->&539[1]->&525");
-        ctx = grpMgr.getContext("E", "79");
+        ctx = grpMgr.getContext("79");
         Assert.assertEquals(ctx, "&73[0]->&78[1]->&79");
-        ctx = grpMgr.getContext("E", "661");
+        ctx = grpMgr.getContext("661");
         Assert.assertEquals(ctx, "&73[0]->&78[1]->&661");
-        ctx = grpMgr.getContext("E", "736");
+        ctx = grpMgr.getContext("736");
         Assert.assertEquals(ctx, "&73[0]->&78[1]->&736");
-        ctx = grpMgr.getContext("E", "467");
+        ctx = grpMgr.getContext("467");
         Assert.assertEquals(ctx, "&73[0]->&78[1]->&467");
-        ctx = grpMgr.getContext("E", "539");
+        ctx = grpMgr.getContext("539");
         Assert.assertEquals(ctx, "&73[0]->&78[1]->&539");
-        ctx = grpMgr.getContext("E", "524");
+        ctx = grpMgr.getContext("524");
         Assert.assertEquals(ctx, "&73[0]->&78[1]->&539[0]->&524");
-        ctx = grpMgr.getContext("E", "538");
+        ctx = grpMgr.getContext("538");
         Assert.assertEquals(ctx, "&73[0]->&78[1]->&539[0]->&538");
-        ctx = grpMgr.getContext("E", "11");
+        ctx = grpMgr.getContext("11");
         Assert.assertEquals(ctx, "&73[1]->&11");
-        ctx = grpMgr.getContext("E", "67");
+        ctx = grpMgr.getContext("67");
         Assert.assertEquals(ctx, "&73[1]->&67");
-        ctx = grpMgr.getContext("E", "78");
+        ctx = grpMgr.getContext("78");
         Assert.assertEquals(ctx, "&73[1]->&78");
-        ctx = grpMgr.getContext("E", "79");
+        ctx = grpMgr.getContext("79");
         Assert.assertEquals(ctx, "&73[1]->&78[0]->&79");
-        ctx = grpMgr.getContext("E", "661");
+        ctx = grpMgr.getContext("661");
         Assert.assertEquals(ctx, "&73[1]->&78[0]->&661");
-        ctx = grpMgr.getContext("E", "736");
+        ctx = grpMgr.getContext("736");
         Assert.assertEquals(ctx, "&73[1]->&78[0]->&736");
-        ctx = grpMgr.getContext("E", "467");
+        ctx = grpMgr.getContext("467");
         Assert.assertEquals(ctx, "&73[1]->&78[0]->&467");
-        ctx = grpMgr.getContext("E", "539");
+        ctx = grpMgr.getContext("539");
         Assert.assertEquals(ctx, "&73[1]->&78[0]->&539");
-        ctx = grpMgr.getContext("E", "524");
+        ctx = grpMgr.getContext("524");
         Assert.assertEquals(ctx, "&73[1]->&78[0]->&539[0]->&524");
-        ctx = grpMgr.getContext("E", "538");
+        ctx = grpMgr.getContext("538");
         Assert.assertEquals(ctx, "&73[1]->&78[0]->&539[0]->&538");
-        ctx = grpMgr.getContext("E", "524");
+        ctx = grpMgr.getContext("524");
         Assert.assertEquals(ctx, "&73[1]->&78[0]->&539[1]->&524");
-        ctx = grpMgr.getContext("E", "525");
+        ctx = grpMgr.getContext("525");
         Assert.assertEquals(ctx, "&73[1]->&78[0]->&539[1]->&525");
-        ctx = grpMgr.getContext("E", "79");
+        ctx = grpMgr.getContext("79");
         Assert.assertEquals(ctx, "&73[1]->&78[1]->&79");
-        ctx = grpMgr.getContext("E", "661");
+        ctx = grpMgr.getContext("661");
         Assert.assertEquals(ctx, "&73[1]->&78[1]->&661");
-        ctx = grpMgr.getContext("E", "736");
+        ctx = grpMgr.getContext("736");
         Assert.assertEquals(ctx, "&73[1]->&78[1]->&736");
-        ctx = grpMgr.getContext("E", "467");
+        ctx = grpMgr.getContext("467");
         Assert.assertEquals(ctx, "&73[1]->&78[1]->&467");
-        ctx = grpMgr.getContext("E", "539");
+        ctx = grpMgr.getContext("539");
         Assert.assertEquals(ctx, "&73[1]->&78[1]->&539");
-        ctx = grpMgr.getContext("E", "524");
+        ctx = grpMgr.getContext("524");
         Assert.assertEquals(ctx, "&73[1]->&78[1]->&539[0]->&524");
-        ctx = grpMgr.getContext("E", "538");
+        ctx = grpMgr.getContext("538");
         Assert.assertEquals(ctx, "&73[1]->&78[1]->&539[0]->&538");
-        ctx = grpMgr.getContext("E", "524");
+        ctx = grpMgr.getContext("524");
         Assert.assertEquals(ctx, "&73[1]->&78[1]->&539[1]->&524");
-        ctx = grpMgr.getContext("E", "525");
+        ctx = grpMgr.getContext("525");
         Assert.assertEquals(ctx, "&73[1]->&78[1]->&539[1]->&525");
         System.out.println(ctx);
-        ctx = grpMgr.getContext("E", "10");
+        ctx = grpMgr.getContext("10");
         Assert.assertEquals(ctx, "&10");
         System.out.println(ctx);
     }
@@ -214,19 +227,20 @@ public class TestGrpMgr {
     // + "10=085" + '\u0001';
     @Test
     public void testGetContext4() {
-        String ctx = grpMgr.getContext("8", "382");
+        FixGroupMgr grpMgr = new FIX44_8_56_GroupMgr();
+        String ctx = grpMgr.getContext("382");
         Assert.assertEquals(ctx, "&382");
-        ctx = grpMgr.getContext("8", "375");
+        ctx = grpMgr.getContext("375");
         Assert.assertEquals(ctx, "&382[0]->&375");
-        ctx = grpMgr.getContext("8", "437");
+        ctx = grpMgr.getContext("437");
         Assert.assertEquals(ctx, "&382[0]->&437");
-        ctx = grpMgr.getContext("8", "438");
+        ctx = grpMgr.getContext("438");
         Assert.assertEquals(ctx, "&382[0]->&438");
-        ctx = grpMgr.getContext("8", "655");
+        ctx = grpMgr.getContext("655");
         Assert.assertEquals(ctx, "&382[0]->&655");
-        ctx = grpMgr.getContext("8", "555");
+        ctx = grpMgr.getContext("555");
         Assert.assertEquals(ctx, "&555");
-        ctx = grpMgr.getContext("8", "600");
+        ctx = grpMgr.getContext("600");
         Assert.assertEquals(ctx, "&555[0]->&600");
     }
 }

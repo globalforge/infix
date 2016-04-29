@@ -70,15 +70,14 @@ public class TestGroup {
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestGroup.sampleMessage1);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(5);
-            Assert.assertEquals("1", fld.getTagVal());
-            Assert.assertEquals(382, fld.getTagNum());
-            fld = myList.get(6);
-            Assert.assertEquals("1", fld.getTagVal());
-            Assert.assertEquals(375, fld.getTagNum());
-            fld = myList.get(7);
-            Assert.assertEquals("2", fld.getTagVal());
-            Assert.assertEquals(655, fld.getTagNum());
+            int wasDone = myList.indexOf(new InfixField(382, "1"));
+            Assert.assertTrue(wasDone >= 0);
+            int nextDone = myList.indexOf(new InfixField(375, "1"));
+            Assert.assertTrue(nextDone >= 0);
+            Assert.assertTrue(nextDone >= wasDone);
+            wasDone = myList.indexOf(new InfixField(655, "2"));
+            Assert.assertTrue(wasDone >= 0);
+            Assert.assertTrue(wasDone >= nextDone);
             Assert.assertEquals(9, myList.size());
             // System.out.println(StaticTestingUtils.rs(result));
         } catch (Exception e) {

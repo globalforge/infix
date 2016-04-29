@@ -52,8 +52,8 @@ public class TestUserDev {
             InfixActions rules = new InfixActions(sampleRule);
             String result = rules.transformFIXMsg(StaticTestingUtils.FIX_44_EXEC_REPORT);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(9);
-            Assert.assertEquals("199", fld.getTagVal());
+            int wasDone = myList.indexOf(new InfixField(14, "199"));
+            Assert.assertTrue(wasDone >= 0);
             // System.out.println(StaticTestingUtils.rs(result));
         } catch (Throwable t) {
             t.printStackTrace();
@@ -68,8 +68,8 @@ public class TestUserDev {
             InfixActions rules = new InfixActions(sampleRule);
             String result = rules.transformFIXMsg(StaticTestingUtils.FIX_44_EXEC_REPORT);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(9);
-            Assert.assertEquals("199", fld.getTagVal());
+            int wasDone = myList.indexOf(new InfixField(14, "199"));
+            Assert.assertTrue(wasDone >= 0);
             // System.out.println(StaticTestingUtils.rs(result));
         } catch (Throwable t) {
             t.printStackTrace();
@@ -84,8 +84,8 @@ public class TestUserDev {
             InfixActions rules = new InfixActions(sampleRule);
             String result = rules.transformFIXMsg(StaticTestingUtils.FIX_44_EXEC_REPORT);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(9);
-            Assert.assertEquals("99.0100", fld.getTagVal());
+            int wasDone = myList.indexOf(new InfixField(44, "99.0100"));
+            Assert.assertTrue(wasDone >= 0);
             // System.out.println(StaticTestingUtils.rs(result));
         } catch (Throwable t) {
             t.printStackTrace();
@@ -100,8 +100,8 @@ public class TestUserDev {
             InfixActions rules = new InfixActions(sampleRule);
             String result = rules.transformFIXMsg(StaticTestingUtils.FIX_44_EXEC_REPORT);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(9);
-            Assert.assertEquals("199", fld.getTagVal());
+            int wasDone = myList.indexOf(new InfixField(14, "199"));
+            Assert.assertTrue(wasDone >= 0);
             // System.out.println(StaticTestingUtils.rs(result));
         } catch (Throwable t) {
             t.printStackTrace();
@@ -116,8 +116,8 @@ public class TestUserDev {
             InfixActions rules = new InfixActions(sampleRule);
             String result = rules.transformFIXMsg(StaticTestingUtils.FIX_44_EXEC_REPORT);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(9);
-            Assert.assertEquals("FOOBAR", fld.getTagVal());
+            int wasDone = myList.indexOf(new InfixField(14, "FOOBAR"));
+            Assert.assertTrue(wasDone >= 0);
             // System.out.println(StaticTestingUtils.rs(result));
         } catch (Throwable t) {
             t.printStackTrace();
@@ -209,8 +209,8 @@ public class TestUserDev {
             InfixActions rules = new InfixActions(sampleRule);
             String result = rules.transformFIXMsg(StaticTestingUtils.FIX_44_EXEC_REPORT);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(33);
-            Assert.assertEquals("199", fld.getTagVal());
+            int wasDone = myList.indexOf(new InfixField(14, "199"));
+            Assert.assertTrue(wasDone >= 0);
             // System.out.println(StaticTestingUtils.rs(result));
         } catch (Throwable t) {
             t.printStackTrace();
@@ -241,13 +241,13 @@ public class TestUserDev {
             InfixActions rules = new InfixActions(sampleRule);
             String result = rules.transformFIXMsg(StaticTestingUtils.FIX_44_EXEC_REPORT);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(9);
-            Assert.assertEquals(Double.toString(Math.PI), fld.getTagVal());
+            int wasDone = myList.indexOf(new InfixField(14, Math.PI + ""));
+            Assert.assertTrue(wasDone >= 0);
             // again
             result = rules.transformFIXMsg(StaticTestingUtils.FIX_44_EXEC_REPORT);
             myList = StaticTestingUtils.parseMessageIntoList(result);
-            fld = myList.get(9);
-            Assert.assertEquals(Double.toString(Math.PI), fld.getTagVal());
+            wasDone = myList.indexOf(new InfixField(14, Math.PI + ""));
+            Assert.assertTrue(wasDone >= 0);
             // System.out.println(StaticTestingUtils.rs(result));
         } catch (Throwable t) {
             t.printStackTrace();
@@ -263,13 +263,13 @@ public class TestUserDev {
             InfixActions rules = new InfixActions(sampleRule);
             String result = rules.transformFIXMsg(StaticTestingUtils.FIX_44_EXEC_REPORT);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(9);
-            Assert.assertEquals("-42", fld.getTagVal());
+            int wasDone = myList.indexOf(new InfixField(14, "-42"));
+            Assert.assertTrue(wasDone >= 0);
             // again
             result = rules.transformFIXMsg(StaticTestingUtils.FIX_44_EXEC_REPORT);
             myList = StaticTestingUtils.parseMessageIntoList(result);
-            fld = myList.get(9);
-            Assert.assertEquals("-42", fld.getTagVal());
+            wasDone = myList.indexOf(new InfixField(14, "-42"));
+            Assert.assertTrue(wasDone >= 0);
             // System.out.println(StaticTestingUtils.rs(result));
         } catch (Throwable t) {
             t.printStackTrace();
@@ -514,8 +514,8 @@ public class TestUserDev {
             InfixActions rules = new InfixActions(sampleRule);
             String result = rules.transformFIXMsg(StaticTestingUtils.FIX_44_EXEC_REPORT);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(9);
-            Assert.assertEquals("0", fld.getTagVal());
+            int wasDone = myList.indexOf(new InfixField(14, "0"));
+            Assert.assertTrue(wasDone >= 0);
         } catch (Throwable t) {
             t.printStackTrace();
             Assert.fail();
@@ -529,8 +529,8 @@ public class TestUserDev {
             InfixActions rules = new InfixActions(sampleRule);
             String result = rules.transformFIXMsg(StaticTestingUtils.FIX_44_EXEC_REPORT);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(9);
-            Assert.assertEquals("0", fld.getTagVal());
+            int wasDone = myList.indexOf(new InfixField(14, "0"));
+            Assert.assertTrue(wasDone >= 0);
         } catch (Throwable t) {
             t.printStackTrace();
             Assert.fail();
@@ -544,8 +544,8 @@ public class TestUserDev {
             InfixActions rules = new InfixActions(sampleRule);
             String result = rules.transformFIXMsg(StaticTestingUtils.FIX_44_EXEC_REPORT);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(9);
-            Assert.assertEquals("0", fld.getTagVal());
+            int wasDone = myList.indexOf(new InfixField(14, "0"));
+            Assert.assertTrue(wasDone >= 0);
         } catch (Throwable t) {
             t.printStackTrace();
             Assert.fail();
@@ -560,8 +560,8 @@ public class TestUserDev {
             InfixActions rules = new InfixActions(sampleRule);
             String result = rules.transformFIXMsg(TestUserDev.sampleMessage2);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(14);
-            Assert.assertEquals("1", fld.getTagVal());
+            int wasDone = myList.indexOf(new InfixField(14, "1"));
+            Assert.assertTrue(wasDone >= 0);
         } catch (Throwable t) {
             t.printStackTrace();
             Assert.fail();
@@ -576,8 +576,8 @@ public class TestUserDev {
             InfixActions rules = new InfixActions(sampleRule);
             String result = rules.transformFIXMsg(TestUserDev.sampleMessage2);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(3);
-            Assert.assertEquals("0", fld.getTagVal());
+            int wasDone = myList.indexOf(new InfixField(44, "0"));
+            Assert.assertTrue(wasDone >= 0);
         } catch (Throwable t) {
             t.printStackTrace();
             Assert.fail();
@@ -591,8 +591,8 @@ public class TestUserDev {
             InfixActions rules = new InfixActions(sampleRule);
             String result = rules.transformFIXMsg(TestUserDev.sampleMessage2);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(3);
-            Assert.assertEquals("0", fld.getTagVal());
+            int wasDone = myList.indexOf(new InfixField(44, "0"));
+            Assert.assertTrue(wasDone >= 0);
         } catch (Throwable t) {
             t.printStackTrace();
             Assert.fail();
@@ -606,8 +606,8 @@ public class TestUserDev {
             InfixActions rules = new InfixActions(sampleRule);
             String result = rules.transformFIXMsg(TestUserDev.sampleMessage2);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(3);
-            Assert.assertEquals("0", fld.getTagVal());
+            int wasDone = myList.indexOf(new InfixField(44, "0"));
+            Assert.assertTrue(wasDone >= 0);
         } catch (Throwable t) {
             t.printStackTrace();
             Assert.fail();
@@ -622,8 +622,8 @@ public class TestUserDev {
             InfixActions rules = new InfixActions(sampleRule);
             String result = rules.transformFIXMsg(TestUserDev.sampleMessage2);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(3);
-            Assert.assertEquals("0", fld.getTagVal());
+            int wasDone = myList.indexOf(new InfixField(44, "0"));
+            Assert.assertTrue(wasDone >= 0);
         } catch (Throwable t) {
             t.printStackTrace();
             Assert.fail();
@@ -638,8 +638,8 @@ public class TestUserDev {
             InfixActions rules = new InfixActions(sampleRule);
             String result = rules.transformFIXMsg(TestUserDev.sampleMessage2);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(3);
-            Assert.assertEquals("0", fld.getTagVal());
+            int wasDone = myList.indexOf(new InfixField(44, "0"));
+            Assert.assertTrue(wasDone >= 0);
         } catch (Throwable t) {
             t.printStackTrace();
             Assert.fail();
@@ -654,8 +654,8 @@ public class TestUserDev {
             InfixActions rules = new InfixActions(sampleRule);
             String result = rules.transformFIXMsg(TestUserDev.sampleMessage2);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(3);
-            Assert.assertEquals("1", fld.getTagVal());
+            int wasDone = myList.indexOf(new InfixField(44, "1"));
+            Assert.assertTrue(wasDone >= 0);
         } catch (Throwable t) {
             t.printStackTrace();
             Assert.fail();
@@ -670,8 +670,8 @@ public class TestUserDev {
             InfixActions rules = new InfixActions(sampleRule);
             String result = rules.transformFIXMsg(TestUserDev.sampleMessage2);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(3);
-            Assert.assertEquals("1", fld.getTagVal());
+            int wasDone = myList.indexOf(new InfixField(44, "1"));
+            Assert.assertTrue(wasDone >= 0);
         } catch (Throwable t) {
             t.printStackTrace();
             Assert.fail();
@@ -685,8 +685,8 @@ public class TestUserDev {
             InfixActions rules = new InfixActions(sampleRule);
             String result = rules.transformFIXMsg(TestUserDev.sampleMessage2);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(3);
-            Assert.assertEquals("0", fld.getTagVal());
+            int wasDone = myList.indexOf(new InfixField(44, "0"));
+            Assert.assertTrue(wasDone >= 0);
         } catch (Throwable t) {
             t.printStackTrace();
             Assert.fail();
@@ -700,8 +700,8 @@ public class TestUserDev {
             InfixActions rules = new InfixActions(sampleRule);
             String result = rules.transformFIXMsg(TestUserDev.sampleMessage2);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(3);
-            Assert.assertEquals("0", fld.getTagVal());
+            int wasDone = myList.indexOf(new InfixField(44, "0"));
+            Assert.assertTrue(wasDone >= 0);
         } catch (Throwable t) {
             t.printStackTrace();
             Assert.fail();
@@ -715,8 +715,8 @@ public class TestUserDev {
             InfixActions rules = new InfixActions(sampleRule);
             String result = rules.transformFIXMsg(TestUserDev.sampleMessage2);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(3);
-            Assert.assertEquals("0", fld.getTagVal());
+            int wasDone = myList.indexOf(new InfixField(44, "0"));
+            Assert.assertTrue(wasDone >= 0);
         } catch (Throwable t) {
             t.printStackTrace();
             Assert.fail();
@@ -730,8 +730,8 @@ public class TestUserDev {
             InfixActions rules = new InfixActions(sampleRule);
             String result = rules.transformFIXMsg(TestUserDev.sampleMessage2);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(3);
-            Assert.assertEquals("1", fld.getTagVal());
+            int wasDone = myList.indexOf(new InfixField(44, "1"));
+            Assert.assertTrue(wasDone >= 0);
         } catch (Throwable t) {
             t.printStackTrace();
             Assert.fail();
@@ -746,8 +746,8 @@ public class TestUserDev {
             InfixActions rules = new InfixActions(sampleRule);
             String result = rules.transformFIXMsg(TestUserDev.sampleMessage2);
             ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(3);
-            Assert.assertEquals("0", fld.getTagVal());
+            int wasDone = myList.indexOf(new InfixField(44, "0"));
+            Assert.assertTrue(wasDone >= 0);
         } catch (Throwable t) {
             t.printStackTrace();
             Assert.fail();

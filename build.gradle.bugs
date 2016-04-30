@@ -4,6 +4,8 @@ allprojects {
         options.debug = false 
     }
     apply plugin: 'eclipse'
+    //apply plugin: 'findbugs'
+    //apply plugin: 'pmd'
     group = 'com.globalforge.infix'
     version = '2.0'
 
@@ -31,6 +33,31 @@ allprojects {
         classpath {
            defaultOutputDir = file('build-eclipse')
         } 
+    }
+    findbugs {
+        ignoreFailures = true
+        sourceSets = [ sourceSets.main ]
+    }
+    tasks.withType(FindBugs) {
+        exclude '**/antlr/*'
+        classes = classes.filter {
+          !it.path.contains(new File("antlr").path)
+        }
+        reports {
+          xml.enabled = false
+          html.enabled = true
+        }
+    }
+    pmd {
+        ignoreFailures = true
+        sourceSets = [ sourceSets.main ]
+    }
+    tasks.withType(Pmd) {
+        exclude '**/antlr/*'
+        reports{
+          xml.enabled = false
+          html.enabled = true
+        }
     }
     task cleanAllProjects(dependsOn:'clean') << {
       println "Cleaning ${project.path}"

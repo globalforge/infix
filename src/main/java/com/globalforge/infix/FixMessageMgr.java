@@ -96,10 +96,6 @@ public class FixMessageMgr {
     }
 
     /**
-     * Sets up a base message with Fix Version and MsgType specief. The rest of
-     * the fields may be added via a callback to InfixAPI. See User Defined
-     * Behavior.
-     * 
      * @param baseMsg The input message
      * @throws IllegalAccessException If the class represented by the fix
      * version or its nullary constructor is not accessible..
@@ -111,10 +107,9 @@ public class FixMessageMgr {
      * in tag 8 that is unrecognized the system will fail when it tries to
      * instantiate a {@link FixGroupMgr} for that version at runtime.
      */
-    public FixMessageMgr(String tag8Value, String tag35Value) throws Exception {
+    public FixMessageMgr(String baseMsg, String tag8Value) throws Exception {
         init(tag8Value);
-        putField(8, tag8Value);
-        putField(35, tag35Value);
+        parseMessage(baseMsg);
     }
 
     public Map<String, InfixFieldInfo> getInfixMessageMap() {
@@ -177,7 +172,12 @@ public class FixMessageMgr {
         String tagStr = fixField.substring(0, index);
         String tagVal = fixField.substring(index + 1);
         if (tagStr.equals("8")) {
-            init(tagVal);
+            if (msgMap.containsKey("&8")) {
+                logger.warn(
+                    "Field BeginString(8) is already defined.  Using pre-defined dictionary.");
+            } else {
+                init(tagVal);
+            }
         }
         int tagNum = 0;
         try {

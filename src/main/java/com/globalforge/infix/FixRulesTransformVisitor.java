@@ -65,7 +65,6 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     private final String fixMessage;
     private boolean isStatementTrue = false;
     private final String tag8Value;
-    private final String tag35Value;
     private String fullParseCtx = "";
 
     /**
@@ -76,35 +75,13 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     public FixRulesTransformVisitor(String fixMsg) {
         this.fixMessage = fixMsg;
         this.tag8Value = null;
-        this.tag35Value = null;
     }
 
-    /**
-     * Accepts a FIX version and MsgType. It's up to the user to add meaningful
-     * tag references and values during the rules visitation. Currently, the
-     * only way to achieve that is using the user defined behavior API which can
-     * offer an implementation of the InfixAPI. The InfixAPI provides methods to
-     * insert tag references and values as if they were parsed from a FIX
-     * message. The only restrictions is that you must know the FIX version and
-     * MsgType ahead of time which defines the message you will populate and for
-     * which any subsequent rules apply.
-     * 
-     * @param tag8Value FIX version
-     * @param tag35Value Message Type
-     */
-    public FixRulesTransformVisitor(String tag8Value, String tag35Value) {
+    public FixRulesTransformVisitor(String fixMsg, String tag8Value) {
         this.tag8Value = tag8Value;
-        this.tag35Value = tag35Value;
-        this.fixMessage = null;
+        this.fixMessage = fixMsg;
     }
 
-    /*-
-    public FixRulesTransformVisitor(Message msg) {
-        this.tag8Value = null;
-        this.tag35Value = null;
-        this.fixMessage = msg.toString();
-    }
-     */
     /**
      * Debug utility
      */
@@ -124,7 +101,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
             if (fixMessage != null) {
                 msgMgr = new FixMessageMgr(fixMessage);
             } else {
-                msgMgr = new FixMessageMgr(tag8Value, tag35Value);
+                msgMgr = new FixMessageMgr(fixMessage, tag8Value);
             }
         } catch (Exception e) {
             FixRulesTransformVisitor.logger

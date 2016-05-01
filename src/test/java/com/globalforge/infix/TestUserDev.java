@@ -754,38 +754,6 @@ public class TestUserDev {
         }
     }
 
-    @Test
-    public void t35() {
-        try {
-            String sampleRule = "{com.globalforge.infix.TestUserDev$UserCtx12}";
-            InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg("FIX.4.4", "D");
-            ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(3);
-            Assert.assertEquals("FOO", fld.getTagVal());
-            Assert.assertEquals(42, fld.getTagNum());
-        } catch (Throwable t) {
-            t.printStackTrace();
-            Assert.fail();
-        }
-    }
-
-    @Test
-    public void t36() {
-        try {
-            String sampleRule = "{com.globalforge.infix.TestUserDev$UserCtx12};&42=\"BAR\"";
-            InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg("FIX.4.4", "D");
-            ArrayList<InfixField> myList = StaticTestingUtils.parseMessageIntoList(result);
-            InfixField fld = myList.get(3);
-            Assert.assertEquals("BAR", fld.getTagVal());
-            Assert.assertEquals(42, fld.getTagNum());
-        } catch (Throwable t) {
-            t.printStackTrace();
-            Assert.fail();
-        }
-    }
-
     public static class UserCtxNonNumeric1 implements InfixUserContext {
         @Override
         public String visitMessage(String fixMessage) {

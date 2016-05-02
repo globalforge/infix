@@ -108,7 +108,7 @@ public class FixMessageMgr {
      * instantiate a {@link FixGroupMgr} for that version at runtime.
      */
     public FixMessageMgr(String baseMsg, String tag8Value) throws Exception {
-        init(tag8Value);
+        parseField("8=" + tag8Value);
         parseMessage(baseMsg);
     }
 
@@ -132,7 +132,6 @@ public class FixMessageMgr {
      */
     private void parseMessage(String baseMsg)
         throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-        msgMap.clear();
         int p = 0;
         int prev = 0;
         String field = null;
@@ -175,6 +174,7 @@ public class FixMessageMgr {
             if (msgMap.containsKey("&8")) {
                 logger.warn(
                     "Field BeginString(8) is already defined.  Using pre-defined dictionary.");
+                return;
             } else {
                 init(tagVal);
             }
@@ -402,6 +402,7 @@ public class FixMessageMgr {
         String curMsg = toString();
         String newMsg = userCtx.visitMessage(curMsg);
         try {
+            msgMap.clear();
             parseMessage(newMsg);
         } catch (Throwable e) {
             FixMessageMgr.logger.error(

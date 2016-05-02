@@ -98,10 +98,10 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     @Override
     public String visitParseRules(FixRulesParser.ParseRulesContext ctx) {
         try {
-            if (fixMessage != null) {
-                msgMgr = new FixMessageMgr(fixMessage);
-            } else {
+            if (tag8Value != null) {
                 msgMgr = new FixMessageMgr(fixMessage, tag8Value);
+            } else {
+                msgMgr = new FixMessageMgr(fixMessage);
             }
         } catch (Exception e) {
             FixRulesTransformVisitor.logger
@@ -190,8 +190,8 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         // If the user is re-assigning the fix version or the msg type we need
         // to re-parse the message once we store the value and complete the
         // assignment.
-        if (tagCtx.equals("&8") || tagCtx.equals("&35")) {
-            throw new RuntimeException("Can't re-assign tag 8 or 35");
+        if (tagCtx.equals("&35")) {
+            throw new RuntimeException("Can't re-assign tag 35");
         }
         visitChildren(ctx);
         msgMgr.putContext(fullParseCtx, tagVal);

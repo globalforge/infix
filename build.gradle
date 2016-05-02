@@ -80,6 +80,7 @@ task cleanAll(type: Delete) {
    delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix40/auto"
    delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix41/auto"
    delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix42/auto"
+   delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix42gc/auto"
    delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix43/auto"
    delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix44/auto"
    delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix50/auto"

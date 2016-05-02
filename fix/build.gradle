@@ -14,14 +14,21 @@ project.ext {
    srcDir = "${projectDir}/src/main/java/com/globalforge/infix/qfix"
    rootLib = "${rootProject.libDir}"
 }
-task parseFIX( 
+
+task parseCustomFIX42GC(
    type: JavaExec, dependsOn:classes) {
+   main = project.ext.mainClass
+   classpath sourceSets.main.runtimeClasspath
+   systemProperty 'SRC_DIR', project.ext.srcDir
+   args 'FIX42GC'
+}
+
+task parseFIX( 
+   type: JavaExec, dependsOn:parseCustomFIX42GC) {
    main = project.ext.mainClass
    classpath sourceSets.main.runtimeClasspath 
    systemProperty 'SRC_DIR', project.ext.srcDir 
 }
-
-// jar.dependsOn("parseFIX");
 
 task buildFIX(type: Copy, dependsOn:jar) {
    from('build/libs')

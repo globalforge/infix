@@ -295,18 +295,6 @@ public class TestAssignTerminals {
     }
 
     @Test
-    public void t17() {
-        try {
-            sampleRule = "&8=\"FIX.4.2\""; // 1
-            rules = new InfixActions(sampleRule);
-            result = rules.transformFIXMsg(TestAssignTerminals.sampleMessage1);
-            Assert.fail();
-        } catch (Exception e) {
-            System.out.println("Should get RuntimeException");
-        }
-    }
-
-    @Test
     public void t23() {
         try {
             sampleRule =

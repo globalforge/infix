@@ -9,7 +9,8 @@ import java.util.Set;
 
 public class DataGenerator {
     private Map<String, ContextOrderMap> orderMap = new HashMap<String, ContextOrderMap>();
-    private Map<String, RepeatingGroupBuilderMap> groupMap = new HashMap<String, RepeatingGroupBuilderMap>();
+    private Map<String, RepeatingGroupBuilderMap> groupMap =
+        new HashMap<String, RepeatingGroupBuilderMap>();
 
     public ContextOrderMap getContextOrderMap(String fVersion) {
         return orderMap.get(fVersion);
@@ -20,8 +21,17 @@ public class DataGenerator {
     }
 
     private void parseFIX(String fVersion) throws Exception {
+        parseFIX(fVersion, null);
+    }
+
+    private void parseFIX(String fVersion, String basedOnVer) throws Exception {
         // Parse all the xml data into objects we can manage.
-        DataDictionaryParser eng = new DataDictionaryParser(fVersion);
+        DataDictionaryParser eng = null;
+        if (basedOnVer == null) {
+            eng = new DataDictionaryParser(fVersion);
+        } else {
+            eng = new DataDictionaryParser(fVersion, basedOnVer);
+        }
         eng.parseFields();
         eng.parseComponents();
         eng.parseHeader();
@@ -40,15 +50,13 @@ public class DataGenerator {
         }
         HeaderParser hdrParser = eng.getHeaderParser();
         MessageParser msgParser = eng.getMessageParser();
-        Set<Entry<String, Map<String, String>>> compMems = msgParser
-            .getMessageMap().entrySet();
-        Iterator<Entry<String, Map<String, String>>> memSetIterator = compMems
-            .iterator();
+        Set<Entry<String, Map<String, String>>> compMems = msgParser.getMessageMap().entrySet();
+        Iterator<Entry<String, Map<String, String>>> memSetIterator = compMems.iterator();
         while (memSetIterator.hasNext()) {
             Entry<String, Map<String, String>> ctxEntry = memSetIterator.next();
             String msgType = ctxEntry.getKey();
-            LinkedHashMap<String, String> ctxOrderMap = (LinkedHashMap<String, String>) ctxEntry
-                .getValue();
+            LinkedHashMap<String, String> ctxOrderMap =
+                (LinkedHashMap<String, String>) ctxEntry.getValue();
             LinkedHashMap<String, String> ctxHdrMap = hdrParser.getContextMap();
             ctxMap.addAll(msgType, ctxHdrMap);;
             ctxMap.addAll(msgType, ctxOrderMap);
@@ -68,13 +76,12 @@ public class DataGenerator {
         Iterator<String> msgTypesIT = msgTypes.iterator();
         while (msgTypesIT.hasNext()) {
             String msgType = msgTypesIT.next();
-            Map<String, RepeatingGroupBuilder> gMap = dataStore
-                .getGroupsInMessage(msgType);
+            Map<String, RepeatingGroupBuilder> gMap = dataStore.getGroupsInMessage(msgType);
             grpMap.addAll(msgType, gMap);
         }
     }
 
-    private void parseFIX5(String f5Version) throws Exception {
+    public void parseFIX5(String f5Version) throws Exception {
         if (!orderMap.containsKey("FIXT.1.1")) {
             parseFIX("FIXT.1.1");
         }
@@ -85,7 +92,22 @@ public class DataGenerator {
         parseFIX(f5Version);
     }
 
-    private void parseFIX4(String f4Version) throws Exception {
+    public void parseCustom(String fixVersion) throws Exception {
+        if (fixVersion.startsWith("FIX4")) {
+            parseFIX4Custom(fixVersion);
+        } else if (fixVersion.startsWith("FIX5")) {
+            parseFIX5Custom(fixVersion);
+        } else {
+            throw new RuntimeException(
+                "Data Dict XML filename must start with either FIX4 or FIX5!");
+        }
+    }
+
+    public void parseFIX4Custom(String f4Version) throws Exception {
+        parseFIX(f4Version, "FIX.4.4");
+    }
+
+    public void parseFIX4(String f4Version) throws Exception {
         parseFIX(f4Version);
     }
 
@@ -121,20 +143,25 @@ public class DataGenerator {
         parseFIX5("FIX.5.0SP2");
     }
 
+    public void parseFIX5Custom(String f4Version) throws Exception {
+        parseFIX(f4Version, "FIX.5.0");
+    }
+
     public void clear() {
         orderMap.clear();
     }
 
     /**
      * Testing only
+     * 
      * @param args
      */
     public static void main(String[] args) {
         DataGenerator dataGen = new DataGenerator();
         try {
             dataGen.parseFIX50SP2();
-            FieldOrderMapCodeGenerator fieldGen = new FieldOrderMapCodeGenerator(
-                "FIX.5.0SP2", dataGen);
+            FieldOrderMapCodeGenerator fieldGen =
+                new FieldOrderMapCodeGenerator("FIX.5.0SP2", dataGen);
             fieldGen.generateClass();
         } catch (Exception e) {
             e.printStackTrace();

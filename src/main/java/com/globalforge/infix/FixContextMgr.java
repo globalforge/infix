@@ -29,7 +29,7 @@ import com.globalforge.infix.qfix.MessageData;
 /**
  * Dynamically instantiates a FixGroupMgr implementation given a proper Fix
  * version string.
- * 
+ *
  * @author Michael Starkie
  */
 public class FixContextMgr {
@@ -37,7 +37,7 @@ public class FixContextMgr {
 
     /**
      * Only 1 instance allowed.
-     * 
+     *
      * @return FixContextMgr The single static instance.
      */
     public static final FixContextMgr getInstance() {
@@ -50,7 +50,7 @@ public class FixContextMgr {
     /**
      * Uses reflaction to create an instance of the FixManager for the version
      * given as an argument.
-     * 
+     *
      * @param fixVersion The fix version that specifies what FixManager class to
      * create an instance of.
      * @return A sub-class of FixGroupMgr

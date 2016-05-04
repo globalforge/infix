@@ -42,7 +42,6 @@ import com.globalforge.infix.antlr.FixRulesParser;
 /**
  * The main entry point to the engine. This is the class which transforms a fix
  * message given a string in rule syntax.
- * 
  * @author Michael C. Starkie
  */
 public class InfixActions {
@@ -58,7 +57,6 @@ public class InfixActions {
 
     /**
      * Initialize the engine and runs the engine given a rule or set of rules.
-     * 
      * @param ruleInput The list of rules
      * @throws IOException When the rule input can not be read.
      */
@@ -77,7 +75,6 @@ public class InfixActions {
 
     /**
      * Initializes the rule engine with a string in rule syntax.
-     * 
      * @param ruleInput The rules to apply in rule syntax.
      * @throws UnsupportedEncodingException
      * @throws IOException
@@ -90,7 +87,6 @@ public class InfixActions {
      * An optional method to load classes before parsing rules. This reduces the
      * time it takes to parse the first rule by loading static data into memory
      * before any rule processing.
-     * 
      * @param fixVersion The fix version static data to load.
      */
     public static void primeEngine(String fixVersion) {
@@ -116,7 +112,6 @@ public class InfixActions {
     /**
      * Accepts a fix message, applies the rules, and returns a transformed fix
      * message. Used for debugging purposes.
-     * 
      * @param fixMessage The fix message to transform
      * @param printDictionary true if you want a dump of internal dictionaries.
      * @return String the transformed fix message.
@@ -133,7 +128,6 @@ public class InfixActions {
     /**
      * Accepts a fix message, applies the rules, and returns a transformed fix
      * message.
-     * 
      * @param fixMessage The fix message to transform
      * @return String the transformed fix message.
      */

@@ -5,6 +5,29 @@ import com.globalforge.infix.api.InfixField;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 
+/*-
+The MIT License (MIT)
+
+Copyright (c) 2016 Global Forge LLC
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 public class StaticTestingUtils {
     // name = [InstrmtLegExecGrp], id = [555], members = [600|601|602
     // name = [NestedParties], id = [539], members = [524|525|538],
@@ -35,42 +58,42 @@ public class StaticTestingUtils {
         + "73=2" + '\u0001' //5
             + "11=ClOrdID1" + '\u0001' //6
             + "67=1" + '\u0001' //7
-            + "78=2" + '\u0001' 
+            + "78=2" + '\u0001'
                 + "79=acct1" + '\u0001'
-                + "661=IDSource1" + '\u0001' 
-                + "736=USD" + '\u0001' 
-                + "467=allocID1" + '\u0001' 
+                + "661=IDSource1" + '\u0001'
+                + "736=USD" + '\u0001'
+                + "467=allocID1" + '\u0001'
                 + "539=2" + '\u0001'  //13
                     + "524=nPartyID1" +  '\u0001'
                     + "538=nPartyRole1" +  '\u0001'
                     + "524=nPartyID2" +  '\u0001'
                     + "525=nPartyIDSource1" +  '\u0001'
-                    
+    
                  + "79=acct2" + '\u0001' //18
-                 + "661=IDSource2" + '\u0001' 
-                 + "736=CAD" + '\u0001' 
-                 + "467=allocID2" + '\u0001' 
+                 + "661=IDSource2" + '\u0001'
+                 + "736=CAD" + '\u0001'
+                 + "467=allocID2" + '\u0001'
                  + "539=1" + '\u0001' //22
                      + "524=nPartyID2" +  '\u0001'
                      + "538=nPartyRole2" +  '\u0001'
-                     
+    
              + "11=ClOrdID2" + '\u0001' //25
-             + "67=2" + '\u0001' 
-             + "78=2" + '\u0001' 
+             + "67=2" + '\u0001'
+             + "78=2" + '\u0001'
                  + "79=acct3" + '\u0001'
-                 + "661=IDSource3" + '\u0001' 
-                 + "736=USD" + '\u0001' 
-                 + "467=allocID3" + '\u0001' 
+                 + "661=IDSource3" + '\u0001'
+                 + "736=USD" + '\u0001'
+                 + "467=allocID3" + '\u0001'
                  + "539=2" + '\u0001'
                      + "524=nPartyID3" +  '\u0001'
                      + "538=nPartyRole3" +  '\u0001' //34
                      + "524=nPartyID4" +  '\u0001'
                      + "525=nPartyIDSource3" +  '\u0001'
-                     
+    
                   + "79=acct4" + '\u0001'
-                  + "661=IDSource4" + '\u0001' 
-                  + "736=CAD" + '\u0001' 
-                  + "467=allocID4" + '\u0001' 
+                  + "661=IDSource4" + '\u0001'
+                  + "736=CAD" + '\u0001'
+                  + "467=allocID4" + '\u0001'
                   + "539=1" + '\u0001'
                       + "524=nPartyID4" +  '\u0001'
                       + "538=nPartyRole4" +  '\u0001';

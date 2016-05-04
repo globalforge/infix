@@ -37,11 +37,10 @@ import java.math.BigDecimal;
  * information before the member fields are referenced by the mapping event.
  * Examples of tag contexts for tags 35 and 375: &35, &382[0]->&375,
  * &382[1]->&375
- * 
+ *
  * @author Michael Starkie
  */
-public class InfixFieldInfo
-    implements Serializable, Comparable<InfixFieldInfo> {
+public class InfixFieldInfo implements Serializable, Comparable<InfixFieldInfo> {
     private static final long serialVersionUID = 1L;
     /**
      * A unique value describing a tag num and any nesting information if the
@@ -66,7 +65,7 @@ public class InfixFieldInfo
 
     /**
      * The value associated with the tag context.
-     * 
+     *
      * @return
      */
     public BigDecimal getPosition() {

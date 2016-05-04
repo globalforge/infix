@@ -30,6 +30,10 @@ import org.slf4j.LoggerFactory;
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
  */
+/**
+ * Parses a quick fix data dictionary.
+ * @author Michael C. Starkie
+ */
 public class DataDictionaryParser {
     /** logger */
     final static Logger logger = LoggerFactory.getLogger(DataDictionaryParser.class);
@@ -37,37 +41,58 @@ public class DataDictionaryParser {
     protected HeaderParser hdrParser = null;
     protected ComponentParser componentParser = null;
     protected MessageParser messageParser = null;
-    // protected FieldOrderMapCodeGenerator codeGen = null;
     protected PrintStream out = null;
     protected String fixFileName = null;
     protected String qFixVersion = null;
 
+    /**
+     * Standard dictionary constructor
+     * @param ver a FIX version. The name of a FIX data dictionary.
+     * @throws Exception
+     */
     public DataDictionaryParser(String ver) throws Exception {
         setUp(ver, null);
     }
 
+    /**
+     * Custom dictionary constructor
+     * @param ver a custom FIX version. The name of a custom FIX data
+     * dictionary.
+     * @param basedOnVer Must supply a standard FIX version that the custom
+     * dictionary is based upon. For example FIX.4.4 or FIX.5.0. All FIX version
+     * specific parsings in this tool are based upon one of those two.
+     * @throws Exception
+     */
     public DataDictionaryParser(String ver, String basedOnVer) throws Exception {
         setUp(ver, basedOnVer);
     }
 
+    /**
+     * @return HeaderParser the component which parses the header section
+     */
     public HeaderParser getHeaderParser() {
         return hdrParser;
     }
 
+    /**
+     * @return MessageParser the component which parses the messages section
+     */
     public MessageParser getMessageParser() {
         return messageParser;
     }
 
+    /**
+     * @return ComponentParser the component which parses the components section
+     */
     public ComponentParser getComponentParser() {
         return componentParser;
     }
 
     /**
-     * Make sure we know where to find the FixRepository.xml file and the
-     * location on the filesystem where the user has specified the location of
-     * the output files.
-     * 
+     * Make sure we know where to find the xml data dictionary file.
      * @param ver The fix version we are parsing.
+     * @param basedOnVer for custom dictionaries, the standard version the
+     * custom dictionary is based upon.
      * @throws Exception When external dependencies are not recognized.
      */
     protected void setUp(String ver, String basedOnVer) throws Exception {
@@ -112,11 +137,19 @@ public class DataDictionaryParser {
         }
     }
 
+    /**
+     * Parses the fields section of a fix xml data dictionary file.
+     * @throws Exception
+     */
     protected void parseFields() throws Exception {
         fieldParser = new FieldParser(fixFileName);
         fieldParser.parse();
     }
 
+    /**
+     * Parses the components section of a fix xml data dictionary file
+     * @throws Exception
+     */
     protected void parseComponents() throws Exception {
         Class<?> FIXParserDefinition;
         Class<?>[] parserArgsClass = new Class[] {
@@ -131,6 +164,10 @@ public class DataDictionaryParser {
         componentParser.parse();
     }
 
+    /**
+     * Parses the messages section of a fix xml data dictionary file
+     * @throws Exception
+     */
     protected void parseMessages() throws Exception {
         Class<?> FIXParserDefinition;
         Class<?>[] parserArgsClass = new Class[] {
@@ -145,6 +182,10 @@ public class DataDictionaryParser {
         messageParser.parse();
     }
 
+    /**
+     * Parses the header section of a fix xml data dictionary file
+     * @throws Exception
+     */
     protected void parseHeader() throws Exception {
         Class<?> FIXParserDefinition;
         Class<?>[] parserArgsClass = new Class[] {
@@ -163,7 +204,6 @@ public class DataDictionaryParser {
             FieldParser fp = new FieldParser("FIXT11.xml");
             fp.parse();
             hdrParser = new HeaderParser("FIXT11.xml", fp, componentParser.getContextStore());
-            // hdrParser = fixTParser.getHeaderParser();
         }
         hdrParser.parse();
     }

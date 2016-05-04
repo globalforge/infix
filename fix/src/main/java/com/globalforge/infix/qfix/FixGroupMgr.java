@@ -8,6 +8,29 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/*-
+The MIT License (MIT)
+
+Copyright (c) 2016 Global Forge LLC
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 public abstract class FixGroupMgr {
     /** logger */
     final Logger logger = LoggerFactory.getLogger(FixGroupMgr.class);
@@ -23,7 +46,7 @@ public abstract class FixGroupMgr {
      * Assigns the correct context string to a Fix tag taking into account
      * whether that tag number exists as part of a repeating group and which
      * level of nesting within a group it may appear.
-     * 
+     *
      * @param msgType The message type that owns the tag.
      * @param tagNum The fix tag number
      * @return FixFieldContext the context and it's order.
@@ -75,7 +98,7 @@ public abstract class FixGroupMgr {
     /**
      * Determines if a repeating group may be present in a particular message
      * type.
-     * 
+     *
      * @param msgType The message type.
      * @param groupId The identifier of the group.
      * @return true or false.
@@ -86,7 +109,7 @@ public abstract class FixGroupMgr {
 
     /**
      * Given a message type and a groupId return the repeating group.
-     * 
+     *
      * @param msgType the message type being parsed or referenced.
      * @param groupId the unique tag number that identifies the start of a
      * particular repeating group.
@@ -99,7 +122,7 @@ public abstract class FixGroupMgr {
     /**
      * Adds a repeating group to a message type. This method is called by the
      * generated code and there should be no reason for a programmer to call it.
-     * 
+     *
      * @param msgType The messgae type.
      * @param g The repeating group to add.
      */

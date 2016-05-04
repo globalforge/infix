@@ -48,7 +48,7 @@ import com.globalforge.infix.qfix.MessageData;
  * {@link InfixField} which contains the fix field data (tag number and value).
  * The only way to access information is via a "context" which is defined as a
  * refernce to a fix field in rule syntax.
- * 
+ *
  * @author Michael Starkie
  */
 public class FixMessageMgr {
@@ -68,7 +68,7 @@ public class FixMessageMgr {
     /**
      * Test if string is an integer. It allows for negative field numbers. Yes,
      * I've seen them used.
-     * 
+     *
      * @param str The string to test.
      * @return true if integer
      */
@@ -78,7 +78,7 @@ public class FixMessageMgr {
 
     /**
      * Parses a fix message in raw fix format, assigns context, and keeps state.
-     * 
+     *
      * @param baseMsg The input message
      * @throws IllegalAccessException If the class represented by the fix
      * version or its nullary constructor is not accessible..
@@ -118,7 +118,7 @@ public class FixMessageMgr {
 
     /**
      * Reset the system. Parse a fix message into data structures.
-     * 
+     *
      * @param baseMsg The base message.
      * @throws IllegalAccessException If the class represented by the fix
      * version or its nullary constructor is not accessible..
@@ -152,7 +152,7 @@ public class FixMessageMgr {
     /**
      * Parses a string in the form "35=D" into a tag num (35) and tag value (D)
      * and calls {@link FixMessageMgr#putField(int, String)} to map the results.
-     * 
+     *
      * @param fixField The string representing a Fix field as it is found in a
      * Fix message.
      * @throws IllegalAccessException If the class represented by the fix
@@ -172,7 +172,7 @@ public class FixMessageMgr {
         String tagVal = fixField.substring(index + 1);
         if (tagStr.equals("8")) {
             if (msgMap.containsKey("&8")) {
-                logger.warn(
+                FixMessageMgr.logger.warn(
                     "Field BeginString(8) is already defined.  Using pre-defined dictionary.");
                 return;
             } else {
@@ -183,7 +183,7 @@ public class FixMessageMgr {
         try {
             tagNum = Integer.parseInt(tagStr);
         } catch (NumberFormatException e) {
-            logger.warn("Dropping non-numeric tag number: " + tagNum);
+            FixMessageMgr.logger.warn("Dropping non-numeric tag number: " + tagNum);
             return;
         }
         putField(tagNum, tagVal);
@@ -193,7 +193,7 @@ public class FixMessageMgr {
      * Dynamically creates a {@link FixGroupMgr} representing the fixVersion at
      * runtime. Each fixVersion is assigned a unique FixGroupMgr because each
      * fix version has new definitions of repeating groups.
-     * 
+     *
      * @param fixVersion The value found in tag 8 in a Fix message.
      * @throws ClassNotFoundException If the fix message contains a Fix version
      * in tag 8 that is unrecognized the system will fail when it tries to
@@ -214,7 +214,7 @@ public class FixMessageMgr {
 
     /**
      * Obtain the Fix message type of the message being transformed.
-     * 
+     *
      * @return String The Fix message type.
      */
     private String getMsgType() {
@@ -228,7 +228,7 @@ public class FixMessageMgr {
 
     /**
      * The method to use when putting a field during a rule parse.
-     * 
+     *
      * @param tagNum The tag number associated with a fix field.
      * @param tagVal The tag value associated with a fix field.
      */
@@ -239,7 +239,7 @@ public class FixMessageMgr {
      * Inserts a fix field into the mapping. Converts a tag number and value
      * into a rule context and inserts the context and associated field data
      * into the mappings. Order of tag data within the message is maintained.
-     * 
+     *
      * @param tagNum The tag number
      * @param tagVal The tag value
      */
@@ -268,7 +268,7 @@ public class FixMessageMgr {
         try {
             Integer.parseInt(tagNum);
         } catch (NumberFormatException e) {
-            logger.warn("Dropping non-numeric tag number: " + tagNum);
+            FixMessageMgr.logger.warn("Dropping non-numeric tag number: " + tagNum);
             return;
         }
         BigDecimal pos = posGen.getFieldPosition(getMsgType(), ctx);
@@ -277,7 +277,7 @@ public class FixMessageMgr {
 
     /**
      * Returns a {@link InfixField} associated with the tag number.
-     * 
+     *
      * @param tagNum The tag number to look up.
      * @return The FixField mapped to the tag number.
      */
@@ -288,7 +288,7 @@ public class FixMessageMgr {
     /**
      * Returns a {@link InfixField} associated with the tag number in rule
      * syntax.
-     * 
+     *
      * @param ctx The tag number to look up in rule syntax (e.g., &35).
      * @return The FixField mapped to the tag number.
      */
@@ -298,7 +298,7 @@ public class FixMessageMgr {
 
     /**
      * Removes a context and it's value from memory.
-     * 
+     *
      * @param ctx The tag context to remove.
      */
     private InfixFieldInfo remove(String ctx) {
@@ -307,7 +307,7 @@ public class FixMessageMgr {
 
     /**
      * Removes a fix field given a tag reference in rule syntax.
-     * 
+     *
      * @param ctx The tag number in rule syntax.
      */
     void removeContext(String ctx) {
@@ -330,7 +330,7 @@ public class FixMessageMgr {
 
     /**
      * Determines if a tag in rule syntax is present.
-     * 
+     *
      * @param ctx The tag in rule syntax
      * @return boolean true if tag is present.
      */
@@ -352,7 +352,7 @@ public class FixMessageMgr {
 
     /**
      * Producted a valid FIX string from the state of this instance.
-     * 
+     *
      * @return String A valid FIX string.
      */
     @Override
@@ -395,7 +395,7 @@ public class FixMessageMgr {
      * of the state contained in an instance of this class. The caller can
      * manipulate the message and pass it back where it will be parsed creating
      * a new in memory state.
-     * 
+     *
      * @param userCtx The caller's class to call back into with the FIX string.
      */
     private void handleCallVisitMessage(InfixUserContext userCtx) {
@@ -423,7 +423,7 @@ public class FixMessageMgr {
      * Calls into the class provided as an argument with an instance of an API
      * handle to an instance of this class allowing the argument class to call
      * back using a limited number of read-only operations.
-     * 
+     *
      * @param userCtx The class that is allowed to call back using the API.
      * @see InfixUserContext
      */
@@ -434,7 +434,7 @@ public class FixMessageMgr {
     /**
      * Create an instance of a user defined implementation of InfixUserContext
      * and call the visit method
-     * 
+     *
      * @param className The name of the class to instantiate.
      */
     void handleUserDefinedContext(String className, String methodName) {
@@ -473,7 +473,7 @@ public class FixMessageMgr {
 
     /**
      * Calls into a user defined class to obtain a value for an assignment.
-     * 
+     *
      * @param userCtx The user's implementation of the class producting the
      * value in the assignment.
      * @see InfixUserTerminal#visitTerminal(InfixAPI)
@@ -485,7 +485,7 @@ public class FixMessageMgr {
 
     /**
      * Calls into a user defined class to obtain a value for an assignment.
-     * 
+     *
      * @param className an implementation of
      * {@linkInfixUserAssignment#visitAssignment(InfixAPI)}
      * @see FixMessageMgr#handleCallVisitUserTerm(InfixUserTerminal)

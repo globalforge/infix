@@ -31,11 +31,9 @@ import com.globalforge.infix.qfix.HeaderParser;
  */
 public class FIX42HeaderParser extends HeaderParser {
     /** logger */
-    final static Logger logger = LoggerFactory
-        .getLogger(FIX42HeaderParser.class);
+    final static Logger logger = LoggerFactory.getLogger(FIX42HeaderParser.class);
 
-    public FIX42HeaderParser(String f, FieldParser cParser, DataStore c)
-        throws Exception {
+    public FIX42HeaderParser(String f, FieldParser cParser, DataStore c) throws Exception {
         super(f, cParser, c);
     }
 }

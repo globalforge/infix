@@ -4,9 +4,32 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+/*-
+The MIT License (MIT)
+
+Copyright (c) 2016 Global Forge LLC
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 /**
  * Encapsulates fields in a repeating group
- * 
+ *
  * @author Michael
  */
 public class RepeatingGroupBuilder {
@@ -39,7 +62,7 @@ public class RepeatingGroupBuilder {
 
     /**
      * Add member to the set of fields
-     * 
+     *
      * @param member field member of repeating group.
      */
     public void addMember(String member) {
@@ -60,7 +83,7 @@ public class RepeatingGroupBuilder {
 
     /**
      * Determines if a tag is part of this repeating group.
-     * 
+     *
      * @param tagNum The tag to check
      * @return boolean if true.
      */
@@ -74,7 +97,7 @@ public class RepeatingGroupBuilder {
 
     /**
      * Returns the actual set of all members of a repeating group.
-     * 
+     *
      * @return Set<String> The tag members belonging to this group.
      */
     public LinkedList<String> getMemberList() {
@@ -87,7 +110,7 @@ public class RepeatingGroupBuilder {
 
     /**
      * Returns an unmodifiable set copy of all members of a repeating group.
-     * 
+     *
      * @return Set<String> The tag members belonging to this group.
      */
     public List<String> getUnmodifiableMemberList() {
@@ -96,7 +119,7 @@ public class RepeatingGroupBuilder {
 
     /**
      * Returns a modifiable set copy of all members of a repeating group.
-     * 
+     *
      * @return Set<String> The tag members belonging to this group.
      */
     public LinkedList<String> getCopyOfMemberList() {

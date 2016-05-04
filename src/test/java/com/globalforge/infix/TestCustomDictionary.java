@@ -9,6 +9,29 @@ import com.globalforge.infix.qfix.MessageData;
 import com.globalforge.infix.qfix.fix42gc.auto.group.FIX42GC_D_68_GroupMgr;
 import com.google.common.collect.ListMultimap;
 
+/*-
+The MIT License (MIT)
+
+Copyright (c) 2016 Global Forge LLC
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 public class TestCustomDictionary {
     static StaticTestingUtils msgStore = null;
     InfixActions rules = null;
@@ -50,7 +73,7 @@ public class TestCustomDictionary {
         try {
             sampleRule = "&382[0]->&375=\"D\"";
             rules = new InfixActions(sampleRule);
-            result = rules.transformFIXMsg(customMsg1, true); // System.out.println(result);
+            result = rules.transformFIXMsg(TestCustomDictionary.customMsg1, true); // System.out.println(result);
             resultStore = StaticTestingUtils.parseMessage(result);
             String r = resultStore.get(375).get(0);
             Assert.assertEquals(r, "D");
@@ -67,7 +90,7 @@ public class TestCustomDictionary {
         try {
             sampleRule = "&382[0]->&375=\"D\"";
             rules = new InfixActions(sampleRule);
-            result = rules.transformFIXMsg(customMsg2, true); // System.out.println(result);
+            result = rules.transformFIXMsg(TestCustomDictionary.customMsg2, true); // System.out.println(result);
             resultStore = StaticTestingUtils.parseMessage(result);
             String r = resultStore.get(375).get(0);
             Assert.assertEquals(r, "D");
@@ -86,7 +109,7 @@ public class TestCustomDictionary {
         try {
             sampleRule = "&382[0]->&375=\"D\"";
             rules = new InfixActions(sampleRule);
-            result = rules.transformFIXMsg(customMsg3, true); // System.out.println(result);
+            result = rules.transformFIXMsg(TestCustomDictionary.customMsg3, true); // System.out.println(result);
             resultStore = StaticTestingUtils.parseMessage(result);
             String r = resultStore.get(375).get(0);
             Assert.assertEquals(r, "D");
@@ -104,7 +127,7 @@ public class TestCustomDictionary {
         try {
             sampleRule = "&382[0]->&375=\"D\"";
             rules = new InfixActions(sampleRule);
-            result = rules.transformFIXMsg(customMsg4, true);
+            result = rules.transformFIXMsg(TestCustomDictionary.customMsg4, true);
             Assert.fail();
         } catch (Exception e) {
         }
@@ -116,7 +139,7 @@ public class TestCustomDictionary {
             // sampleRule = ";&382[0]->&375=\"D\";&8=\"FIX.4.2\"";
             sampleRule = "&382[0]->&375=\"D\"";
             rules = new InfixActions(sampleRule);
-            result = rules.transformFIXMsg(customMsg4, "FIX.4.2GC"); // System.out.println(result);
+            result = rules.transformFIXMsg(TestCustomDictionary.customMsg4, "FIX.4.2GC"); // System.out.println(result);
             resultStore = StaticTestingUtils.parseMessage(result);
             String r = resultStore.get(375).get(0);
             Assert.assertEquals(r, "D");
@@ -134,7 +157,7 @@ public class TestCustomDictionary {
         try {
             sampleRule = "&382[0]->&375=\"D\";&8=\"FIX.4.2\"";
             rules = new InfixActions(sampleRule);
-            result = rules.transformFIXMsg(customMsg4, "FIX.4.2GC"); // System.out.println(result);
+            result = rules.transformFIXMsg(TestCustomDictionary.customMsg4, "FIX.4.2GC"); // System.out.println(result);
             resultStore = StaticTestingUtils.parseMessage(result);
             String r = resultStore.get(375).get(0);
             Assert.assertEquals(r, "D");

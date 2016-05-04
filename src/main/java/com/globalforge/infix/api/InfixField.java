@@ -27,7 +27,7 @@ import java.io.Serializable;
  */
 /**
  * An encapsulation of a Fix Field including tag number and tag value.
- * 
+ *
  * @author Michael Starkie
  */
 public final class InfixField implements Serializable {
@@ -37,7 +37,7 @@ public final class InfixField implements Serializable {
 
     /**
      * Constructs an immutable instance.
-     * 
+     *
      * @param num A Fix tag number.
      * @param val A fix tag value.
      */
@@ -53,7 +53,7 @@ public final class InfixField implements Serializable {
 
     /**
      * return the tag number associated with this field.
-     * 
+     *
      * @return int The tag number.
      */
     public int getTagNum() {
@@ -62,7 +62,7 @@ public final class InfixField implements Serializable {
 
     /**
      * Return the tag value associated with this field.
-     * 
+     *
      * @return int The tag value.
      */
     public String getTagVal() {
@@ -77,7 +77,9 @@ public final class InfixField implements Serializable {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof InfixField) {
-            if (this == obj) { return true; }
+            if (this == obj) {
+                return true;
+            }
             return this.hashCode() == obj.hashCode();
         }
         return false;

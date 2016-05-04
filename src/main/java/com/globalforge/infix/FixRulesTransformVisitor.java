@@ -27,7 +27,6 @@ import com.globalforge.infix.qfix.FixGroupMgr;
  * rule syntax grammar are implemented here. Methods in this class correspond to
  * tokens in the grammer. Each method is visited as the rules are parsed. See
  * the Antlr documentation for more detail.
- * 
  * @see FixRulesBaseVisitor
  * @author Michael
  */
@@ -69,7 +68,6 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
 
     /**
      * Initialize the rule engine with a Fix input string.
-     * 
      * @param fixMsg The input message
      */
     public FixRulesTransformVisitor(String fixMsg) {
@@ -114,7 +112,6 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
 
     /**
      * Begin parsing a set of rules.
-     * 
      * @return String a fully formatted Fix String representing the results of
      * rule invocations.
      * @see FixRulesParser.FixrulesContext
@@ -127,7 +124,6 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     /**
      * Handle an action. This is really the first method that get's invoked for
      * every rule. It is the place where all temporary data stores are reset.
-     * 
      * @see FixRulesParser.ActionContext
      */
     @Override
@@ -142,7 +138,6 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      * and different message types have different repeating group
      * characteristics and these differences will change the context keys that
      * may point to them.
-     * 
      * @param curVersion The current Fix Version before the change.
      * @param curMsgType The current MsgType before the change.
      */
@@ -175,7 +170,6 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     */
     /**
      * Handle tag assignment.
-     * 
      * @return String the right hand side of an assignment.
      * @see FixRulesParser.AssignContext
      */
@@ -184,15 +178,11 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         String tagCtx = ctx.tag().tagref().getText();
         String tagVal = visit(ctx.expr());
         // This prevents any assignment
-        if ((tagCtx == null) || (tagVal == null)) {
-            return null;
-        }
+        if ((tagCtx == null) || (tagVal == null)) { return null; }
         // If the user is re-assigning the fix version or the msg type we need
         // to re-parse the message once we store the value and complete the
         // assignment.
-        if (tagCtx.equals("&35")) {
-            throw new RuntimeException("Can't re-assign tag 35");
-        }
+        if (tagCtx.equals("&35")) { throw new RuntimeException("Can't re-assign tag 35"); }
         visitChildren(ctx);
         msgMgr.putContext(fullParseCtx, tagVal);
         return null;
@@ -207,21 +197,15 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         String lCtx = ctx.tag(FixRulesTransformVisitor.LEFT).tagref().getText();
         String rCtx = ctx.tag(FixRulesTransformVisitor.RIGHT).tagref().getText();
         // No one messes with 8 or 35. Too bad!
-        if (lCtx.equals("&8") || lCtx.equals("&35")) {
-            return null;
-        }
-        if (rCtx.equals("&8") || rCtx.equals("&35")) {
-            return null;
-        }
+        if (lCtx.equals("&8") || lCtx.equals("&35")) { return null; }
+        if (rCtx.equals("&8") || rCtx.equals("&35")) { return null; }
         visit(ctx.tag(FixRulesTransformVisitor.LEFT));
         String lRef = fullParseCtx;
         visit(ctx.tag(FixRulesTransformVisitor.RIGHT));
         String rRef = fullParseCtx;
         InfixFieldInfo lValue = msgMgr.getContext(lRef);
         InfixFieldInfo rValue = msgMgr.getContext(rRef);
-        if ((lValue == null) || (rValue == null)) {
-            return null;
-        }
+        if ((lValue == null) || (rValue == null)) { return null; }
         msgMgr.putContext(lRef, rValue.getField().getTagVal());
         msgMgr.putContext(rRef, lValue.getField().getTagVal());
         return null;
@@ -229,7 +213,6 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
 
     /**
      * Do something with a tag. Just continues on visiting the children.
-     * 
      * @see FixRulesParser.TagContext
      */
     @Override
@@ -240,7 +223,6 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
 
     /**
      * Do something with a reference. Just continues on visiting the children.
-     * 
      * @see FixRulesParser.RefContext
      */
     @Override
@@ -268,7 +250,6 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      * reference hierarchy to the message manager which understands how to look
      * them up by popping the stack and inserting the tag so that it appears in
      * the correct order.
-     * 
      * @return String representation of a tag references in rule syntax.
      * @see FixRulesTransformVisitor#ctxTree
      * @see FixMessageMgr#putContext(Deque, String, String)
@@ -287,7 +268,6 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      * the nesting level of a repeating group. Also used to build the stack
      * based tree of refernces descibed in
      * {@link FixRulesTransformVisitor#visitTagref}
-     * 
      * @see FixRulesTransformVisitor#visitTagref
      */
     @Override
@@ -300,7 +280,6 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     /**
      * Do something with a terminal node. Just continues on visiting the
      * children.
-     * 
      * @see FixRulesParser.TermContext
      */
     @Override
@@ -310,7 +289,6 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
 
     /**
      * Given a tag in rule syntax lookup and return it's value.
-     * 
      * @return String the value of a fix tag given a tag number.
      * @see FixRulesParser.MyTagContext
      */
@@ -334,7 +312,6 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
 
     /**
      * Return the value of an integer in rule syntax.
-     * 
      * @return String An integer in string format.
      * @see FixRulesParser.IntContext
      */
@@ -345,7 +322,6 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
 
     /**
      * Return the value of a float in rule syntax.
-     * 
      * @return String a float in string format.
      * @see FixRulesParser.FloatContext
      */
@@ -357,7 +333,6 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
 
     /**
      * Strips the quotes off of a String value in rule syntax.
-     * 
      * @return String A string literal stripped of quotes.
      * @see FixRulesParser.ValContext
      */
@@ -375,7 +350,6 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
 
     /**
      * Formats a timestamp string in rule syntax into a FIX UTC timestamp.
-     * 
      * @return String the datetime in format yyyyMMdd-HH:mm:ss.SSS
      * @see FixRulesParser.DateTimeContext
      */
@@ -386,7 +360,6 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
 
     /**
      * Formats a date string in rule syntax into a FIX UTC timestamp.
-     * 
      * @return String the date in format yyyyMMdd
      * @see FixRulesParser.DateContext
      */
@@ -397,7 +370,6 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
 
     /**
      * Perform addition and substraction on operands in rule syntax.
-     * 
      * @return String the result of an addition or subtraction of two operands
      * depending upon the context.
      * @see FixRulesParser.AddSubContext
@@ -430,7 +402,6 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     /**
      * Perform multiplication & division on operands in rule syntax depending
      * upon the context.
-     * 
      * @return String the result of a multiplication or division of two
      * operands.
      * @see FixRulesParser.MulDivContext
@@ -462,7 +433,6 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
 
     /**
      * Performs tag concatenation of values.
-     * 
      * @return String the concatenation of two values
      * @see FixRulesParser.CatContext
      */
@@ -491,7 +461,6 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      * between numbers. If any exceptions result from comparing non-numbers then
      * a string comparison is attempted. Any boolean operations on alphabetic
      * strings that end up here may have unexpected results.
-     * 
      * @param lVal A value on the left side of an expression to compare.
      * @param rVal A value on the right side of an to compare the left against.
      * @return -1, 0, or 1 if the tag values associated with the context is
@@ -684,17 +653,11 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      */
     @Override
     public String visitThen(FixRulesParser.ThenContext ctx) {
-        if (!isStatementTrue) {
-            return null;
-        }
+        if (!isStatementTrue) { return null; }
         ActionContext actionCtx = ctx.action();
         FixrulesContext rulesCtx = ctx.fixrules();
-        if (actionCtx != null) {
-            return visit(actionCtx);
-        }
-        if (rulesCtx != null) {
-            return visit(rulesCtx);
-        }
+        if (actionCtx != null) { return visit(actionCtx); }
+        if (rulesCtx != null) { return visit(rulesCtx); }
         return null;
     }
 
@@ -704,17 +667,11 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      */
     @Override
     public String visitEls(FixRulesParser.ElsContext ctx) {
-        if (isStatementTrue) {
-            return null;
-        }
+        if (isStatementTrue) { return null; }
         ActionContext actionCtx = ctx.action();
         FixrulesContext rulesCtx = ctx.fixrules();
-        if (actionCtx != null) {
-            return visit(actionCtx);
-        }
-        if (rulesCtx != null) {
-            return visit(rulesCtx);
-        }
+        if (actionCtx != null) { return visit(actionCtx); }
+        if (rulesCtx != null) { return visit(rulesCtx); }
         return null;
     }
 
@@ -823,7 +780,6 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     /**
      * Invokes a user-defined class that is responsible for generating the right
      * hand side of an assignment.
-     * 
      * @return String The right hand side of the assignment.
      */
     @Override

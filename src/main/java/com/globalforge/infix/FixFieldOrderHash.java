@@ -9,6 +9,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.globalforge.infix.qfix.MessageData;
 
+/*-
+The MIT License (MIT)
+
+Copyright (c) 2016 Global Forge LLC
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 public class FixFieldOrderHash {
     /** logger */
     final static Logger logger = LoggerFactory.getLogger(FixFieldOrderHash.class);
@@ -36,7 +59,7 @@ public class FixFieldOrderHash {
             String fldOrder = msgData.getFieldOrderMap("0").getFieldOrder(ctxString);
             return new BigDecimal(fldOrder, MathContext.DECIMAL32);
         }
-        boolean isGroupRef = containsRef(ctxString);
+        boolean isGroupRef = FixFieldOrderHash.containsRef(ctxString);
         if (isGroupRef) {
             // not tested
             String genRef = ctxString.replaceAll("\\[\\d+\\]", "[*]");
@@ -45,7 +68,7 @@ public class FixFieldOrderHash {
                 throw new RuntimeException("No repeating group found in data dict for ctx="
                     + ctxString + ", msgType=" + msgType);
             }
-            fldOrder = replaceWildcards(fldOrder, ctxString);
+            fldOrder = FixFieldOrderHash.replaceWildcards(fldOrder, ctxString);
             ctxOrder = new BigDecimal(fldOrder, MathContext.UNLIMITED);
             return ctxOrder;
         }
@@ -59,7 +82,7 @@ public class FixFieldOrderHash {
     }
 
     public static boolean containsRef(String ctxString) {
-        int tagIdx = ctxString.indexOf(REF);
+        int tagIdx = ctxString.indexOf(FixFieldOrderHash.REF);
         if (tagIdx < 0) {
             return false;
         }
@@ -68,7 +91,7 @@ public class FixFieldOrderHash {
 
     /**
      * Number after last '&'
-     * 
+     *
      * @param ctxString Full context of field reference.
      * @return String a tag number
      */
@@ -126,11 +149,12 @@ public class FixFieldOrderHash {
         if (!orderCtx.contains("*")) {
             return orderCtx;
         }
-        int nextLevel = getFirstNestingLevel(grpCtx);
+        int nextLevel = FixFieldOrderHash.getFirstNestingLevel(grpCtx);
         // convert nextLevel into a 6 digit number.
         String mantissaPart = String.format("%06d", nextLevel);
         orderCtx = orderCtx.replaceFirst("(\\*)", mantissaPart + "");
-        return replaceWildcards(orderCtx, grpCtx.substring(grpCtx.indexOf(REF) + 1));
+        return FixFieldOrderHash.replaceWildcards(orderCtx,
+            grpCtx.substring(grpCtx.indexOf(FixFieldOrderHash.REF) + 1));
     }
 
     public static void main(String[] args) {
@@ -143,52 +167,52 @@ public class FixFieldOrderHash {
         genRef = grpRef.replaceAll("\\[\\d+\\]", "[*]");
         // "175.*864*875*25"
         System.out.println(genRef);
-        String orderCtx = replaceWildcards("175.*864*875*25", grpRef);
+        String orderCtx = FixFieldOrderHash.replaceWildcards("175.*864*875*25", grpRef);
         BigDecimal val = new BigDecimal(orderCtx, MathContext.UNLIMITED);
         sortList.add(0, val);
         System.out.println(val);
         grpRef = "&1310[0]->&1309[0]->&1141[0]->&1022";
-        orderCtx = replaceWildcards("175.*864*875*25", grpRef);
+        orderCtx = FixFieldOrderHash.replaceWildcards("175.*864*875*25", grpRef);
         val = new BigDecimal(orderCtx, MathContext.UNLIMITED);
         sortList.add(0, val);
         System.out.println(val);
         grpRef = "&1310[0]->&1309[0]->&1141[1]->&1022";
-        orderCtx = replaceWildcards("175.*864*875*25", grpRef);
+        orderCtx = FixFieldOrderHash.replaceWildcards("175.*864*875*25", grpRef);
         val = new BigDecimal(orderCtx, MathContext.UNLIMITED);
         sortList.add(0, val);
         System.out.println(val);
         grpRef = "&1310[0]->&1309[0]->&1141[2]->&1022";
-        orderCtx = replaceWildcards("175.*864*875*25", grpRef);
+        orderCtx = FixFieldOrderHash.replaceWildcards("175.*864*875*25", grpRef);
         val = new BigDecimal(orderCtx, MathContext.UNLIMITED);
         sortList.add(0, val);
         System.out.println(val);
         grpRef = "&1310[0]->&1309[1]->&1141[0]->&1022";
-        orderCtx = replaceWildcards("175.*864*875*25", grpRef);
+        orderCtx = FixFieldOrderHash.replaceWildcards("175.*864*875*25", grpRef);
         val = new BigDecimal(orderCtx, MathContext.UNLIMITED);
         sortList.add(0, val);
         System.out.println(val);
         grpRef = "&1310[1]->&1309[0]->&1141[0]->&1022";
-        orderCtx = replaceWildcards("175.*864*875*25", grpRef);
+        orderCtx = FixFieldOrderHash.replaceWildcards("175.*864*875*25", grpRef);
         val = new BigDecimal(orderCtx, MathContext.UNLIMITED);
         sortList.add(0, val);
         System.out.println(val);
         grpRef = "&1310[1]->&1309[0]->&1141[1]->&1022";
-        orderCtx = replaceWildcards("175.*864*875*25", grpRef);
+        orderCtx = FixFieldOrderHash.replaceWildcards("175.*864*875*25", grpRef);
         val = new BigDecimal(orderCtx, MathContext.UNLIMITED);
         sortList.add(0, val);
         System.out.println(val);
         grpRef = "&1310[1]->&1309[0]->&1141[10]->&1022";
-        orderCtx = replaceWildcards("175.*864*875*25", grpRef);
+        orderCtx = FixFieldOrderHash.replaceWildcards("175.*864*875*25", grpRef);
         val = new BigDecimal(orderCtx, MathContext.UNLIMITED);
         sortList.add(0, val);
         System.out.println(val);
         grpRef = "&1310[10013]->&1309[0]->&1141[00]->&1022";
-        orderCtx = replaceWildcards("175.*864*875*25", grpRef);
+        orderCtx = FixFieldOrderHash.replaceWildcards("175.*864*875*25", grpRef);
         val = new BigDecimal(orderCtx, MathContext.UNLIMITED);
         sortList.add(0, val);
         System.out.println(val);
         grpRef = "&1310[999999]->&1309[999999]->&1141[999999]->&1022";
-        orderCtx = replaceWildcards("175.*864*875*25", grpRef);
+        orderCtx = FixFieldOrderHash.replaceWildcards("175.*864*875*25", grpRef);
         val = new BigDecimal(orderCtx, MathContext.UNLIMITED);
         sortList.add(0, val);
         System.out.println(val);

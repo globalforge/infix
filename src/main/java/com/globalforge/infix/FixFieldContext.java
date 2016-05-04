@@ -37,7 +37,7 @@ import java.math.MathContext;
  * information before the member fields are referenced by the mapping event.
  * Examples of tag contexts for tags 35 and 375: &35, &382[0]->&375,
  * &382[1]->&375
- * 
+ *
  * @author Michael Starkie
  */
 public class FixFieldContext {
@@ -55,7 +55,7 @@ public class FixFieldContext {
 
     /**
      * An imutable instance of this class.
-     * 
+     *
      * @param ctx A fix tag number in rule context. Tag numbers that appear more
      * than once will each have a unique context string. The context value is
      * the tag number coupled with information about it's location in a fix
@@ -76,7 +76,7 @@ public class FixFieldContext {
 
     /**
      * The value associated with the tag context.
-     * 
+     *
      * @return
      */
     public BigDecimal getValue() {

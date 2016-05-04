@@ -2,7 +2,6 @@ package com.globalforge.infix;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -16,6 +15,29 @@ import com.globalforge.infix.api.InfixFieldInfo;
 import com.globalforge.infix.api.InfixUserContext;
 import com.globalforge.infix.api.InfixUserTerminal;
 
+/*-
+The MIT License (MIT)
+
+Copyright (c) 2016 Global Forge LLC
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 public class TestUserDev {
     public static class UserCtx1 implements InfixUserContext {
         @Override
@@ -325,11 +347,11 @@ public class TestUserDev {
         public void visitInfixAPI(InfixAPI infixApi) {
             Map<String, InfixFieldInfo> idxDict = infixApi.getMessageDict();
             InfixFieldInfo tag539 = idxDict.get("&555");
-            BigDecimal val = tag539.getPosition();
+            tag539.getPosition();
             InfixField fld = tag539.getField();
             Assert.assertEquals(fld.getTagVal(), fld.getTagVal());
             Assert.assertEquals(fld.getTagNum(), fld.getTagNum());
-            InfixFieldInfo tag = idxDict.get("&555[0]->&539[0]->&538");
+            idxDict.get("&555[0]->&539[0]->&538");
             Assert.assertEquals(fld.getTagVal(), fld.getTagVal());
             Assert.assertEquals(fld.getTagNum(), fld.getTagNum());
         }
@@ -340,9 +362,7 @@ public class TestUserDev {
         try {
             String sampleRule = "{com.globalforge.infix.TestUserDev$UserCtx6}";
             InfixActions rules = new InfixActions(sampleRule);
-            @SuppressWarnings("unused")
-            String result = rules.transformFIXMsg(StaticTestingUtils.FIX_44_EXEC_REPORT);
-            // System.out.println(StaticTestingUtils.rs(result));
+            rules.transformFIXMsg(StaticTestingUtils.FIX_44_EXEC_REPORT);
         } catch (Throwable t) {
             t.printStackTrace();
             Assert.fail();

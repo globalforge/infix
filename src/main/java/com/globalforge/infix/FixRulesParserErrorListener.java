@@ -36,29 +36,25 @@ import org.slf4j.LoggerFactory;
 /**
  * Extension of antr bases class allowing for more control over parser error
  * reporting.
- * 
+ *
  * @see BaseErrorListener
  * @author Michael
  */
 public class FixRulesParserErrorListener extends BaseErrorListener {
     /** logger */
-    final static Logger logger = LoggerFactory
-        .getLogger(FixRulesParserErrorListener.class);
-    public static final FixRulesParserErrorListener INSTANCE =
-        new FixRulesParserErrorListener();
+    final static Logger logger = LoggerFactory.getLogger(FixRulesParserErrorListener.class);
+    public static final FixRulesParserErrorListener INSTANCE = new FixRulesParserErrorListener();
 
     /**
      * @see BaseErrorListener#reportAmbiguity
      */
     @Override
-    public void syntaxError(Recognizer<?, ?> recognizer,
-        Object offendingSymbol, int line, int charPositionInLine, String msg,
-        RecognitionException e) {
+    public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
+        int charPositionInLine, String msg, RecognitionException e) {
         List<String> stack = ((Parser) recognizer).getRuleInvocationStack();
         Collections.reverse(stack);
-        String logMsg =
-            "Parser ERROR: line " + line + ":" + charPositionInLine + " at "
-                + offendingSymbol + ": " + msg;
+        String logMsg = "Parser ERROR: line " + line + ":" + charPositionInLine + " at "
+            + offendingSymbol + ": " + msg;
         CommonToken tok = (CommonToken) offendingSymbol;
         String s = tok.getText();
         logMsg += ": offending token " + s;

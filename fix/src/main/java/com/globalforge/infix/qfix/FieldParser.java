@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -34,8 +35,10 @@ import org.slf4j.LoggerFactory;
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
  */
-public class FieldParser extends AbstractXMLParser {
+public class FieldParser {
     /** logger */
+    protected final XMLInputFactory factory = XMLInputFactory.newInstance();
+    protected final String fixFileName;
     final static Logger logger = LoggerFactory.getLogger(FieldParser.class);
     private final Map<String, String> tagNameToNumber = new ConcurrentHashMap<String, String>();
     private final Map<String, String> tagNumberToName = new ConcurrentHashMap<String, String>();
@@ -43,7 +46,7 @@ public class FieldParser extends AbstractXMLParser {
     private boolean isFieldsElement = false;
 
     public FieldParser(String f) throws Exception {
-        super(f);
+        this.fixFileName = f;
     }
 
     public String getTagNum(String tagName) {
@@ -56,13 +59,12 @@ public class FieldParser extends AbstractXMLParser {
      * that may legally found in each Message Type. Associations include
      * repeating groups, references to repeating groups within other repeating
      * groups and block.
+     * 
      * @param v The fix version we should parse (e.g., FIX.4.4)
      * @throws XMLStreamException XML file is corrupted.
      */
-    @Override
     public void parse() throws XMLStreamException {
-        InputStream dictStream = ClassLoader
-            .getSystemResourceAsStream(fixFileName);
+        InputStream dictStream = ClassLoader.getSystemResourceAsStream(fixFileName);
         XMLStreamReader reader = factory.createXMLStreamReader(dictStream);
         while (reader.hasNext()) {
             int event = reader.next();

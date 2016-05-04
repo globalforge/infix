@@ -8,6 +8,29 @@ import com.globalforge.infix.api.InfixActions;
 import com.globalforge.infix.api.InfixUserTerminal;
 import com.google.common.collect.ListMultimap;
 
+/*-
+The MIT License (MIT)
+
+Copyright (c) 2016 Global Forge LLC
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 public class TestConditionals {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -176,6 +199,20 @@ public class TestConditionals {
             Assert.assertEquals("0", resultStore.get(45).get(0));
             Assert.assertEquals("1200", resultStore.get(47).get(0));
             Assert.assertEquals("1400", resultStore.get(48).get(0));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void t11() {
+        try {
+            String sampleRule = "&35==\"D\" ? [&47=1200; &48=1400] : [&47=4; &48=\"P\"]";
+            ListMultimap<Integer, String> resultStore = getResults(sampleRule);
+            Assert.assertEquals("0", resultStore.get(45).get(0));
+            Assert.assertEquals("4", resultStore.get(47).get(0));
+            Assert.assertEquals("P", resultStore.get(48).get(0));
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();

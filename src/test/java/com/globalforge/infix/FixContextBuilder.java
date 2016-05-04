@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.concurrent.LinkedBlockingDeque;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.globalforge.infix.FixMessageMgr;
 import com.globalforge.infix.qfix.FixGroupMgr;
 
 /*-
@@ -33,7 +32,7 @@ import com.globalforge.infix.qfix.FixGroupMgr;
  */
 /**
  * A class used to assist the implementation of InfixAPI.
- * 
+ *
  * @see FixAPIImpl
  * @author Michael C. Starkie
  */
@@ -51,7 +50,7 @@ final class FixContextBuilder {
     /**
      * Converts a tag reference in rule sytax to a stack of context strings to
      * assist the group manager in locating the proper insertion order.
-     * 
+     *
      * @see FixMessageMgr#putContext(Deque, String, String)
      * @see FixGroupMgr#getContext(String, String, String, boolean)
      * @see FixAPIImpl#putContext(String, String)
@@ -81,7 +80,7 @@ final class FixContextBuilder {
      * &555[0]->
      * &555
      * </code>
-     * 
+     *
      * @see FixMessageMgr#putContext(Deque, String, String)
      * @see FixGroupMgr#getContext(String, String, String, boolean)
      * @see FixAPIImpl#putContext(String, String)
@@ -120,7 +119,7 @@ final class FixContextBuilder {
 
     /**
      * Return the build context.
-     * 
+     *
      * @see FixContextBuilder#buildContext
      * @return LinkedBlockingDeque<String>
      */
@@ -130,7 +129,7 @@ final class FixContextBuilder {
 
     /**
      * Return the tag number associated with this context.
-     * 
+     *
      * @return String the tag number associated with the context.
      */
     String getTagNum() {
@@ -140,7 +139,7 @@ final class FixContextBuilder {
     /**
      * Reverses the stack of the context hierarchy in the order needed by the
      * FixFieldMgr.
-     * 
+     *
      * @see FixMessageMgr#putContext(Deque, String, String)
      * @param stack The context of the context indicators.
      * @return LinkedBlockingDeque<String> A reversal of the parameter.
@@ -157,7 +156,7 @@ final class FixContextBuilder {
 
     /**
      * Prints the context stack for debugging purposes.
-     * 
+     *
      * @param ctxs The context indicators for the tag.
      */
     static void printCtx(Deque<String> ctxs) {
@@ -188,7 +187,7 @@ final class FixContextBuilder {
 
     /**
      * Test it out.
-     * 
+     *
      * @param args
      */
     public static void main(String[] args) {

@@ -29,7 +29,7 @@ import com.globalforge.infix.api.InfixUserContext;
  */
 /**
  * An example implementation showing how to use user defined behavior
- * 
+ *
  * @author Michael C. Starkie
  */
 public class ExampleUserContext implements InfixUserContext {
@@ -37,7 +37,7 @@ public class ExampleUserContext implements InfixUserContext {
     /**
      * User defined but the message returned must be legal for the fix version
      * otherwise the behavior is undefined.
-     * 
+     *
      * @param fixMessage The message to manipulate with java code
      * @return String The new message to return to the parser.
      */
@@ -48,7 +48,7 @@ public class ExampleUserContext implements InfixUserContext {
     /**
      * Demonstrate how to change the state of a fix message as it resides in
      * memory before final transformation.
-     * 
+     *
      * @param InfixMappingAPI A handle into the infix internals.
      * @see InfixAPI
      */
@@ -59,19 +59,17 @@ public class ExampleUserContext implements InfixUserContext {
 
     /**
      * Demonstrate that you can write java to be called during a rule parse.
-     * 
+     *
      * @param baseMsg The message to manipulate with java code
      * @return String The new message to return to the parser.
      */
     private String calculatePrice(String baseMsg) {
         double price = Math.PI;
         String[] msgArray =
-            Pattern.compile(Character.toString((char) 0x01), Pattern.LITERAL)
-                .split(baseMsg);
+            Pattern.compile(Character.toString((char) 0x01), Pattern.LITERAL).split(baseMsg);
         StringBuilder newMsg = new StringBuilder();
         for (String field : msgArray) {
-            int tagNum =
-                Integer.parseInt(field.substring(0, field.indexOf("=")));
+            int tagNum = Integer.parseInt(field.substring(0, field.indexOf("=")));
             if (tagNum == 44) {
                 newMsg.append("44=" + price);
             } else {

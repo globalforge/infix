@@ -11,6 +11,29 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/*-
+The MIT License (MIT)
+
+Copyright (c) 2016 Global Forge LLC
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 public class GroupManagerCodeGenerator {
     /** logger */
     private final static Logger logger = LoggerFactory.getLogger(GroupManagerCodeGenerator.class);
@@ -62,9 +85,7 @@ public class GroupManagerCodeGenerator {
 
     private void handleInitHeader() {
         Map<String, RepeatingGroupBuilder> headerMap = repeatingGrpMap.getGroupMap().get("HEADER");
-        if (headerMap == null) {
-            return;
-        }
+        if (headerMap == null) { return; }
         Iterator<String> groupIDs = headerMap.keySet().iterator();
         while (groupIDs.hasNext()) {
             String groupID = groupIDs.next();
@@ -91,8 +112,8 @@ public class GroupManagerCodeGenerator {
             "\tstatic final public class " + groupClassName + " extends FixRepeatingGroup {");
         out.println("\t\tprivate static " + groupClassName + " instance = null;");
         out.println();
-        out.println("\t\tprivate static synchronized " + groupClassName
-            + " getInstance(String id, String delim) {");
+        out.println(
+            "\t\tprivate static " + groupClassName + " getInstance(String id, String delim) {");
         out.println("\t\t   if (instance == null) {");
         out.println("\t\t      instance = new " + groupClassName + "(id, delim);");
         out.println("\t\t   }");
@@ -122,7 +143,8 @@ public class GroupManagerCodeGenerator {
     private void handleDefineGroups(String msgType) {
         Map<String, RepeatingGroupBuilder> msgGroupMap = repeatingGrpMap.getGroupMap().get(msgType);
         if (msgGroupMap == null) {
-            logger.warn("NO GROUP FOX MSG TYPE: " + msgType + ", IN FIX: " + qfixverLowerCase);
+            GroupManagerCodeGenerator.logger
+                .warn("NO GROUP FOX MSG TYPE: " + msgType + ", IN FIX: " + qfixverLowerCase);
             return;
         }
         Iterator<String> groupIDIter = msgGroupMap.keySet().iterator();
@@ -136,7 +158,6 @@ public class GroupManagerCodeGenerator {
 
     /**
      * Begin constructing the java source when this rule is invoked by antlr.
-     * 
      * @param version The fix version. Not used.
      */
     private void handleStartClass() {
@@ -144,6 +165,7 @@ public class GroupManagerCodeGenerator {
         out.println();
         out.println("import com.globalforge.infix.qfix.FixGroupMgr;");
         out.println("import com.globalforge.infix.qfix.FixRepeatingGroup;");
+        doCopyright();
         out.println();
         out.println("/**");
         out.println(
@@ -155,13 +177,42 @@ public class GroupManagerCodeGenerator {
         out.println("\t{");
     }
 
+    private void doCopyright() {
+        out.println();
+        out.println("/*-");
+        out.println("The MIT License (MIT)");
+        out.println();
+        out.println("Copyright (c) 2016 Global Forge LLC");
+        out.println();
+        out.println("Permission is hereby granted, free of charge, to any person obtaining a copy");
+        out.println(
+            "of this software and associated documentation files (the \"Software\"), to deal");
+        out.println("in the Software without restriction, including without limitation the rights");
+        out.println("to use, copy, modify, merge, publish, distribute, sublicense, and/or sell");
+        out.println("copies of the Software, and to permit persons to whom the Software is");
+        out.println("furnished to do so, subject to the following conditions:");
+        out.println();
+        out.println(
+            "The above copyright notice and this permission notice shall be included in all");
+        out.println("copies or substantial portions of the Software.");
+        out.println();
+        out.println("THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR");
+        out.println("IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,");
+        out.println("FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE");
+        out.println("AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER");
+        out.println(
+            "LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,");
+        out.println(
+            "OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE");
+        out.println("SOFTWARE.");
+        out.println("*/");
+    }
+
     private void finish() {
         // out.println("}");
         out.flush();
         boolean isError = out.checkError();
-        if (isError) {
-            throw new RuntimeException("IO Error during Group Code Generation!");
-        }
+        if (isError) { throw new RuntimeException("IO Error during Group Code Generation!"); }
     }
 
     private void generateCode() throws Exception {

@@ -8,7 +8,7 @@ import com.globalforge.infix.api.InfixFieldInfo;
 /*-
  The MIT License (MIT)
 
- 
+
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ import com.globalforge.infix.api.InfixFieldInfo;
 /**
  * Implementation of an API allowing a user a handle into the internal engine
  * during a rule parse.
- * 
+ *
  * @see InfixAPI
  * @author Michael C. Starkie
  */
@@ -44,7 +44,7 @@ class FixAPIImpl implements InfixAPI {
 
     /**
      * Remove a fix context from memory during rule parse.
-     * 
+     *
      * @see InfixAPI#removeContext(String)
      */
     @Override
@@ -55,17 +55,21 @@ class FixAPIImpl implements InfixAPI {
     /**
      * Insert a fix context into memory during a rule parse. FixVersion and
      * MsgType are not permitted to be modified.
-     * 
+     *
      * @see InfixAPI#putContext(String, String)
      */
     @Override
     public void putContext(String ctx, String value) {
-        if (!ctx.startsWith("&")) { throw new IllegalArgumentException(
-            "field must start with '&' in putContext()."); }
-        if (ctx.equals("&8")) { throw new IllegalArgumentException(
-            "Invalid context change.  Can't change FIX Version."); }
-        if (ctx.equals("&35")) { throw new IllegalArgumentException(
-            "Invalid context change.  Can't change Msg Type."); }
+        if (!ctx.startsWith("&")) {
+            throw new IllegalArgumentException("field must start with '&' in putContext().");
+        }
+        if (ctx.equals("&8")) {
+            throw new IllegalArgumentException(
+                "Invalid context change.  Can't change FIX Version.");
+        }
+        if (ctx.equals("&35")) {
+            throw new IllegalArgumentException("Invalid context change.  Can't change Msg Type.");
+        }
         msgMgr.putContext(ctx, value);
     }
 
@@ -73,7 +77,7 @@ class FixAPIImpl implements InfixAPI {
      * Insert fix fields into the parsed message. Keys are tag numbers in rule
      * syntax and values are the tag values associated with the keys. This
      * method will replace any fields already parsed.
-     * 
+     *
      * @see InfixAPI#putMessageDict(Map)
      * @param msgDict Map<String, String> The fix fields to insert in the form
      * of a dictionary of tag numbers in rule syntax to tag values.
@@ -81,12 +85,14 @@ class FixAPIImpl implements InfixAPI {
     @Override
     public void putMessageDict(LinkedHashMap<String, String> msgDict) {
         if (msgMgr.getContext("&8") == null) {
-            if (!msgDict
-                .containsKey("&8")) { throw new RuntimeException("Can't find tag 8 anywhere!"); }
+            if (!msgDict.containsKey("&8")) {
+                throw new RuntimeException("Can't find tag 8 anywhere!");
+            }
         }
         if (msgMgr.getContext("&35") == null) {
-            if (!msgDict
-                .containsKey("&35")) { throw new RuntimeException("Can't find tag 35 anywhere!"); }
+            if (!msgDict.containsKey("&35")) {
+                throw new RuntimeException("Can't find tag 35 anywhere!");
+            }
         }
         String[] keys = msgDict.keySet().toArray(new String[msgDict.size()]);
         for (String k : keys) {
@@ -97,7 +103,7 @@ class FixAPIImpl implements InfixAPI {
 
     /**
      * Obtain the fix data associated with a fix context.
-     * 
+     *
      * @see InfixAPI#getContext(String)
      */
     @Override
@@ -108,7 +114,7 @@ class FixAPIImpl implements InfixAPI {
     /**
      * Obtain a fully formatted fix message representing the memory state as it
      * currently exists during a rule parse.
-     * 
+     *
      * @see InfixAPI#getMessage()
      */
     @Override

@@ -29,7 +29,7 @@ import java.util.Set;
  */
 /**
  * The definition of a repeating group.
- * 
+ *
  * @author Michael
  */
 public class FixRepeatingGroup {
@@ -40,7 +40,7 @@ public class FixRepeatingGroup {
 
     /**
      * A repeating group is defined principally by it's id and delimiter.
-     * 
+     *
      * @param id The tag in the fix spec that is used to indicate the number of
      * groups present in a particular repeating group (e.g., NoContraBrokers
      * (Tag = 382)).
@@ -71,7 +71,7 @@ public class FixRepeatingGroup {
 
     /**
      * Determines if a tag is part of this repeating group.
-     * 
+     *
      * @param tagNum The tag to check
      * @return boolean if true.
      */
@@ -86,7 +86,7 @@ public class FixRepeatingGroup {
     /**
      * Returns the set of all members of a repeating group. This does not
      * include the id tag but does include the delimiter tag.
-     * 
+     *
      * @return Set<String> The tag members belonging to this group.
      */
     public Set<String> getMemberSet() {

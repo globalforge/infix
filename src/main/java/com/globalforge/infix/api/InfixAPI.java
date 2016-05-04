@@ -35,13 +35,13 @@ import java.util.Map;
  * in this interface. Any deviation from this policy will produce undefined
  * results and may lead to data corruption or runtime exceptions. <br>
  * <strong>THREAD SAFETY: NOT SAFE.</strong>
- * 
+ *
  * @author Michael C. Starkie
  */
 public interface InfixAPI {
     /**
      * Removes a FIX tag from the in-memory message.
-     * 
+     *
      * @param ctx The tag number in action syntax (e.g., &44).
      */
     public void removeContext(String ctx);
@@ -51,7 +51,7 @@ public interface InfixAPI {
     /**
      * Returns an object containing the tag num and tag value associated with
      * tag number.
-     * 
+     *
      * @param ctx The tag number in action syntax (e.g., &44).
      * @return InfixField Tag number and tag value.
      * @see InfixField
@@ -63,7 +63,7 @@ public interface InfixAPI {
      * syntax and values are the tag values associated with the keys. This
      * method will replace any fields already parsed. Insert order must be
      * preserved for the integrity of repeating groups.
-     * 
+     *
      * @param msgDict LinkedHashMap<String, String> The FIX fields to insert in
      * the form of a dictionary of tag numbers in action syntax to tag values.
      */
@@ -74,7 +74,7 @@ public interface InfixAPI {
     /**
      * Obtain a fully formatted FIX message representing the memory state as it
      * currently exists during a action parse.
-     * 
+     *
      * @return String a fully formatted FIX message.
      */
     public String getMessage();

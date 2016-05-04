@@ -32,9 +32,9 @@ import org.antlr.v4.runtime.misc.NotNull;
  SOFTWARE.
  */
 /**
- * An extension to the Antlr class allowing for more detailed error handling. * @see
- * DefaultErrorStrategy
- * 
+ * An extension to the Antlr class allowing for more detailed error handling.
+ * * @see DefaultErrorStrategy
+ *
  * @author Michael C. Starkie
  */
 public class FixRulesErrorStrategy extends DefaultErrorStrategy {

@@ -31,6 +31,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+/**
+ * Responsible for assigning a context string to a raw FIX tag number during a
+ * FIX message parse. Is tightly coupled with repeating group definitions and
+ * the contexts of their members.
+ * @author Michael C. Starkie
+ */
 public abstract class FixGroupMgr {
     /** logger */
     final Logger logger = LoggerFactory.getLogger(FixGroupMgr.class);
@@ -46,7 +52,6 @@ public abstract class FixGroupMgr {
      * Assigns the correct context string to a Fix tag taking into account
      * whether that tag number exists as part of a repeating group and which
      * level of nesting within a group it may appear.
-     *
      * @param msgType The message type that owns the tag.
      * @param tagNum The fix tag number
      * @return FixFieldContext the context and it's order.
@@ -73,9 +78,7 @@ public abstract class FixGroupMgr {
         }
         FixGroupInProgress gip = grpStack.peek();
         // Not part of any group.
-        if (gip == null) {
-            return ctxString;
-        }
+        if (gip == null) { return ctxString; }
         // Stack not empty and tagNum not groupID. Must be member of group or
         // group on stack is done.
         FixRepeatingGroup curGrp = gip.getGroup();
@@ -98,7 +101,6 @@ public abstract class FixGroupMgr {
     /**
      * Determines if a repeating group may be present in a particular message
      * type.
-     *
      * @param msgType The message type.
      * @param groupId The identifier of the group.
      * @return true or false.
@@ -109,7 +111,6 @@ public abstract class FixGroupMgr {
 
     /**
      * Given a message type and a groupId return the repeating group.
-     *
      * @param msgType the message type being parsed or referenced.
      * @param groupId the unique tag number that identifies the start of a
      * particular repeating group.
@@ -122,7 +123,6 @@ public abstract class FixGroupMgr {
     /**
      * Adds a repeating group to a message type. This method is called by the
      * generated code and there should be no reason for a programmer to call it.
-     *
      * @param msgType The messgae type.
      * @param g The repeating group to add.
      */
@@ -130,6 +130,11 @@ public abstract class FixGroupMgr {
         grpMap.put(groupId, g);
     }
 
+    /**
+     * Builds a context string for a repeating group member from a stack of all
+     * the previous member fields seen so far during a message parse.
+     * @return String
+     */
     private String getCurrentGoupContext() {
         String grpCtx = "";
         Iterator<FixGroupInProgress> it = grpStack.descendingIterator();

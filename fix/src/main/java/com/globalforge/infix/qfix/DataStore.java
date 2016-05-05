@@ -61,9 +61,8 @@ public class DataStore {
      * @param isNested Whether the group is nested inside some other group.
      * @return RepeatingGroupBuilder group in progress
      */
-    public RepeatingGroupBuilder startMessageGroup(String curMessage, String groupId,
-        boolean isNested) {
-        return groupStore.startMessageGroup(curMessage, groupId, isNested);
+    public RepeatingGroupBuilder setNestedGroup(String curMessage, String groupId) {
+        return groupStore.setNestedGroup(curMessage, groupId);
     }
 
     /**
@@ -205,18 +204,30 @@ public class DataStore {
         fieldStore.putComponentContext(key, memList);
     }
 
+    /**
+     * @see FieldDataStore#containsComponentName(String)
+     */
     public boolean containsComponentName(String nameKey) {
         return fieldStore.containsComponentName(nameKey);
     }
 
+    /**
+     * @see FieldDataStore#removeComponent(String)
+     */
     public void removeComponent(String nameKey) {
         fieldStore.removeComponent(nameKey);;
     }
 
+    /**
+     * @see FieldDataStore#getGroupNameSet()
+     */
     public Set<String> getGroupNameSet() {
         return fieldStore.getGroupNameSet();
     }
 
+    /**
+     * @see FieldDataStore#getComponentNameSet()
+     */
     public Set<String> getComponentNameSet() {
         return fieldStore.getComponentNameSet();
     }

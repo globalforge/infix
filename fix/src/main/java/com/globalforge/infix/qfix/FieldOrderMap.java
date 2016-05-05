@@ -28,6 +28,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+/**
+ * A map of field context strings and their order within a FIX message type.
+ * @author Michael C. Starkie
+ */
 public abstract class FieldOrderMap {
     /** logger */
     protected final Logger logger = LoggerFactory.getLogger(FieldOrderMap.class);

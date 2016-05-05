@@ -6,7 +6,7 @@ Author: Michael C. Starkie
 /*
  The MIT License (MIT)
 
- Copyright (c) 2015 Global Forge LLC
+ Copyright (c) 2016 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -43,7 +43,7 @@ qualifiedName   :   Identifier ('.' Identifier)* ;
 
 Identifier      :   Letter (Letter|JavaIDDigit)* ;
 			
-assign          :   tag EQ expr;
+assign          :   tag EQ (CAST)? expr;
 
 exchange        :   tag FLP tag;
 
@@ -107,6 +107,7 @@ is              :   IS tg=terminal ;
 then            :   ('?' action) | ('?' '[' fixrules ']');
 els             :   (':' action) | (':' '[' fixrules ']');
 
+CAST			: '(int)' ;
 FLP				: '<->';
 DEL             : '~'  ;
 CT              : '|'  ;

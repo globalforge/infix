@@ -134,6 +134,20 @@ public class TestAssignTerminals {
     }
 
     @Test
+    public void testTagFLOAT_Truncates() {
+        try {
+            sampleRule = "&44 = (int) 42.01";
+            rules = new InfixActions(sampleRule);
+            result = rules.transformFIXMsg(TestAssignTerminals.sampleMessage1);
+            resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertEquals(resultStore.get(44).get(0), "42");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
+
+    @Test
     public void testTagFLOAT2() {
         try {
             sampleRule = "&44=0.01";

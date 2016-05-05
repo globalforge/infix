@@ -29,7 +29,6 @@ import java.util.Set;
  */
 /**
  * The definition of a repeating group.
- *
  * @author Michael
  */
 public class FixRepeatingGroup {
@@ -40,7 +39,6 @@ public class FixRepeatingGroup {
 
     /**
      * A repeating group is defined principally by it's id and delimiter.
-     *
      * @param id The tag in the fix spec that is used to indicate the number of
      * groups present in a particular repeating group (e.g., NoContraBrokers
      * (Tag = 382)).
@@ -71,7 +69,6 @@ public class FixRepeatingGroup {
 
     /**
      * Determines if a tag is part of this repeating group.
-     *
      * @param tagNum The tag to check
      * @return boolean if true.
      */
@@ -79,6 +76,12 @@ public class FixRepeatingGroup {
         return memberSet.contains(tagNum);
     }
 
+    /**
+     * Determines of a field is the beginning of a nested repeating group within
+     * a repeating group.
+     * @param tagNum the member field of a group
+     * @return boolean
+     */
     public boolean containsReference(String tagNum) {
         return referenceSet.contains(tagNum);
     }
@@ -86,13 +89,16 @@ public class FixRepeatingGroup {
     /**
      * Returns the set of all members of a repeating group. This does not
      * include the id tag but does include the delimiter tag.
-     *
      * @return Set<String> The tag members belonging to this group.
      */
     public Set<String> getMemberSet() {
         return Collections.unmodifiableSet(memberSet);
     }
 
+    /**
+     * Returns all the nested group identifiers found within a repeating group
+     * @return Set<String>
+     */
     public Set<String> getReferenceSet() {
         return Collections.unmodifiableSet(referenceSet);
     }

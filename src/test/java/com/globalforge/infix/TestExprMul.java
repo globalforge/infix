@@ -50,6 +50,20 @@ public class TestExprMul {
     }
 
     @Test
+    public void testm1_cast() {
+        try {
+            sampleRule = "&45 = (int) (3.143 * 6 * &44)";
+            rules = new InfixActions(sampleRule);
+            result = rules.transformFIXMsg(TestExprMul.sampleMessage1);
+            resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertEquals(resultStore.get(45).get(0), "59");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
+
+    @Test
     public void testm2() {
         try {
             sampleRule = "&382=&9*1.5";

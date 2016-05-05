@@ -132,43 +132,6 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     }
 
     /**
-     * Reparses the fix message stored in memory. If the FixVersion(tag 8) or
-     * MsgType(tag 35) has been re-assigned we need to extract the message from
-     * memory with the change, parse and store it again. Different fix versions
-     * and different message types have different repeating group
-     * characteristics and these differences will change the context keys that
-     * may point to them.
-     * @param curVersion The current Fix Version before the change.
-     * @param curMsgType The current MsgType before the change.
-     */
-    /*-
-    private void reParse(InfixField curVersion, InfixField curMsgType) {
-        // remember the old state so we can roll-back on error.
-        FixMessageMgr oldMsgMgr = msgMgr;
-        String fixMsg = msgMgr.toString();
-        try {
-            // Parse the message with the new fix version in tag 8 or 35.
-            // This has the effect of changing the context keys if repeating
-            // groups differ between version or msg type.
-            msgMgr = new FixMessageMgr(fixMsg);
-        } catch (Exception e) {
-            FixRulesTransformVisitor.logger.error(
-                "Can not re-parse message after tag 8 or tag 35 assignment. Rolling back assignment.",
-                e);
-            // roll-back the old state
-            msgMgr = oldMsgMgr;
-            // roll-back the original fix version and msgType (we had to update
-            // it before calling toString() in order to reparse.
-            msgMgr.putFieldFromPostMsgParse(
-                Integer.toString(curVersion.getTagNum()),
-                curVersion.getTagVal());
-            msgMgr.putFieldFromPostMsgParse(
-                Integer.toString(curMsgType.getTagNum()),
-                curMsgType.getTagVal());
-        }
-    }
-    */
-    /**
      * Handle tag assignment.
      * @return String the right hand side of an assignment.
      * @see FixRulesParser.AssignContext
@@ -179,11 +142,14 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         String tagVal = visit(ctx.expr());
         // This prevents any assignment
         if ((tagCtx == null) || (tagVal == null)) { return null; }
-        // If the user is re-assigning the fix version or the msg type we need
-        // to re-parse the message once we store the value and complete the
-        // assignment.
         if (tagCtx.equals("&35")) { throw new RuntimeException("Can't re-assign tag 35"); }
         visitChildren(ctx);
+        if (ctx.CAST() != null) {
+            if ("(int)".equals(ctx.CAST().toString())) {
+                int intVal = (int) Double.parseDouble(tagVal);
+                tagVal = intVal + "";
+            }
+        }
         msgMgr.putContext(fullParseCtx, tagVal);
         return null;
     }

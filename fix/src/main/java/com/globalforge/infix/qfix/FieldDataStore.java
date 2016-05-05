@@ -29,6 +29,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+/**
+ * Contains all information needed by Infix regarding fields, their contexts and
+ * orders as derived from the quick fix data dictionaries.
+ * @author Michael C. Starkie
+ */
 public class FieldDataStore {
     private final static Logger logger = LoggerFactory.getLogger(FieldDataStore.class);
     /** component name to a list of fields in infix syntax */
@@ -40,7 +45,6 @@ public class FieldDataStore {
 
     /**
      * Associates a group component name with a list of fields in Infix syntax.
-     * 
      * @param key The group component name
      * @param memList The list of fields.
      */
@@ -51,7 +55,6 @@ public class FieldDataStore {
     /**
      * Returns the list of fields in Infix syntax associated with a group
      * component name.
-     * 
      * @param referredName the name of the group component.
      * @return LinkedList<String> the list of fields.
      */
@@ -61,7 +64,6 @@ public class FieldDataStore {
 
     /**
      * Associates a component name with a list of fields in Infix syntax.
-     * 
      * @param key The component name.
      * @param memList The list of fields.
      */
@@ -71,7 +73,6 @@ public class FieldDataStore {
 
     /**
      * Returns a list of fields in Infix syntax associated with a component.
-     * 
      * @param referredName The name of the component.
      * @return LinkedList<String> The list of fields.
      */
@@ -81,7 +82,6 @@ public class FieldDataStore {
 
     /**
      * Returns the complete set of group component names if a FIX dictionary.
-     * 
      * @return Set<String> The set of group names.
      */
     Set<String> getGroupNameSet() {
@@ -90,7 +90,6 @@ public class FieldDataStore {
 
     /**
      * Tests if the set of component names contains the given key.
-     * 
      * @param nameKey The key
      * @return true if the set of component names includes the key.
      */
@@ -100,7 +99,6 @@ public class FieldDataStore {
 
     /**
      * Tests if the set of group names contains the given key.
-     * 
      * @param nameKey The key.
      * @return true if the set of group names includes the key.
      */
@@ -110,7 +108,6 @@ public class FieldDataStore {
 
     /**
      * Removes the set of fields associated with a component name.
-     * 
      * @param nameKey The component name.
      */
     void removeComponent(String nameKey) {
@@ -120,7 +117,6 @@ public class FieldDataStore {
     /**
      * Returns the complete set of component names (non-groups) found in a data
      * dictionary.
-     * 
      * @return Set<String> The set of component names.
      */
     Set<String> getComponentNameSet() {

@@ -32,6 +32,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+/**
+ * The main entry point to the parsing and code generating of data dictionaries.
+ * Contains main() and is used to generate runtime data needed for Infix.
+ * @author Michael C. Starkie
+ */
 public class FieldOrderMapCodeGenerator {
     /** logger */
     private final static Logger logger = LoggerFactory.getLogger(FieldOrderMapCodeGenerator.class);
@@ -46,10 +51,23 @@ public class FieldOrderMapCodeGenerator {
         this.msgCtxMap = d.getContextOrderMap(fVer);
     }
 
+    /**
+     * Main entry to generating all field related data
+     * @throws Exception
+     */
     public void generateClass() throws Exception {
         generateCode();
     }
 
+    /**
+     * Determines where on the file system to write the code. Each message type
+     * has it's own package location. Must set SRC_DIR environment variable to
+     * absolute path of com.globalforge.infix.qfix package <br>
+     * Example: <br>
+     * SRC_DIR=/projects/infix/fix/src/main/java/com/globalforge/infix/qfix
+     * @param msgType
+     * @throws Exception
+     */
     private void initOutputStreams(String msgType) throws Exception {
         String SRC_DIR = System.getenv("SRC_DIR");
         if (SRC_DIR != null) {
@@ -80,6 +98,10 @@ public class FieldOrderMapCodeGenerator {
         }
     }
 
+    /**
+     * Does the deed of generating all the field related code.
+     * @throws Exception
+     */
     private void generateCode() throws Exception {
         Set<Entry<String, LinkedHashMap<String, String>>> compMems = null;
         Iterator<Entry<String, LinkedHashMap<String, String>>> memSetIterator = null;
@@ -122,6 +144,9 @@ public class FieldOrderMapCodeGenerator {
         out.println("\t{");
     }
 
+    /**
+     * Prints the copyright. blah..blah..blah
+     */
     private void doCopyright() {
         out.println();
         out.println("/*-");

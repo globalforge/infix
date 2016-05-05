@@ -35,6 +35,11 @@ import org.slf4j.LoggerFactory;
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
  */
+/**
+ * Parses the fields section of a quick fix data dictionary and records the
+ * field name and field numeric value in a map.
+ * @author Michael C. Starkie
+ */
 public class FieldParser {
     /** logger */
     protected final XMLInputFactory factory = XMLInputFactory.newInstance();
@@ -45,10 +50,20 @@ public class FieldParser {
     private final Set<String> elementNames = new HashSet<String>();
     private boolean isFieldsElement = false;
 
+    /**
+     * Requires a name of a fix file
+     * @param f the filename
+     * @throws Exception
+     */
     public FieldParser(String f) throws Exception {
         this.fixFileName = f;
     }
 
+    /**
+     * Get the field number associated with a field name
+     * @param tagName the name of the field
+     * @return the number associated with the field.
+     */
     public String getTagNum(String tagName) {
         return tagNameToNumber.get(tagName);
         // return tagName;
@@ -59,7 +74,6 @@ public class FieldParser {
      * that may legally found in each Message Type. Associations include
      * repeating groups, references to repeating groups within other repeating
      * groups and block.
-     * 
      * @param v The fix version we should parse (e.g., FIX.4.4)
      * @throws XMLStreamException XML file is corrupted.
      */

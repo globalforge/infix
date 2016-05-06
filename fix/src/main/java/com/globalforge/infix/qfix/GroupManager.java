@@ -34,8 +34,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 /**
- * Keeps track of all group components that are not repeating groups.
- *
+ * Keeps track of all components that are repeating groups during dictionary
+ * parse.
  * @author Michael
  */
 public class GroupManager {
@@ -46,7 +46,6 @@ public class GroupManager {
     /**
      * The first member of every member set in a group is the goup id. The group
      * id is the only non-repeating field in a group.
-     *
      * @param groupComponentName The component name for the group
      * @param groupId The first field in the group
      */
@@ -57,7 +56,6 @@ public class GroupManager {
 
     /**
      * Adds a member to the list of fields associated with a group.
-     *
      * @param compName The component or group name.
      * @param fieldName The field name.
      */
@@ -69,7 +67,6 @@ public class GroupManager {
     /**
      * Adds a nested component name to the list of fields associated with a
      * component.
-     *
      * @param compName
      * @param nestedCompName
      */
@@ -78,6 +75,12 @@ public class GroupManager {
         grp.addMember("@" + nestedCompName);
     }
 
+    /**
+     * During a linear xml parse, insert a reference marker for any group that
+     * has not been encountered yet and it thus not defined.
+     * @param compName component name
+     * @param nestedCompName nested component name
+     */
     public void addNestedGroup(String compName, String nestedCompName) {
         RepeatingGroupBuilder grp = groupMap.get(compName);
         grp.addMember("#" + nestedCompName);
@@ -85,7 +88,6 @@ public class GroupManager {
 
     /**
      * Returns true if argument is a group name.
-     *
      * @param referredName the group name
      * @return boolean
      */
@@ -95,7 +97,6 @@ public class GroupManager {
 
     /**
      * Returns an unmodifiable set of group names.
-     *
      * @return Set<String> group names.
      */
     public Set<String> getGroupNames() {
@@ -104,7 +105,6 @@ public class GroupManager {
 
     /**
      * Returns the group associated with a component or group name;
-     *
      * @param componentName The component name of the group
      * @return FixRepeatingGroup
      */

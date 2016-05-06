@@ -30,9 +30,8 @@ import org.slf4j.LoggerFactory;
  SOFTWARE.
  */
 /**
- * Extension of base lexter error listener allowing for more details error
+ * Extension of base lexer error listener allowing for more details error
  * reporting.
- *
  * @see BaseErrorListener
  * @author Michael C. Starkie
  */

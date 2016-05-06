@@ -34,9 +34,8 @@ import org.slf4j.LoggerFactory;
  SOFTWARE.
  */
 /**
- * Extension of antr bases class allowing for more control over parser error
+ * Extension of antlr bases class allowing for more control over parser error
  * reporting.
- *
  * @see BaseErrorListener
  * @author Michael
  */

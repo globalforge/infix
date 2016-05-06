@@ -34,6 +34,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+/**
+ * Produces all the java code that extends FixGroupMgr. For each message type,
+ * within each fix version, a class exists which contains information about all
+ * the repeating groups found in that message and any groups that are nested
+ * within those groups.
+ * @author Michael C. Starkie
+ */
 public class GroupManagerCodeGenerator {
     /** logger */
     private final static Logger logger = LoggerFactory.getLogger(GroupManagerCodeGenerator.class);
@@ -44,17 +51,35 @@ public class GroupManagerCodeGenerator {
     private final RepeatingGroupBuilderMap repeatingGrpMap;
     private final ContextOrderMap msgCtxMap;
 
+    /**
+     * @param fVer A version of FIX
+     * @param d The data generator holding all the parses information for the
+     * fix version.
+     */
     public GroupManagerCodeGenerator(String fVer, DataGenerator d) {
         this.afixVer = fVer.replace(".", "");
         this.repeatingGrpMap = d.getRepeatingGroupMap(fVer);
         this.msgCtxMap = d.getContextOrderMap(fVer);
     }
 
+    /**
+     * Start here to generate all the code.
+     * @throws Exception
+     */
     public void generateClass() throws Exception {
         generateCode();
         finish();
     }
 
+    /**
+     * Determines where on the file system to write the code. Each message type
+     * has it's own package location. Must set SRC_DIR environment variable to
+     * absolute path of com.globalforge.infix.qfix package <br>
+     * Example: <br>
+     * SRC_DIR=/projects/infix/fix/src/main/java/com/globalforge/infix/qfix
+     * @param msgType
+     * @throws Exception
+     */
     private void initOutputStreams(String msgType) throws Exception {
         String SRC_DIR = System.getenv("SRC_DIR");
         if (SRC_DIR != null) {
@@ -83,6 +108,9 @@ public class GroupManagerCodeGenerator {
         }
     }
 
+    /**
+     * Headers first. Headers contain repeating groups in some fix versions.
+     */
     private void handleInitHeader() {
         Map<String, RepeatingGroupBuilder> headerMap = repeatingGrpMap.getGroupMap().get("HEADER");
         if (headerMap == null) { return; }
@@ -98,6 +126,12 @@ public class GroupManagerCodeGenerator {
         }
     }
 
+    /**
+     * Print out class methods and data for a repeating group within the class
+     * specific to a message type.
+     * @param msgType
+     * @param group
+     */
     private void writeOutGroupClass(String msgType, RepeatingGroupBuilder group) {
         String groupId = group.getGroupId();
         group.getGroupDelim();
@@ -140,6 +174,12 @@ public class GroupManagerCodeGenerator {
         out.println();
     }
 
+    /**
+     * Print out class methods and data for a repeating group within the class
+     * specific to a message type.
+     * @param msgType
+     * @param group
+     */
     private void handleDefineGroups(String msgType) {
         Map<String, RepeatingGroupBuilder> msgGroupMap = repeatingGrpMap.getGroupMap().get(msgType);
         if (msgGroupMap == null) {
@@ -177,6 +217,9 @@ public class GroupManagerCodeGenerator {
         out.println("\t{");
     }
 
+    /**
+     * blah...blah...blah..but very important!
+     */
     private void doCopyright() {
         out.println();
         out.println("/*-");
@@ -208,6 +251,9 @@ public class GroupManagerCodeGenerator {
         out.println("*/");
     }
 
+    /**
+     * Final checks and balances.
+     */
     private void finish() {
         // out.println("}");
         out.flush();
@@ -215,6 +261,10 @@ public class GroupManagerCodeGenerator {
         if (isError) { throw new RuntimeException("IO Error during Group Code Generation!"); }
     }
 
+    /**
+     * Start generating the code for all message types.
+     * @throws Exception
+     */
     private void generateCode() throws Exception {
         Set<Entry<String, LinkedHashMap<String, String>>> compMems = null;
         Iterator<Entry<String, LinkedHashMap<String, String>>> memSetIterator = null;

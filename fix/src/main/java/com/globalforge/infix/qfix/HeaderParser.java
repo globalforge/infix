@@ -40,9 +40,15 @@ import com.globalforge.infix.qfix.AbstractXMLParser.CurrentContext;
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
  */
+/**
+ * Base class for parsing the header section of a fix xml data dictionary.
+ * Header parsing comes after field and component parsing.
+ * @author Michael C. Starkie
+ */
 public class HeaderParser {
     /** logger */
     protected final static Logger logger = LoggerFactory.getLogger(HeaderParser.class);
+    /** Map of field context (e.g., &8) to order it appears in the header */
     private final LinkedHashMap<String, String> ctxMap = new LinkedHashMap<String, String>();
     private final Deque<CurrentContext> elementStack = new ArrayDeque<CurrentContext>(100);
     private final Deque<String> curGroupStack = new ArrayDeque<String>(100);
@@ -50,25 +56,44 @@ public class HeaderParser {
     private final XMLInputFactory factory = XMLInputFactory.newInstance();
     private final FieldParser fParser;
     private final String fixFileName;
+    /** Keeps track of the number of fields in a header */
     private final AtomicInteger fieldOrder = new AtomicInteger(0);
+    /** all information about fields and groups */
     private DataStore ctxStore;
 
+    /**
+     * @param f FIX data dictionary file name
+     * @param cParser data parses from the fields section
+     * @param c component and group information from the component parse
+     * @throws Exception
+     */
     public HeaderParser(String f, FieldParser cParser, DataStore c) throws Exception {
         this.fixFileName = f;
         this.fParser = cParser;
         this.ctxStore = c;
     }
 
+    /**
+     * returns the current number of fields seen so far during a parse.
+     * @return int
+     */
     public int getCurFieldOrder() {
         return fieldOrder.get();
     }
 
-    // @Override
+    /**
+     * Begin parsing
+     * @throws XMLStreamException
+     */
     public void parse() throws XMLStreamException {
         parseHeader();
         printMembers();
     }
 
+    /**
+     * Returns the context map (see class member section).
+     * @return LinkedHashMap<String, String>
+     */
     public LinkedHashMap<String, String> getContextMap() {
         return ctxMap;
     }
@@ -141,14 +166,17 @@ public class HeaderParser {
         reader.close();
     }
 
+    /**
+     * Stores component information found in a header. Only used in FIX 5.0 and
+     * above where repeating groups in a header are defined as components.
+     * @param componentName the name of the component
+     */
     private void addComponents(String componentName) {
         LinkedList<String> cList = ctxStore.getComponentContext(componentName);
         if (cList == null) {
             cList = ctxStore.getGroupContext(componentName);
         }
-        if (cList == null) {
-            throw new RuntimeException("No such component: " + componentName);
-        }
+        if (cList == null) { throw new RuntimeException("No such component: " + componentName); }
         Iterator<String> i = cList.iterator();
         int memberOrder = 0;
         String curGrp = null;
@@ -171,6 +199,9 @@ public class HeaderParser {
         }
     }
 
+    /**
+     * data dump for debugging
+     */
     private void printMembers() {
         Set<Entry<String, String>> compMems = ctxMap.entrySet();
         Iterator<Entry<String, String>> memSetIterator = compMems.iterator();

@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Deque;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -19,7 +18,6 @@ import com.globalforge.infix.antlr.FixRulesParser.FixrulesContext;
 import com.globalforge.infix.antlr.FixRulesParser.TagnumContext;
 import com.globalforge.infix.antlr.FixRulesParser.TerminalContext;
 import com.globalforge.infix.api.InfixFieldInfo;
-import com.globalforge.infix.qfix.FixGroupMgr;
 
 /**
  * This is the class which performs the application logic in response to the
@@ -75,6 +73,12 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         this.tag8Value = null;
     }
 
+    /**
+     * Initialize the rule engine with a Fix input string and custom FIX
+     * version.
+     * @param fixMsg The FIX input message
+     * @param tag8Value The customer FIX version.
+     */
     public FixRulesTransformVisitor(String fixMsg, String tag8Value) {
         this.tag8Value = tag8Value;
         this.fixMessage = fixMsg;
@@ -88,8 +92,6 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     }
 
     /**
-     * {@inheritDoc}
-     * <p/>
      * The default implementation returns the result of calling
      * {@link #visitChildren} on {@code ctx}.
      */
@@ -217,10 +219,6 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      * them up by popping the stack and inserting the tag so that it appears in
      * the correct order.
      * @return String representation of a tag references in rule syntax.
-     * @see FixRulesTransformVisitor#ctxTree
-     * @see FixMessageMgr#putContext(Deque, String, String)
-     * @see FixGroupMgr#getCxtPosition(Deque)
-     * @see FixRulesParser.TagrefContext
      */
     @Override
     public String visitTagref(FixRulesParser.TagrefContext ctx) {
@@ -230,9 +228,9 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     }
 
     /**
-     * Do something with a refernce to a tag index. A tag index is defined as
+     * Do something with a reference to a tag index. A tag index is defined as
      * the nesting level of a repeating group. Also used to build the stack
-     * based tree of refernces descibed in
+     * based tree of references described in
      * {@link FixRulesTransformVisitor#visitTagref}
      * @see FixRulesTransformVisitor#visitTagref
      */
@@ -315,7 +313,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     }
 
     /**
-     * Formats a timestamp string in rule syntax into a FIX UTC timestamp.
+     * Formats a time stamp string in rule syntax into a FIX UTC time stamp.
      * @return String the datetime in format yyyyMMdd-HH:mm:ss.SSS
      * @see FixRulesParser.DateTimeContext
      */
@@ -335,22 +333,17 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     }
 
     /**
-     * Perform addition and substraction on operands in rule syntax.
+     * Perform addition and subtraction on operands in rule syntax.
      * @return String the result of an addition or subtraction of two operands
      * depending upon the context.
      * @see FixRulesParser.AddSubContext
      */
     @Override
     public String visitAddSub(FixRulesParser.AddSubContext ctx) {
-        String left = visit(ctx.expr(FixRulesTransformVisitor.LEFT)); // get
-                                                                      // value
-                                                                      // of left
-                                                                      // subexpression
-        String right = visit(ctx.expr(FixRulesTransformVisitor.RIGHT)); // get
-                                                                        // value
-                                                                        // of
-                                                                        // right
-                                                                        // subexpression
+        // get value of left subexpression
+        String left = visit(ctx.expr(FixRulesTransformVisitor.LEFT));
+        // get value of right subexpression
+        String right = visit(ctx.expr(FixRulesTransformVisitor.RIGHT));
         if ((left == null) || (right == null)) {
             FixRulesTransformVisitor.logger.warn("null field in 'Add/Sub'. No assignment: {}",
                 ctx.getText());
@@ -374,15 +367,10 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      */
     @Override
     public String visitMulDiv(FixRulesParser.MulDivContext ctx) {
-        String left = visit(ctx.expr(FixRulesTransformVisitor.LEFT)); // get
-                                                                      // value
-                                                                      // of left
-                                                                      // subexpression
-        String right = visit(ctx.expr(FixRulesTransformVisitor.RIGHT)); // get
-                                                                        // value
-                                                                        // of
-                                                                        // right
-                                                                        // subexpression
+        // get value of left subexpression
+        String left = visit(ctx.expr(FixRulesTransformVisitor.LEFT));
+        // get value of right subexpression
+        String right = visit(ctx.expr(FixRulesTransformVisitor.RIGHT));
         if ((left == null) || (right == null)) {
             FixRulesTransformVisitor.logger.warn("null field in 'Mul/Div'. No assignment: {}",
                 ctx.getText());
@@ -404,15 +392,10 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      */
     @Override
     public String visitCat(FixRulesParser.CatContext ctx) {
-        String left = visit(ctx.expr(FixRulesTransformVisitor.LEFT)); // get
-                                                                      // value
-                                                                      // of left
-                                                                      // subexpression
-        String right = visit(ctx.expr(FixRulesTransformVisitor.RIGHT)); // get
-                                                                        // value
-                                                                        // of
-                                                                        // right
-                                                                        // subexpression
+        // get value of left subexpression
+        String left = visit(ctx.expr(FixRulesTransformVisitor.LEFT));
+        // get value of right subexpression
+        String right = visit(ctx.expr(FixRulesTransformVisitor.RIGHT));
         if ((left == null) || (right == null)) {
             FixRulesTransformVisitor.logger.warn("null field in '|'. No assignment: {}",
                 ctx.getText());
@@ -615,7 +598,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
 
     /**
      * The outcome of a boolean expression is always a tag assignment. If the
-     * outcome is true an assigment will take place.
+     * outcome is true an assignment will take place.
      */
     @Override
     public String visitThen(FixRulesParser.ThenContext ctx) {
@@ -629,7 +612,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
 
     /**
      * The outcome of a boolean expression is always a tag assignment. If the
-     * outcome is false an assigment will take place.
+     * outcome is false an assignment will take place.
      */
     @Override
     public String visitEls(FixRulesParser.ElsContext ctx) {
@@ -685,6 +668,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     /**
      * Deletes a series of tags from a fix message.
      */
+    @Override
     public String visitDeleteTagSet(FixRulesParser.DeleteTagSetContext ctx) {
         List<TagnumContext> tagList = ctx.tagnum();
         Map<String, InfixFieldInfo> msgMap = msgMgr.getInfixMessageMap();

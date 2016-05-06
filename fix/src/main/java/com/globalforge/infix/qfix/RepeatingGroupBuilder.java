@@ -29,12 +29,13 @@ SOFTWARE.
 */
 /**
  * Encapsulates fields in a repeating group
- *
  * @author Michael
  */
 public class RepeatingGroupBuilder {
     protected final String groupId;
+    /** member fields of a group */
     protected final LinkedList<String> memberList = new LinkedList<String>();
+    /** list of group identifiers of any nested groups within this group */
     protected final LinkedList<String> referenceList = new LinkedList<String>();
     protected boolean isNested = false;
 
@@ -62,28 +63,37 @@ public class RepeatingGroupBuilder {
 
     /**
      * Add member to the set of fields
-     *
      * @param member field member of repeating group.
      */
     public void addMember(String member) {
         memberList.add(member);
     }
 
+    /**
+     * Add a reference to a nested group within this group
+     * @param groupId
+     */
     public void addReference(String groupId) {
         referenceList.add(groupId);
     }
 
+    /**
+     * @return true is this group is nested in some other group
+     */
     public boolean isNested() {
         return isNested;
     }
 
+    /**
+     * Set true if this group is nested within some other group.
+     * @param n
+     */
     public void setNested(boolean n) {
         isNested = n;
     }
 
     /**
      * Determines if a tag is part of this repeating group.
-     *
      * @param tagNum The tag to check
      * @return boolean if true.
      */
@@ -91,26 +101,33 @@ public class RepeatingGroupBuilder {
         return memberList.contains(tagNum);
     }
 
-    public boolean containsReference(String tagNum) {
-        return referenceList.contains(tagNum);
+    /**
+     * Determine if the given group identifier is nested within this group
+     * @param groupId the group identifier
+     * @return boolean
+     */
+    public boolean containsReference(String groupId) {
+        return referenceList.contains(groupId);
     }
 
     /**
      * Returns the actual set of all members of a repeating group.
-     *
      * @return Set<String> The tag members belonging to this group.
      */
     public LinkedList<String> getMemberList() {
         return memberList;
     }
 
+    /**
+     * @return LinkedList<String> a list of all nested group identifiers within
+     * this group.
+     */
     public LinkedList<String> getReferenceList() {
         return referenceList;
     }
 
     /**
      * Returns an unmodifiable set copy of all members of a repeating group.
-     *
      * @return Set<String> The tag members belonging to this group.
      */
     public List<String> getUnmodifiableMemberList() {
@@ -119,7 +136,6 @@ public class RepeatingGroupBuilder {
 
     /**
      * Returns a modifiable set copy of all members of a repeating group.
-     *
      * @return Set<String> The tag members belonging to this group.
      */
     public LinkedList<String> getCopyOfMemberList() {

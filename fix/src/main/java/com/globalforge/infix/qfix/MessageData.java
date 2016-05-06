@@ -29,16 +29,27 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+/**
+ * Base class for runtime classes which load all the generated classes and
+ * static data into memory.
+ * @author Michael C. Starkie
+ */
 public abstract class MessageData {
     private final static Logger logger = LoggerFactory.getLogger(MessageData.class);
+    /** information used in field order classes */
     protected Map<String, FieldOrderMap> fieldOrderMap = new HashMap<String, FieldOrderMap>();
+    /** information used in group definition classes */
     protected Map<String, FixGroupMgr> groupMap = new HashMap<String, FixGroupMgr>();
 
+    /**
+     * Dynamically loads the extension of FieldOrderMap associated with a
+     * message type.
+     * @param msgType
+     * @return FieldOrderMap
+     */
     public FieldOrderMap getFieldOrderMap(String msgType) {
         FieldOrderMap fldMap = fieldOrderMap.get(msgType);
-        if (fldMap != null) {
-            return fldMap;
-        }
+        if (fldMap != null) { return fldMap; }
         String methodName = "initMessageType_" + msgType + "_" + msgType.hashCode();
         try {
             Method method = getClass().getMethod(methodName);
@@ -52,11 +63,15 @@ public abstract class MessageData {
         return fldMap;
     }
 
+    /**
+     * Dynamically loads the extension of FixGroupMgr associated with a message
+     * type.
+     * @param msgType
+     * @return FixGroupMgr
+     */
     public FixGroupMgr getGroupMgr(String msgType) {
         FixGroupMgr grpMgr = groupMap.get(msgType);
-        if (grpMgr != null) {
-            return grpMgr;
-        }
+        if (grpMgr != null) { return grpMgr; }
         String methodName = "initMessageType_" + msgType + "_" + msgType.hashCode();
         try {
             Method method = getClass().getMethod(methodName);

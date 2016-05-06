@@ -42,6 +42,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+/**
+ * Parses the messages section of a FIX data dictionary
+ * @author Michael C. Starkie
+ */
 public abstract class MessageParser {
     final static Logger logger = LoggerFactory.getLogger(MessageParser.class);
     // the precision is based on the largest repeating group. there should be no
@@ -57,6 +61,12 @@ public abstract class MessageParser {
     protected final String fixFileName;
     protected final DataStore ctxStore;
 
+    /**
+     * @param f FIX File name
+     * @param cParser Field parse data
+     * @param h Header parse data
+     * @param c Component parse data
+     */
     public MessageParser(String f, FieldParser cParser, HeaderParser h, ComponentParser c) {
         this.headerParser = h;
         this.fixFileName = f;
@@ -65,28 +75,61 @@ public abstract class MessageParser {
         this.ctxStore = c.getContextStore();
     }
 
+    /**
+     * Entry point
+     * @throws XMLStreamException
+     * @throws Exception
+     */
     public abstract void parse() throws XMLStreamException, Exception;
 
+    /**
+     * Obtain a reference to the data store
+     * @return DataStore
+     */
     public DataStore getFIXDataStore() {
         return ctxStore;
     }
 
+    /**
+     * Obtain a reference to the header parse data
+     * @return HeaderParser
+     */
     public HeaderParser getHeaderParser() {
         return headerParser;
     }
 
+    /**
+     * Obtain a reference to the map of message types to the map of field
+     * contexts to field order.
+     * @return Map<String, Map<String, String>>
+     */
     public Map<String, Map<String, String>> getMessageMap() {
         return Collections.unmodifiableMap(messageMap);
     }
 
+    /**
+     * Obtain a reference to the map of message types to the map of field
+     * contexts to field order.
+     * @return Map<String, Map<String, Integer>>
+     */
     public Map<String, Map<String, Integer>> getGroupMap() {
         return Collections.unmodifiableMap(groupMap);
     }
 
+    /**
+     * For repeating group members, the final order of any particular member
+     * within a fix message is unknown before runtime because we don't know how
+     * many times a particular group will repeat. We can infer a syntax for a
+     * relative order that will heuristically all but guarantee the proper order
+     * of a repeating member regardless of the number of repeating member fields
+     * at runtime.
+     * @param memberPos
+     * @param groupSize
+     * @return
+     */
     private String getMantissaHash(int memberPos, int groupSize) {
         BigDecimal dividend = new BigDecimal(memberPos + 1.0, MathContext.DECIMAL32);
         BigDecimal divisor = new BigDecimal(groupSize + 1.0, MathContext.DECIMAL32);
-        // --
         BigDecimal memberHash =
             dividend.divide(divisor, MessageParser.mathCtx).stripTrailingZeros();
         String locationHash = memberHash.toPlainString();
@@ -95,19 +138,32 @@ public abstract class MessageParser {
         return mantissa;
     }
 
+    /**
+     * returns the innermost group identifier of a group context
+     * @param ctxString
+     * @return String
+     */
     public static String getGroupIdCtx(String ctxString) {
         int bracketIdx = ctxString.lastIndexOf("[");
-        if (bracketIdx < 0) {
-            return null;
-        }
+        if (bracketIdx < 0) { return null; }
         String groupIdCtx = ctxString.substring(0, bracketIdx);
         return groupIdCtx;
     }
 
-    protected LinkedHashMap<String, String> orderMessage(String msgName, int fOrder) {
+    /**
+     * The algorithm which preassigns an order value to a fix field. Calculates
+     * the relative order of a group member in relation to its group identifier
+     * and leave a placeholder that is dependent upon it's nesting level at
+     * runtime.
+     * @param msgType The message type
+     * @param fOrder the current order of the last field seen
+     * @return LinkedHashMap<String, String> A list of field contexts and their
+     * order in the message.
+     */
+    protected LinkedHashMap<String, String> orderMessage(String msgType, int fOrder) {
         HashMap<Integer, String> nestMap = new HashMap<Integer, String>();
         LinkedHashMap<String, String> newMsgFieldMap = new LinkedHashMap<String, String>();
-        LinkedHashMap<String, String> msgFields = messageMap.get(msgName);
+        LinkedHashMap<String, String> msgFields = messageMap.get(msgType);
         Iterator<String> ctxKeys = msgFields.keySet().iterator();
         HashMap<String, Integer> groupMemberCount = new HashMap<String, Integer>();
         while (ctxKeys.hasNext()) {
@@ -115,7 +171,7 @@ public abstract class MessageParser {
             String ctxKey = ctxKeys.next();
             int starCount = ctxKey.length() - ctxKey.replace("*", "").length();
             String groupIdCtx = MessageParser.getGroupIdCtx(ctxKey);
-            LinkedHashMap<String, Integer> msgGroupMap = groupMap.get(msgName);
+            LinkedHashMap<String, Integer> msgGroupMap = groupMap.get(msgType);
             if (groupIdCtx != null) {
                 int groupSize = msgGroupMap.get(groupIdCtx);
                 if (!groupMemberCount.containsKey(groupIdCtx)) {
@@ -135,12 +191,17 @@ public abstract class MessageParser {
                 nestMap.put(starCount, nextOrder + ".*");
             }
         }
+        // a hack to make sure the trailer fields are last.
         newMsgFieldMap.put("&93", 1999998 + "");
         newMsgFieldMap.put("&89", 1999999 + "");
         newMsgFieldMap.put("&10", 2000000 + "");
         return newMsgFieldMap;
     }
 
+    /**
+     * Orders all fields in a message type for all message types in a FIX
+     * version.
+     */
     protected void orderAllMessages() {
         LinkedHashMap<String, LinkedHashMap<String, String>> newMessageMap =
             new LinkedHashMap<String, LinkedHashMap<String, String>>();
@@ -158,6 +219,11 @@ public abstract class MessageParser {
         messageMap.putAll(newMessageMap);
     }
 
+    /**
+     * In order to assign a relative position of a member within a repeating
+     * group the algorithm needs to know the size of the repeating group in
+     * terms of the number of member fields.
+     */
     protected void calcMemberSizes() {
         Set<Entry<String, LinkedHashMap<String, String>>> compMems = messageMap.entrySet();
         Iterator<Entry<String, LinkedHashMap<String, String>>> memSetIterator = compMems.iterator();
@@ -191,7 +257,6 @@ public abstract class MessageParser {
 
     /**
      * Number after last '&'
-     *
      * @param ctxString Full context of field reference.
      * @return String a tag number
      */
@@ -201,30 +266,28 @@ public abstract class MessageParser {
         return tagNum;
     }
 
-    /*-
-    private boolean isComponentGroup(String groupId) {
-        if (ctxStore.isComponentGroup(groupId)) {
-            return true;
-        }
-        return false;
-    }
-    
-    private RepeatingGroupBuilder getComponentGroup(String groupId) {
-        return ctxStore.getComponentGroup(groupId);
-    }
-    
-    private RepeatingGroupBuilder getMessageGroup(String curMessage, String groupId) {
-        if (ctxStore.isMessageGroup(curMessage, groupId)) {
-            return ctxStore.getMessageGroup(curMessage, groupId);
-        }
-        return null;
-    }
-    */
+    /**
+     * Places the field context in the map of field to order and sets the order
+     * to null. The order will be assigned later.
+     * @param msgType the message type
+     * @param fieldCtx the field context
+     */
     protected void addFieldContextKeyToOrderMap(String msgType, String fieldCtx) {
         LinkedHashMap<String, String> fieldMap = messageMap.get(msgType);
         fieldMap.put(fieldCtx, null);
     }
 
+    /**
+     * Given a list of components in infix syntax build parse out repeating
+     * group if any exist.
+     * @param curMessage The current message being parsed
+     * @param components A list of parsed components that are referenced in a
+     * message
+     * @param preCtx If a component is nested in a group then the component
+     * elements are members.
+     * @param groupId The current group within a message being parsed (may be
+     * null).
+     */
     protected void addComponents(String curMessage, LinkedList<String> components, String preCtx,
         String groupId) {
         LinkedHashMap<String, String> fieldMap = messageMap.get(curMessage);
@@ -252,6 +315,9 @@ public abstract class MessageParser {
         }
     }
 
+    /**
+     * data dump
+     */
     protected void printMembers() {
         Set<Entry<String, LinkedHashMap<String, String>>> compMems = messageMap.entrySet();
         Iterator<Entry<String, LinkedHashMap<String, String>>> memSetIterator = compMems.iterator();
@@ -269,6 +335,9 @@ public abstract class MessageParser {
         }
     }
 
+    /**
+     * data dump in reverse?
+     */
     protected void printMembersReverse() {
         Set<Entry<String, LinkedHashMap<String, String>>> compMems = messageMap.entrySet();
         Iterator<Entry<String, LinkedHashMap<String, String>>> memSetIterator = compMems.iterator();
@@ -286,6 +355,9 @@ public abstract class MessageParser {
         }
     }
 
+    /**
+     * data dump of all group identifiers in a message
+     */
     protected void printGroupIds() {
         Set<Entry<String, LinkedHashMap<String, Integer>>> compMems = groupMap.entrySet();
         Iterator<Entry<String, LinkedHashMap<String, Integer>>> memSetIterator =

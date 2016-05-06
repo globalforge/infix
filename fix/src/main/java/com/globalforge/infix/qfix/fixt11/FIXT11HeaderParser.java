@@ -29,6 +29,10 @@ import com.globalforge.infix.qfix.HeaderParser;
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
  */
+/**
+ * @see HeaderParser
+ * @author Michael C. Starkie
+ */
 public class FIXT11HeaderParser extends HeaderParser {
     /** logger */
     final static Logger logger = LoggerFactory.getLogger(FIXT11HeaderParser.class);

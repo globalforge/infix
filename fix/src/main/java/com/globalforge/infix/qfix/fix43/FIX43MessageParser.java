@@ -30,6 +30,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+/**
+ * FIX 4.3 is same as FIX 4.4 parser
+ * @see FIX44MessageParser
+ * @author Michael C. Starkie
+ */
 public class FIX43MessageParser extends FIX44MessageParser {
     /** logger */
     final static Logger logger = LoggerFactory.getLogger(FIX43MessageParser.class);

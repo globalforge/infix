@@ -34,7 +34,6 @@ SOFTWARE.
 /**
  * Resolves references to components and groups. An algorithm to convert
  * component names into an Infix like context map.
- *
  * @author Michael
  */
 public class ResolveManager {
@@ -80,6 +79,9 @@ public class ResolveManager {
         // printIntermediateGroups();
     }
 
+    /**
+     * @return DataStore grab the data store
+     */
     public DataStore getContextStore() {
         return this.ctxStore;
     }
@@ -137,7 +139,6 @@ public class ResolveManager {
     /**
      * Given a component name from the quick fix data dictionary, convert all
      * the member fields contained within it to infix syntax.
-     *
      * @param member The component name as defined by a quickfix dictionary.
      * @param resolveList The list of field members conververted to infix
      * syntax.
@@ -184,7 +185,6 @@ public class ResolveManager {
      * Given a group component name from the quick fix data dictionary, convert
      * all the component (excluding group components) member fields contained
      * within it to infix syntax.
-     *
      * @param member The name of the group component as defined by the quickfix
      * data dictionary.
      * @return LinkedList<String> The list of all resolved component member
@@ -228,12 +228,21 @@ public class ResolveManager {
         }
     }
 
+    /**
+     * Start a repeating group.
+     * @param grpId the group identifier
+     */
     private void startGroup(String grpId) {
         grpId = grpId.substring(1);
         RepeatingGroupBuilder rg = new RepeatingGroupBuilder(grpId);
         ctxStore.putComponentGroup(grpId, rg);
     }
 
+    /**
+     * Add a member to a repeating group
+     * @param grpId the group identifier
+     * @param mem the member
+     */
     private void addGroupMember(String grpId, String mem) {
         grpId = grpId.substring(1);
         mem = mem.substring(1);
@@ -244,7 +253,6 @@ public class ResolveManager {
      * Given a group component name from the quick fix data dictionary, convert
      * all the group component member fields contained within it to infix
      * syntax.
-     *
      * @param member The name of the group component defined in the quickfix
      * data dictionary.
      * @param grpCtx The infix context in progress.
@@ -261,7 +269,7 @@ public class ResolveManager {
             if (cIdx >= 0) {
                 String referredName = mem.substring(cIdx + 1);
                 if ("NoSecurityAltID".equals(referredName)) {
-                    System.out.println(referredName);
+                    // System.out.println(referredName);
                 }
                 resolveGroupsInGroup(referredName, grpCtx, resolveList);
             } else {
@@ -298,7 +306,6 @@ public class ResolveManager {
      * Given a pure component (not a group) name from the quick fix data
      * dictionary, convert all the group component member fields contained
      * within it to infix syntax.
-     *
      * @param member The name of the component.
      * @param grpCtx The nested infix syntax in progress.
      * @param resolveList The final list of member fields converted to infix
@@ -359,18 +366,16 @@ public class ResolveManager {
         while (compIt.hasNext()) {
             String compKey = compIt.next();
             boolean added = ckSet.add(compKey);
-            if (!added) {
-                throw new RuntimeException("duplicate key in complete comp map: " + compKey);
-            }
+            if (!added) { throw new RuntimeException(
+                "duplicate key in complete comp map: " + compKey); }
         }
         Set<String> groupNames = ctxStore.getGroupNameSet();
         Iterator<String> groupIt = groupNames.iterator();
         while (groupIt.hasNext()) {
             String grpKey = groupIt.next();
             boolean added = ckSet.add(grpKey);
-            if (!added) {
-                throw new RuntimeException("duplicate key in complete group map: " + grpKey);
-            }
+            if (!added) { throw new RuntimeException(
+                "duplicate key in complete group map: " + grpKey); }
         }
     }
 
@@ -398,10 +403,8 @@ public class ResolveManager {
         compMems = groupNames.iterator();
         while (compMems.hasNext()) {
             String componentName = compMems.next();
-            if (ctxStore.containsComponentName(componentName)) {
-                throw new RuntimeException(
-                    "Can't have component in both comp table and group table: " + componentName);
-            }
+            if (ctxStore.containsComponentName(componentName)) { throw new RuntimeException(
+                "Can't have component in both comp table and group table: " + componentName); }
             LinkedList<String> fieldNameList = ctxStore.getGroupContext(componentName);
             Set<String> memSet = new HashSet<String>(fieldNameList.size());
             for (int i = 0; i < fieldNameList.size(); i++) {
@@ -460,6 +463,9 @@ public class ResolveManager {
         ResolveManager.logger.info("--- END INTERMEDIATE GROUPS ---");
     }
 
+    /**
+     * data dump.
+     */
     public void printGroupManager() {
         this.grpMgr.printGroupMap();
     }

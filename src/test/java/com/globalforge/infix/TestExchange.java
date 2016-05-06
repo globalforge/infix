@@ -30,7 +30,6 @@ SOFTWARE.
 */
 /**
  * Test changing the values between tags.
- *
  * @author Michael
  */
 public class TestExchange {

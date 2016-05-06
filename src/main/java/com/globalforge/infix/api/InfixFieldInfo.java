@@ -30,20 +30,19 @@ import java.math.BigDecimal;
  * A means to bind a tag number to it's position in the input message. A tag
  * number may appear more than once in a fix message within a repeating group.
  * All tag numbers have a distinct context string that both indicates the tag
- * num and provides information about it's nested position within a message. The
- * infix application maintains the order of tags in the input message. It
+ * number and provides information about it's nested position within a message.
+ * The infix application maintains the order of tags in the input message. It
  * accomplishes this by mapping a number associated with the tag context in the
  * original message. The FieldContext class is a temporary holder of this
  * information before the member fields are referenced by the mapping event.
  * Examples of tag contexts for tags 35 and 375: &35, &382[0]->&375,
  * &382[1]->&375
- *
  * @author Michael Starkie
  */
 public class InfixFieldInfo implements Serializable, Comparable<InfixFieldInfo> {
     private static final long serialVersionUID = 1L;
     /**
-     * A unique value describing a tag num and any nesting information if the
+     * A unique value describing a tag number and any nesting information if the
      * tag is part of a repeating group. Used as a key in a hash of tag
      * numbers..
      */
@@ -59,13 +58,16 @@ public class InfixFieldInfo implements Serializable, Comparable<InfixFieldInfo> 
         position = pos;
     }
 
+    /**
+     * Get the Field Object
+     * @return InfixField
+     */
     public InfixField getField() {
         return field;
     }
 
     /**
      * The value associated with the tag context.
-     *
      * @return
      */
     public BigDecimal getPosition() {

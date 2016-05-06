@@ -28,15 +28,29 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+/**
+ * Transfers all repeating group info collected during a fix data dictionary
+ * parse and consolidates it in a class used by the code generator.
+ * @author Michael C. Starkie
+ */
 public class RepeatingGroupBuilderMap {
     /** A map of MsgType to repeating groups mapped by groupId */
     protected final Map<String, Map<String, RepeatingGroupBuilder>> grpMap =
         new HashMap<String, Map<String, RepeatingGroupBuilder>>();
 
+    /**
+     * Return map of MsgType to repeating groups mapped by groupId
+     * @return Map<String, Map<String, RepeatingGroupBuilder>>
+     */
     public Map<String, Map<String, RepeatingGroupBuilder>> getGroupMap() {
         return grpMap;
     }
 
+    /**
+     * Collect all the repeating group info found in a message section.
+     * @param msgType The message type
+     * @param gMap The group info
+     */
     public void addAll(String msgType, Map<String, RepeatingGroupBuilder> gMap) {
         Map<String, RepeatingGroupBuilder> ctxMap = grpMap.get(msgType);
         if (ctxMap == null) {
@@ -46,6 +60,11 @@ public class RepeatingGroupBuilderMap {
         ctxMap.putAll(gMap);
     }
 
+    /**
+     * Collect all the repeating group info found elsewhere like the components
+     * section.
+     * @param otherMap A map of groups collected during a components parse.
+     */
     public void addAll(RepeatingGroupBuilderMap otherMap) {
         Map<String, Map<String, RepeatingGroupBuilder>> otherMessageMap = otherMap.grpMap;
         Iterator<Entry<String, Map<String, RepeatingGroupBuilder>>> otherEntries =

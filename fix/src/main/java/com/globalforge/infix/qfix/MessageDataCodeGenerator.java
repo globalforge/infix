@@ -32,6 +32,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+/**
+ * Generates the sub-classes of MessageData for each version of FIX.
+ * @author Michael C. Starkie
+ */
 public class MessageDataCodeGenerator {
     /** logger */
     private final static Logger logger = LoggerFactory.getLogger(MessageDataCodeGenerator.class);
@@ -41,11 +45,19 @@ public class MessageDataCodeGenerator {
     private PrintStream out = null;
     private final ContextOrderMap msgCtxMap;
 
+    /**
+     * @param fVer FIX Version
+     * @param d all the data parsed from the FIX Version
+     */
     public MessageDataCodeGenerator(String fVer, DataGenerator d) {
         this.afixVer = fVer.replace(".", "");
         this.msgCtxMap = d.getContextOrderMap(fVer);
     }
 
+    /**
+     * Does the deed. Generates all the java classes.
+     * @throws Exception
+     */
     public void generateClass() throws Exception {
         initOutputStreams("Static");
         handleStartClass();
@@ -58,6 +70,15 @@ public class MessageDataCodeGenerator {
         finish();
     }
 
+    /**
+     * Determines where on the file system to write the code. Each message type
+     * has it's own package location. Must set SRC_DIR environment variable to
+     * absolute path of com.globalforge.infix.qfix package <br>
+     * Example: <br>
+     * SRC_DIR=/projects/infix/fix/src/main/java/com/globalforge/infix/qfix
+     * @param msgType
+     * @throws Exception
+     */
     private void initOutputStreams(String type) throws Exception {
         String SRC_DIR = System.getenv("SRC_DIR");
         if (SRC_DIR != null) {
@@ -106,6 +127,9 @@ public class MessageDataCodeGenerator {
         out.println("public class " + fileNamePrefix + " extends MessageData {");
     }
 
+    /**
+     * mucho importante
+     */
     private void doCopyright() {
         out.println();
         out.println("/*-");
@@ -137,6 +161,9 @@ public class MessageDataCodeGenerator {
         out.println("*/");
     }
 
+    /**
+     * Build the constructors which initializes each message type
+     */
     private void handleConstructor() {
         out.println("\t{");
         Set<Entry<String, LinkedHashMap<String, String>>> compMems = null;
@@ -152,6 +179,9 @@ public class MessageDataCodeGenerator {
         out.println("\t}");
     }
 
+    /**
+     * build the methods which populate the runtim data.
+     */
     private void handleMessages() {
         Set<Entry<String, LinkedHashMap<String, String>>> compMems = null;
         Iterator<Entry<String, LinkedHashMap<String, String>>> memSetIterator = null;
@@ -171,6 +201,9 @@ public class MessageDataCodeGenerator {
         }
     }
 
+    /**
+     * It's a good thing to finish
+     */
     private void finish() {
         out.println("}");
     }

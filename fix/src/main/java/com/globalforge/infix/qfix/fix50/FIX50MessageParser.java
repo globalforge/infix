@@ -40,6 +40,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+/**
+ * Parse a FIX 5.0 message and all FIX versions after to FIX 5.0
+ * @author Michael C. Starkie
+ */
 public class FIX50MessageParser extends MessageParser {
     /** logger */
     final static Logger logger = LoggerFactory.getLogger(FIX50MessageParser.class);

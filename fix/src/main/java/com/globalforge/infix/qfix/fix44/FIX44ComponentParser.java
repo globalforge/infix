@@ -39,6 +39,10 @@ import com.globalforge.infix.qfix.ResolveManager;
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
  */
+/**
+ * Parse FIX 4.4 components section
+ * @author Michael C. Starkie
+ */
 public class FIX44ComponentParser extends ComponentParser {
     /** logger */
     final static Logger logger = LoggerFactory.getLogger(FIX44ComponentParser.class);
@@ -88,7 +92,7 @@ public class FIX44ComponentParser extends ComponentParser {
                         String name = reader.getAttributeValue(0);
                         curComponent = name;
                         if ("UnderlyingInstrument".equals(curComponent)) {
-                            System.out.println();
+                            // System.out.println();
                         }
                         componentMgr.initializeComponent(name);
                     } else if ("component".equals(elementName)

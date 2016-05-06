@@ -29,7 +29,6 @@ import com.globalforge.infix.api.InfixUserContext;
  */
 /**
  * An example implementation showing how to use user defined behavior
- *
  * @author Michael C. Starkie
  */
 public class ExampleUserContext implements InfixUserContext {
@@ -37,7 +36,6 @@ public class ExampleUserContext implements InfixUserContext {
     /**
      * User defined but the message returned must be legal for the fix version
      * otherwise the behavior is undefined.
-     *
      * @param fixMessage The message to manipulate with java code
      * @return String The new message to return to the parser.
      */
@@ -48,7 +46,6 @@ public class ExampleUserContext implements InfixUserContext {
     /**
      * Demonstrate how to change the state of a fix message as it resides in
      * memory before final transformation.
-     *
      * @param InfixMappingAPI A handle into the infix internals.
      * @see InfixAPI
      */
@@ -59,7 +56,6 @@ public class ExampleUserContext implements InfixUserContext {
 
     /**
      * Demonstrate that you can write java to be called during a rule parse.
-     *
      * @param baseMsg The message to manipulate with java code
      * @return String The new message to return to the parser.
      */

@@ -42,6 +42,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+/**
+ * Parse FIX 5.0 components section
+ * @author Michael C. Starkie
+ */
 public class FIX50ComponentParser extends ComponentParser {
     @SuppressWarnings("unused")
     final private static Logger logger = LoggerFactory.getLogger(FIX50ComponentParser.class);
@@ -123,10 +127,8 @@ public class FIX50ComponentParser extends ComponentParser {
                     groupMgr.addMember(componentName, attrName);
                 } else if ("component".equals(elementName)) {
                     groupMgr.addNestedComponent(componentName, attrName);
-                } else if ("group".equals(elementName)) {
-                    throw new RuntimeException(
-                        "Nested groups not handled for this fix version: " + elementName);
-                }
+                } else if ("group".equals(elementName)) { throw new RuntimeException(
+                    "Nested groups not handled for this fix version: " + elementName); }
             }
         }
     }

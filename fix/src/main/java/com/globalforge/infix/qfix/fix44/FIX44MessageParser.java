@@ -40,6 +40,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+/**
+ * Parse a FIX 4.4 message and all FIX versions prior to FIX 4.4
+ * @author Michael C. Starkie
+ */
 public class FIX44MessageParser extends MessageParser {
     /** logger */
     final static Logger logger = LoggerFactory.getLogger(FIX44MessageParser.class);
@@ -124,7 +128,7 @@ public class FIX44MessageParser extends MessageParser {
                     if ("component".equals(elementName) && (curContext == CurrentContext.GROUP)) {
                         String componentName = reader.getAttributeValue(null, "name");
                         if ("E".equals(curMessage) && "Stipulations".equals(componentName)) {
-                            System.out.println();
+                            // System.out.println();
                         }
                         LinkedList<String> components = ctxStore.getComponentContext(componentName);
                         addComponents(curMessage, components, groupCtxStack.peek() + "[*]->",
@@ -134,7 +138,7 @@ public class FIX44MessageParser extends MessageParser {
                         String tagName = reader.getAttributeValue(null, "name");
                         String tagNum = fParser.getTagNum(tagName);
                         if ("E".equals(curMessage) && "78".equals(tagNum)) {
-                            System.out.println();
+                            // System.out.println();
                         }
                         ctxStore.addMessageGroupReference(curMessage, curGroupStack.peek(), tagNum);
                         curGroupStack.push(tagNum);

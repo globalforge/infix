@@ -52,9 +52,8 @@ public abstract class FixGroupMgr {
      * Assigns the correct context string to a Fix tag taking into account
      * whether that tag number exists as part of a repeating group and which
      * level of nesting within a group it may appear.
-     * @param msgType The message type that owns the tag.
      * @param tagNum The fix tag number
-     * @return FixFieldContext the context and it's order.
+     * @return String the context string.
      */
     public String getContext(String tagNum) {
         String ctxString = '&' + tagNum;
@@ -123,7 +122,7 @@ public abstract class FixGroupMgr {
     /**
      * Adds a repeating group to a message type. This method is called by the
      * generated code and there should be no reason for a programmer to call it.
-     * @param msgType The messgae type.
+     * @param msgType The message type.
      * @param g The repeating group to add.
      */
     protected void putGroup(String groupId, FixRepeatingGroup g) {

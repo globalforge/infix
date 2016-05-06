@@ -30,6 +30,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+/**
+ * FIXT 1.1 is same as FIX 5.0 parser
+ * @see FIX50MessageParser
+ * @author Michael C. Starkie
+ */
 public class FIXT11MessageParser extends FIX50MessageParser {
     /** logger */
     final static Logger logger = LoggerFactory.getLogger(FIXT11MessageParser.class);

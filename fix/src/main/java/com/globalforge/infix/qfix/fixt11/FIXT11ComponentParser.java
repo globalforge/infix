@@ -26,6 +26,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+/**
+ * FIXT 1.1 works just like FIX 50
+ * @see FIX50ComponentParser
+ * @author Michael C. Starkie
+ */
 public class FIXT11ComponentParser extends FIX50ComponentParser {
     public FIXT11ComponentParser(String f, FieldParser cParser) throws Exception {
         super(f, cParser);

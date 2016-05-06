@@ -32,7 +32,6 @@ import com.globalforge.infix.api.InfixActions;
 /**
  * An example test application showing how to use the infix tool and to ensure
  * the integrity of builds.
- *
  * @author Michael Starkie
  */
 public class ExampleApp {

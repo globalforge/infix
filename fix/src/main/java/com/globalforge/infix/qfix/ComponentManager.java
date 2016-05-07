@@ -35,7 +35,6 @@ SOFTWARE.
 */
 /**
  * Keeps track of all components that are not repeating groups.
- * 
  * @author Michael
  */
 public class ComponentManager {
@@ -45,7 +44,6 @@ public class ComponentManager {
 
     /**
      * Initialize a map of fields associated with the component name
-     * 
      * @param name the component name.
      */
     public void initializeComponent(String name) {
@@ -56,7 +54,6 @@ public class ComponentManager {
 
     /**
      * Adds a member to the list of fields associated with a component.
-     * 
      * @param compName The component name.
      * @param fieldName The field name.
      */
@@ -68,7 +65,6 @@ public class ComponentManager {
     /**
      * Adds a nested component name to the list of fields associated with a
      * component.
-     * 
      * @param compName
      * @param nestedCompName
      */
@@ -100,7 +96,6 @@ public class ComponentManager {
 
     /**
      * Returns an unmodifiable set of component names.
-     * 
      * @return Set<String> componentNames.
      */
     public Set<String> getComponentNames() {
@@ -109,7 +104,6 @@ public class ComponentManager {
 
     /**
      * Returns a modifable list of field names given a component name.
-     * 
      * @param componentName The component name.
      * @return LinkedList<String> The associated field names.
      */

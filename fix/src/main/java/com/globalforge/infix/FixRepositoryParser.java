@@ -71,6 +71,7 @@ import org.slf4j.LoggerFactory;
  * @deprecated Use quick fix data dictionaries instead.
  * @author Michael C. Starkie
  */
+@Deprecated
 public class FixRepositoryParser {
     /** logger */
     final static Logger logger = LoggerFactory.getLogger(FixRepositoryParser.class);
@@ -139,6 +140,7 @@ public class FixRepositoryParser {
      * @throws XMLStreamException A corrupted FixRepository.xml file is found.
      * @deprecated
      */
+    @Deprecated
     public void parseGroupNames(String v) throws XMLStreamException {
         XMLStreamReader reader = factory
             .createXMLStreamReader(ClassLoader.getSystemResourceAsStream("FixRepository.xml"));
@@ -191,6 +193,7 @@ public class FixRepositoryParser {
      * @param v The fix version we are parsing.
      * @throws XMLStreamException
      */
+    @Deprecated
     public void parseBlocks(String v) throws XMLStreamException {
         XMLStreamReader reader = factory
             .createXMLStreamReader(ClassLoader.getSystemResourceAsStream("FixRepository.xml"));
@@ -287,6 +290,7 @@ public class FixRepositoryParser {
      * Runs through the block data collected and checks it's integrtity.
      * @deprecated
      */
+    @Deprecated
     public void checkBlockData() {
         Iterator<Entry<String, FixBlock>> it = fixBlocks.entrySet().iterator();
         while (it.hasNext()) {
@@ -332,6 +336,7 @@ public class FixRepositoryParser {
      * debug helper
      * @deprecated
      */
+    @Deprecated
     public void printGroupNames() {
         Iterator<String> it = fixGroupNames.iterator();
         while (it.hasNext()) {
@@ -350,6 +355,7 @@ public class FixRepositoryParser {
      * @param v The fix version we are to parse.
      * @throws XMLStreamException XML file is corrupt.
      */
+    @Deprecated
     public void parseGroups(String v) throws XMLStreamException {
         XMLStreamReader reader = factory
             .createXMLStreamReader(ClassLoader.getSystemResourceAsStream("FixRepository.xml"));
@@ -462,6 +468,7 @@ public class FixRepositoryParser {
      * Checks the integrety of the groups after they are parsed.
      * @deprecated
      */
+    @Deprecated
     public void checkGroupData() {
         Iterator<Entry<String, FixGroup>> it = fixGroups.entrySet().iterator();
         while (it.hasNext()) {
@@ -504,6 +511,7 @@ public class FixRepositoryParser {
      * @param v The fix version we should parse
      * @throws XMLStreamException XML file is corrupted.
      */
+    @Deprecated
     public void parseMessages(String v) throws XMLStreamException {
         XMLStreamReader reader = factory
             .createXMLStreamReader(ClassLoader.getSystemResourceAsStream("FixRepository.xml"));
@@ -593,6 +601,7 @@ public class FixRepositoryParser {
      * @deprecated
      * @param group The group to print.
      */
+    @Deprecated
     public void printGroupInfo(FixGroup group) {
         FixRepositoryParser.logger.info("\t" + group);
         List<String> refs = group.getGroupReferences();
@@ -609,6 +618,7 @@ public class FixRepositoryParser {
     /**
      * @deprecated
      */
+    @Deprecated
     public void printHops() {
         out.println("\t<Group name=\"HopGrp\">");
         out.println("\t\t<Id>627</Id>");
@@ -625,6 +635,7 @@ public class FixRepositoryParser {
      * @deprecated
      * @param group The group to print.
      */
+    @Deprecated
     public void printGroupXMLInfo(FixGroup group) {
         if (groupChecklist.contains(group.name)) { return; }
         groupChecklist.add(group.name);
@@ -667,6 +678,7 @@ public class FixRepositoryParser {
      * Dump message info for debug purposes
      * @deprecated
      */
+    @Deprecated
     public void printMsgInfo() {
         Iterator<Entry<String, Set<String>>> it = msgMap.entrySet().iterator();
         while (it.hasNext()) {
@@ -706,6 +718,7 @@ public class FixRepositoryParser {
      * @param msgType The message type to print.
      * @param fixVersion The current fix version we are printing msg info for.
      */
+    @Deprecated
     public void printMsgXMLInfo(String msgType, String fixVersion) {
         if (msgType.equals("8")) {
             // System.out.println("ExecutionReport");
@@ -739,6 +752,7 @@ public class FixRepositoryParser {
      * @deprecated
      * @param curFixVersion The fix version being printed.
      */
+    @Deprecated
     public void printDictionary(String curFixVersion) {
         out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         out.println("<!-- " + curFixVersion + " data dictionary -->");
@@ -766,6 +780,7 @@ public class FixRepositoryParser {
      * @deprecated
      * @param args The fix version must be in args[0].
      */
+    @Deprecated
     public static void main(String[] args) {
         try {
             if (args.length == 0) {
@@ -801,6 +816,7 @@ public class FixRepositoryParser {
      * @deprecated
      * @author Michael C. Starkie
      */
+    @Deprecated
     public static class FixBlock {
         protected String name = null;
         protected final LinkedList<String> members = new LinkedList<String>();

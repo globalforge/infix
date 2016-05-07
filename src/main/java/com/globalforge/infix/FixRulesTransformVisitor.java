@@ -11,12 +11,6 @@ import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.globalforge.infix.antlr.FixRulesBaseVisitor;
-import com.globalforge.infix.antlr.FixRulesParser;
-import com.globalforge.infix.antlr.FixRulesParser.ActionContext;
-import com.globalforge.infix.antlr.FixRulesParser.FixrulesContext;
-import com.globalforge.infix.antlr.FixRulesParser.TagnumContext;
-import com.globalforge.infix.antlr.FixRulesParser.TerminalContext;
 import com.globalforge.infix.api.InfixFieldInfo;
 
 /**

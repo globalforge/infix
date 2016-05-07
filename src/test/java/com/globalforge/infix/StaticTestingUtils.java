@@ -68,7 +68,7 @@ public class StaticTestingUtils {
                     + "538=nPartyRole1" +  '\u0001'
                     + "524=nPartyID2" +  '\u0001'
                     + "525=nPartyIDSource1" +  '\u0001'
-
+    
                  + "79=acct2" + '\u0001' //18
                  + "661=IDSource2" + '\u0001'
                  + "736=CAD" + '\u0001'
@@ -76,7 +76,7 @@ public class StaticTestingUtils {
                  + "539=1" + '\u0001' //22
                      + "524=nPartyID2" +  '\u0001'
                      + "538=nPartyRole2" +  '\u0001'
-
+    
              + "11=ClOrdID2" + '\u0001' //25
              + "67=2" + '\u0001'
              + "78=2" + '\u0001'
@@ -89,7 +89,7 @@ public class StaticTestingUtils {
                      + "538=nPartyRole3" +  '\u0001' //34
                      + "524=nPartyID4" +  '\u0001'
                      + "525=nPartyIDSource3" +  '\u0001'
-
+    
                   + "79=acct4" + '\u0001'
                   + "661=IDSource4" + '\u0001'
                   + "736=CAD" + '\u0001'
@@ -97,7 +97,7 @@ public class StaticTestingUtils {
                   + "539=1" + '\u0001'
                       + "524=nPartyID4" +  '\u0001'
                       + "538=nPartyRole4" +  '\u0001';
-
+    
     */
     public static String FIX_44_NEW_ORDER_LIST = "8=FIX.4.4" + '\u0001' + "9=247" + '\u0001' // 1
         + "35=E" + '\u0001' + "66=MyListID" + '\u0001' + "394=1" + '\u0001' + "73=2" + '\u0001' // 5

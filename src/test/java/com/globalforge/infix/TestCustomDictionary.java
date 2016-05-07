@@ -6,7 +6,6 @@ import org.junit.Test;
 import com.globalforge.infix.api.InfixActions;
 import com.globalforge.infix.qfix.FixGroupMgr;
 import com.globalforge.infix.qfix.MessageData;
-import com.globalforge.infix.qfix.fix42gc.auto.group.FIX42GC_D_68_GroupMgr;
 import com.google.common.collect.ListMultimap;
 
 /*-

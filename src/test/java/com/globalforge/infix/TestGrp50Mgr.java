@@ -4,13 +4,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import com.globalforge.infix.qfix.FixGroupMgr;
 import com.globalforge.infix.qfix.FixRepeatingGroup;
-import com.globalforge.infix.qfix.fix50.auto.group.FIX50_3_51_GroupMgr;
-import com.globalforge.infix.qfix.fix50.auto.group.FIX50_8_56_GroupMgr;
-import com.globalforge.infix.qfix.fix50.auto.group.FIX50_8_56_GroupMgr.Msg_8_56_Group_382;
-import com.globalforge.infix.qfix.fix50.auto.group.FIX50_8_56_GroupMgr.Msg_8_56_Group_711;
-import com.globalforge.infix.qfix.fix50.auto.group.FIX50_AS_2098_GroupMgr;
-import com.globalforge.infix.qfix.fix50.auto.group.FIX50_D_68_GroupMgr;
-import com.globalforge.infix.qfix.fix50.auto.group.FIX50_E_69_GroupMgr;
 
 /*-
 The MIT License (MIT)

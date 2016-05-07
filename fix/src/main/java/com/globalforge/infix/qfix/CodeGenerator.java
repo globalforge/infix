@@ -26,7 +26,6 @@ SOFTWARE.
 /**
  * Code generation main starting point. Produces all the java code that Infix
  * depends on.
- * 
  * @author Michael C. Starkie
  */
 public class CodeGenerator {

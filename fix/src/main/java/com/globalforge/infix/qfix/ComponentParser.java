@@ -28,7 +28,6 @@ SOFTWARE.
 /**
  * Base class for all component parser element types found in an xml fix
  * dictionary.
- * 
  * @author Michael C. Starkie
  */
 public abstract class ComponentParser {
@@ -40,7 +39,6 @@ public abstract class ComponentParser {
 
     /**
      * Parse a component section of a fix data dictionary
-     * 
      * @throws XMLStreamException
      * @throws Exception
      */
@@ -53,7 +51,6 @@ public abstract class ComponentParser {
     /**
      * Obtains the data store holding all the field and group information for
      * all components.
-     * 
      * @return
      */
     public DataStore getContextStore() {
@@ -63,7 +60,6 @@ public abstract class ComponentParser {
     /**
      * Obtain the resolver algorithm which resolves all component and group
      * references.
-     * 
      * @return
      */
     public ResolveManager getResolveMgr() {

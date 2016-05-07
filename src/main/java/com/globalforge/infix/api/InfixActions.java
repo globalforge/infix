@@ -13,8 +13,6 @@ import com.globalforge.infix.FixRulesErrorStrategy;
 import com.globalforge.infix.FixRulesLexerErrorListener;
 import com.globalforge.infix.FixRulesParserErrorListener;
 import com.globalforge.infix.FixRulesTransformVisitor;
-import com.globalforge.infix.antlr.FixRulesLexer;
-import com.globalforge.infix.antlr.FixRulesParser;
 
 /*-
  The MIT License (MIT)

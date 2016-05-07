@@ -1,0 +1,132 @@
+allprojects {
+    apply plugin: 'java'
+    compileJava {
+        options.debug = false 
+    }
+    apply plugin: 'eclipse'
+    //apply plugin: 'findbugs'
+    //apply plugin: 'pmd'
+    group = 'com.globalforge.infix'
+    version = '2.0'
+
+    jar {
+        manifest.attributes provider: 'GlobalForge'
+	exclude '**/*.g4'
+	exclude '**/*.xml'
+    }
+    repositories {
+       flatDir {
+          dirs "${rootProject.projectDir}/libs"
+       }
+       mavenCentral()
+    }
+    dependencies {
+        testCompile "com.google.guava:guava:18.0"
+        testCompile "junit:junit:4.11"
+        compile fileTree(dir: "${rootProject.projectDir}/libs", include: '*.jar'), 'org.slf4j:slf4j-api:1.7.7'
+        compile 'org.slf4j:slf4j-api:1.7.7'
+        runtime fileTree(dir: "${rootProject.projectDir}/libs", include: '*.jar'), 'org.slf4j:slf4j-api:1.7.7'
+        runtime 'org.slf4j:slf4j-api:1.7.7'
+        runtime 'org.slf4j:slf4j-simple:1.7.7'
+    }
+    eclipse {
+        classpath {
+           defaultOutputDir = file('build-eclipse')
+        } 
+    }
+    findbugs {
+        ignoreFailures = true
+        sourceSets = [ sourceSets.main ]
+    }
+    tasks.withType(FindBugs) {
+        exclude '**/antlr/*'
+        classes = classes.filter {
+          !it.path.contains(new File("antlr").path)
+        }
+        reports {
+          xml.enabled = false
+          html.enabled = true
+        }
+    }
+    pmd {
+        ignoreFailures = true
+        sourceSets = [ sourceSets.main ]
+    }
+    tasks.withType(Pmd) {
+        exclude '**/antlr/*'
+        reports{
+          xml.enabled = false
+          html.enabled = true
+        }
+    }
+    task cleanAllProjects(dependsOn:'clean') << {
+      println "Cleaning ${project.path}"
+    }
+}
+
+apply plugin: 'distribution'
+distributions {
+     main {
+         contents {
+             from "libs/infix-2.0.jar"
+             from "libs/fix-2.0.jar"
+             from "libs/antlr-4.5.1-complete.jar"
+             from "libs/slf4j-api-1.7.7.jar"
+             from "libs/slf4j-simple-1.7.7.jar"
+             from "libs/guava-18.0.jar"
+         }
+     }
+}
+configurations {
+   main 
+}
+dependencies {
+   main "com.globalforge.infix:infix:1.1"
+}
+project.ext {
+   outputDir = "${projectDir}/src/main/java/com/globalforge/infix/antlr"
+   resourceDir = "${projectDir}/src/main/resources"
+   libDir = "${rootProject.projectDir}/libs"
+}
+
+task(copyLib, dependsOn:assemble) {
+   copy {
+     from 'build/libs'
+     into project.ext.libDir
+   }
+}
+
+task buildAntlr(type:Exec) {
+   commandLine 'java', '-jar', "${project.ext.libDir}/antlr-4.5.1-complete.jar", '-package', 'com.globalforge.infix.antlr', '-o', project.ext.outputDir, '-visitor', '-listener', "${project.ext.resourceDir}/FixRules.g4"
+}
+
+task cleanAll(type: Delete) {
+   dependsOn cleanAllProjects
+   description 'cleans all the antlr generated source and xml in addition to clean.'
+   delete "${rootProject.projectDir}/src/main/java/com/globalforge/infix/antlr"
+   delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix40/auto"
+   delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix41/auto"
+   delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix42/auto"
+   delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix43/auto"
+   delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix44/auto"
+   delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix50/auto"
+   delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix50sp1/auto"
+   delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix50sp2/auto"
+   delete "${rootProject.projectDir}/libs/fix-2.0.jar"
+   delete "${rootProject.projectDir}/libs/infix-2.0.jar"
+   delete "${rootProject.projectDir}/build-eclipse"
+   delete "${rootProject.projectDir}/fix/build-eclipse"
+   delete "${rootProject.projectDir}/fix/build"
+   delete "${rootProject.projectDir}/dict/build-eclipse"
+   delete "${rootProject.projectDir}/dict/build"
+   delete "${rootProject.projectDir}/src/main/dist/infix-2.0.jar"
+   delete "${rootProject.projectDir}/src/main/dist/antlr-4.5.1-complete.jar"
+   delete "${rootProject.projectDir}/src/main/dist/slf4j-simple-1.7.7.jar"
+   delete "${rootProject.projectDir}/src/main/dist/slf4j-api-1.7.7.jar"
+   delete "${rootProject.projectDir}/build/distributions"
+}
+
+compileJava.dependsOn("buildAntlr")
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.10'
+}

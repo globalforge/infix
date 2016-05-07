@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2015 Global Forge LLC
+ Copyright (c) 2016 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -30,29 +30,24 @@ import org.slf4j.LoggerFactory;
  SOFTWARE.
  */
 /**
- * Extension of base lexter error listener allowing for more details error
+ * Extension of base lexer error listener allowing for more details error
  * reporting.
- * 
  * @see BaseErrorListener
  * @author Michael C. Starkie
  */
 public class FixRulesLexerErrorListener extends BaseErrorListener {
     /** logger */
-    final static Logger logger = LoggerFactory
-        .getLogger(FixRulesLexerErrorListener.class);
-    public static final FixRulesLexerErrorListener INSTANCE =
-        new FixRulesLexerErrorListener();
+    final static Logger logger = LoggerFactory.getLogger(FixRulesLexerErrorListener.class);
+    public static final FixRulesLexerErrorListener INSTANCE = new FixRulesLexerErrorListener();
 
     /**
      * @see BaseErrorListener#syntaxError
      */
     @Override
-    public void syntaxError(Recognizer<?, ?> recognizer,
-        Object offendingSymbol, int line, int charPositionInLine, String msg,
-        RecognitionException e) {
-        String logMsg =
-            "Lexer ERROR: line " + line + ":" + charPositionInLine + " at "
-                + offendingSymbol + ": " + msg;
+    public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
+        int charPositionInLine, String msg, RecognitionException e) {
+        String logMsg = "Lexer ERROR: line " + line + ":" + charPositionInLine + " at "
+            + offendingSymbol + ": " + msg;
         String sourceName = recognizer.getInputStream().getSourceName();
         if ((sourceName != null) && !sourceName.isEmpty()) {
             logMsg = String.format(logMsg + ": sourceName: " + sourceName);

@@ -1,9 +1,9 @@
-package com.globalforge.infix;
+package com.globalforge.infix.qfix;
 
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2015 Global Forge LLC
+ Copyright (c) 2016 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -43,80 +43,63 @@ package com.globalforge.infix;
  * If not, the stack is popped again. Once the stack is empty, subsequent tags
  * do not belong to repeating groups or else they indicate the start of a new
  * group.
- * 
- * @author Michael
+ * @author Michael C. Starkie
  */
-class GroupInProgress {
-    private int levels = 0;
-    private int curIdx = -1;
-    private String grpIdent = null;
-    private FixRepeatingGroup repeatingGroup = null;
+class FixGroupInProgress {
+    private int nestingLevel = -1;
+    private FixRepeatingGroup group = null;
 
-    /**
-     * A group in prgress is a repeating group with some state management data.
-     * It is a temporary object used for accounting purposes only while parsing
-     * a fix message.
-     * 
-     * @param rgrp The repeating group currently being parsed.
-     * @param numOfGrps The tag vlue of the groupId field (e.g.,
-     * NoContraGrps(382=2)).
-     * @param tagNum The tag number of the groupId field (e.g., 382).
-     */
-    GroupInProgress(FixRepeatingGroup rgrp, int numOfGrps, String tagNum) {
-        repeatingGroup = rgrp;
-        levels = numOfGrps;
-        grpIdent = tagNum;
+    FixGroupInProgress(FixRepeatingGroup grp) {
+        this.group = grp;
+    }
+
+    FixGroupInProgress(FixGroupInProgress other) {
+        this.group = other.group;
+        this.nestingLevel = other.nestingLevel;
     }
 
     /**
      * The current group. If repeating, there may be more than 1 set of tags.
      * Each set of tags in a group is referred to here as the group number.
-     * 
      * @return
      */
     int getCurGroupNumber() {
-        return curIdx;
+        if (nestingLevel < 0) { return 0; }
+        return nestingLevel;
     }
 
     /**
-     * The group number is incremented only when we encounter the delimeter tag
+     * Returns the group that this instance is based off of.
+     * @return FixRepeatingGroup
+     */
+    FixRepeatingGroup getGroup() {
+        return group;
+    }
+
+    /**
+     * The group number is incremented only when we encounter the delimiter tag
      * of a repeating group. The delimiter tag is always the first tag following
      * the groupId and it indicates that 1) the group is repeating when
      * encountered again or 2) the group has ended (when not encountered
      * anymore).
-     * 
      * @return
      */
-    int incCurGoupNumber() {
-        curIdx += 1;
-        if (curIdx == levels) {
-            curIdx = -1;
-        }
-        return curIdx;
+    void incCurGoupNumber() {
+        ++nestingLevel;
     }
 
-    /**
-     * The groupId tag (e.g., NoContraGrps(382)). The tag number tells us which
-     * group and the tag value tells us how many.
-     * 
-     * @return The tag number of the repeating group.
-     */
-    String getGroupIdentifier() {
-        return grpIdent;
-    }
-
-    FixRepeatingGroup getRepeatingGroup() {
-        return repeatingGroup;
-    }
-
-    /**
-     * The string value is used to build the tag contexts of tags belonging to a
-     * repeating group. <br>
-     * <br>
-     * <strong> MODIFYING THIS METHOD WILL BREAK THE PROGRAM </strong>
-     */
     @Override
     public String toString() {
-        return '&' + getGroupIdentifier() + '[' + getCurGroupNumber() + "]->";
+        return '&' + group.getId() + '[' + getCurGroupNumber() + "]->";
+    }
+
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return toString().equals(obj);
     }
 }

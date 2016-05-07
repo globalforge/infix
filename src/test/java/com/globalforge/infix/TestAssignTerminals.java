@@ -8,6 +8,29 @@ import org.junit.Test;
 import com.globalforge.infix.api.InfixActions;
 import com.google.common.collect.ListMultimap;
 
+/*-
+The MIT License (MIT)
+
+Copyright (c) 2016 Global Forge LLC
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 public class TestAssignTerminals {
     static StaticTestingUtils msgStore = null;
     InfixActions rules = null;
@@ -33,20 +56,17 @@ public class TestAssignTerminals {
             sampleRule = "&35=\"D\"";
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestAssignTerminals.sampleMessage1);
+            Assert.fail();
             resultStore = StaticTestingUtils.parseMessage(result);
             Assert.assertEquals(resultStore.get(35).get(0), "D");
         } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
         }
     }
-    static final String sampleMessageNonNumeric = "8=FIX.4.4" + '\u0001'
-        + "9=1042" + '\u0001' + "35=D" + '\u0001' + "44=3.142" + '\u0001'
-        + "43=-1" + '\u0001' + "-43=-1" + '\u0001' + "-44=1" + '\u0001'
-        + "45=0" + '\u0001' + "FOO=0" + '\u0001' + "BAR=NONSENSE" + '\u0001'
-        + "&=Ridiculous" + '\u0001' + "78=2" + '\u0001' + "79=FOO" + '\u0001'
-        + "80=eb8cd" + '\u0001' + "79=BAR" + '\u0001' + "80=8dhosb" + '\u0001'
-        + "10=004";
+    static final String sampleMessageNonNumeric = "8=FIX.4.4" + '\u0001' + "9=1042" + '\u0001'
+        + "35=D" + '\u0001' + "44=3.142" + '\u0001' + "43=-1" + '\u0001' + "-43=-1" + '\u0001'
+        + "-44=1" + '\u0001' + "45=0" + '\u0001' + "FOO=0" + '\u0001' + "BAR=NONSENSE" + '\u0001'
+        + "&=Ridiculous" + '\u0001' + "78=2" + '\u0001' + "79=FOO" + '\u0001' + "80=eb8cd"
+        + '\u0001' + "79=BAR" + '\u0001' + "80=8dhosb" + '\u0001' + "10=004";
 
     @Test
     public void testTagNonNumeric1() {
@@ -63,9 +83,7 @@ public class TestAssignTerminals {
         try {
             sampleRule = "&43=\"NNT2\"";
             rules = new InfixActions(sampleRule);
-            result =
-                rules
-                    .transformFIXMsg(TestAssignTerminals.sampleMessageNonNumeric);
+            result = rules.transformFIXMsg(TestAssignTerminals.sampleMessageNonNumeric);
             resultStore = StaticTestingUtils.parseMessage(result);
             Assert.assertEquals(resultStore.get(43).get(0), "NNT2");
         } catch (Exception e) {
@@ -79,9 +97,7 @@ public class TestAssignTerminals {
         try {
             sampleRule = "&-43=\"NNT2\"";
             rules = new InfixActions(sampleRule);
-            result =
-                rules
-                    .transformFIXMsg(TestAssignTerminals.sampleMessageNonNumeric);
+            result = rules.transformFIXMsg(TestAssignTerminals.sampleMessageNonNumeric);
             System.out.println(StaticTestingUtils.rs(result));
             resultStore = StaticTestingUtils.parseMessage(result);
             Assert.assertEquals(resultStore.get(-43).get(0), "NNT2");
@@ -113,6 +129,20 @@ public class TestAssignTerminals {
             resultStore = StaticTestingUtils.parseMessage(result);
             Assert.assertEquals(resultStore.get(44).get(0), "42.01");
         } catch (Exception e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testTagFLOAT_Truncates() {
+        try {
+            sampleRule = "&44 = (int) 42.01";
+            rules = new InfixActions(sampleRule);
+            result = rules.transformFIXMsg(TestAssignTerminals.sampleMessage1);
+            resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertEquals(resultStore.get(44).get(0), "42");
+        } catch (Exception e) {
+            e.printStackTrace();
             Assert.fail();
         }
     }
@@ -162,7 +192,10 @@ public class TestAssignTerminals {
         try {
             sampleRule = "&45=&35";
             rules = new InfixActions(sampleRule);
+            System.out
+                .println("before: " + StaticTestingUtils.rs(TestAssignTerminals.sampleMessage1));
             result = rules.transformFIXMsg(TestAssignTerminals.sampleMessage1);
+            System.out.println("after : " + StaticTestingUtils.rs(result));
             resultStore = StaticTestingUtils.parseMessage(result);
             String f = resultStore.get(45).get(0);
             Assert.assertEquals(f, "D");
@@ -299,116 +332,6 @@ public class TestAssignTerminals {
     }
 
     @Test
-    public void t17() {
-        try {
-            sampleRule = "&8=\"FIX.4.2\""; // 1
-            rules = new InfixActions(sampleRule);
-            result = rules.transformFIXMsg(TestAssignTerminals.sampleMessage1);
-            resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals("BAR", resultStore.get(79).get(0));
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-    }
-
-    @Test
-    public void t18() {
-        try {
-            sampleRule = "&8=\"FIX.5.0SP2\""; // 1
-            rules = new InfixActions(sampleRule);
-            result = rules.transformFIXMsg(TestAssignTerminals.sampleMessage1);
-            resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals("FOO", resultStore.get(79).get(0));
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-    }
-
-    @Test
-    public void t19() {
-        try {
-            sampleRule =
-                "&8=\"FIX.5.0SP2\";&1058=2;&1058[0]->&1059=1;&1058[0]->&1060=2;&1058[1]->&1059=3;&1058[1]->&1060=4"; // 1
-            rules = new InfixActions(sampleRule);
-            System.out.println("before: " + TestAssignTerminals.sampleMessage1);
-            result = rules.transformFIXMsg(TestAssignTerminals.sampleMessage1);
-            System.out.println("after : " + result);
-            // System.out.println(StaticTestingUtils.rs(result));
-            resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals("1", resultStore.get(1059).get(0));
-            Assert.assertEquals("2", resultStore.get(1060).get(0));
-            Assert.assertEquals("3", resultStore.get(1059).get(1));
-            Assert.assertEquals("4", resultStore.get(1060).get(1));
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-    }
-
-    @Test
-    public void t20() {
-        try {
-            sampleRule =
-                "&8=\"FIX.5.0SP2\";&1058=2;&1058[0]->&1059=1;&1058[0]->&1060=2;&1058[1]->&1059=3;&1058[1]->&1060=4"; // 1
-            rules = new InfixActions(sampleRule);
-            InfixActions.primeEngine("FIX.5.0SP2");
-            result =
-                rules.transformFIXMsg(TestAssignTerminals.sampleMessage1, true);
-            // System.out.println(StaticTestingUtils.rs(result));
-            resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals("1", resultStore.get(1059).get(0));
-            Assert.assertEquals("2", resultStore.get(1060).get(0));
-            Assert.assertEquals("3", resultStore.get(1059).get(1));
-            Assert.assertEquals("4", resultStore.get(1060).get(1));
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-    }
-
-    @Test
-    public void t21() {
-        try {
-            sampleRule =
-                "&8=\"FIX.5.0SP2\";  &1058=2;  &1058[0]->&1059=1;  &1058[0]->&1060=2;  &1058[1]->&1059=3;  &1058[1]->&1060=4"; // 1
-            rules = new InfixActions(sampleRule);
-            InfixActions.primeEngine("FIX.4.4");
-            InfixActions.primeEngine("FIX.5.0SP2");
-            result = rules.transformFIXMsg(TestAssignTerminals.sampleMessage1);
-            // System.out.println(StaticTestingUtils.rs(result));
-            resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals("1", resultStore.get(1059).get(0));
-            Assert.assertEquals("2", resultStore.get(1060).get(0));
-            Assert.assertEquals("3", resultStore.get(1059).get(1));
-            Assert.assertEquals("4", resultStore.get(1060).get(1));
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-    }
-
-    @Test
-    public void t22() {
-        try {
-            sampleRule =
-                "&8=\"FIX.4.4\";&1058=2;&1058[0]->&1059=1;&1058[0]->&1060=2;&1058[1]->&1059=3;&1058[1]->&1060=4"; // 1
-            rules = new InfixActions(sampleRule);
-            // rules.primeEngine("FIX.4.4");
-            // rules.primeEngine("FIX.5.0SP2");
-            result = rules.transformFIXMsg(TestAssignTerminals.sampleMessage1);
-            // System.out.println(StaticTestingUtils.rs(result));
-            resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals("3", resultStore.get(1059).get(0));
-            Assert.assertEquals("4", resultStore.get(1060).get(0));
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-    }
-
-    @Test
     public void t23() {
         try {
             sampleRule =
@@ -418,12 +341,8 @@ public class TestAssignTerminals {
             // rules.primeEngine("FIX.5.0SP2");
             result = rules.transformFIXMsg(TestAssignTerminals.sampleMessage1);
             // System.out.println(StaticTestingUtils.rs(result));
-            resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals("3", resultStore.get(1059).get(0));
-            Assert.assertEquals("4", resultStore.get(1060).get(0));
-        } catch (Exception e) {
-            e.printStackTrace();
             Assert.fail();
+        } catch (Exception e) {
         }
     }
 
@@ -462,37 +381,22 @@ public class TestAssignTerminals {
             Assert.fail();
         }
     }
-    static final String sampleMessage1 = "8=FIX.4.4" + '\u0001' + "9=1042"
-        + '\u0001' + "35=D" + '\u0001' + "44=3.142" + '\u0001' + "43=-1"
-        + '\u0001' + "-43=-1" + '\u0001' + "-44=1" + '\u0001' + "45=0"
-        + '\u0001' + "78=2" + '\u0001' + "79=FOO" + '\u0001' + "80=eb8cd"
+    static final String sampleMessage1 = "8=FIX.4.4" + '\u0001' + "9=1042" + '\u0001' + "35=D"
+        + '\u0001' + "44=3.142" + '\u0001' + "43=-1" + '\u0001' + "-43=-1" + '\u0001' + "-44=1"
+        + '\u0001' + "45=0" + '\u0001' + "78=2" + '\u0001' + "79=FOO" + '\u0001' + "80=eb8cd"
         + '\u0001' + "79=BAR" + '\u0001' + "80=8dhosb" + '\u0001' + "10=004";
-
-    @Test
-    public void t26() {
-        try {
-            sampleRule =
-                "&683=2;&683[0]->&688=0;&683[0]->&689=1;&683[1]->&688=3;&683[1]->&689=4"; // 1
-            rules = new InfixActions(sampleRule);
-            result = rules.transformFIXMsg(TestAssignTerminals.sampleMessage1);
-            // System.out.println(StaticTestingUtils.rs(result));
-            resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals("2", resultStore.get(683).get(0));
-            Assert.assertEquals("3", resultStore.get(688).get(0));
-            Assert.assertEquals("4", resultStore.get(689).get(0));
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-    }
+    static final String sampleMessageAI = "8=FIX.4.4" + '\u0001' + "9=1042" + '\u0001' + "35=AI"
+        + '\u0001' + "44=3.142" + '\u0001' + "43=-1" + '\u0001' + "-43=-1" + '\u0001' + "-44=1"
+        + '\u0001' + "45=0" + '\u0001' + "78=2" + '\u0001' + "79=FOO" + '\u0001' + "80=eb8cd"
+        + '\u0001' + "79=BAR" + '\u0001' + "80=8dhosb" + '\u0001' + "10=004";
 
     @Test
     public void t27() {
         try {
             sampleRule =
-                "&35=8;&683=2;&683[0]->&688=0;&683[0]->&689=1;&683[1]->&688=3;&683[1]->&689=4"; // 1
+                "&555=1;&555[0]->&683=2;&555[0]->&683[0]->&688=0;&555[0]->&683[0]->&689=1;&555[0]->&683[1]->&688=3;&555[0]->&683[1]->&689=4"; // 1
             rules = new InfixActions(sampleRule);
-            result = rules.transformFIXMsg(TestAssignTerminals.sampleMessage1);
+            result = rules.transformFIXMsg(TestAssignTerminals.sampleMessageAI);
             // System.out.println(StaticTestingUtils.rs(result));
             resultStore = StaticTestingUtils.parseMessage(result);
             Assert.assertEquals("2", resultStore.get(683).get(0));

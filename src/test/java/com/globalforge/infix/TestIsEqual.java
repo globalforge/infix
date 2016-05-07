@@ -5,15 +5,36 @@ import org.junit.Test;
 import com.globalforge.infix.api.InfixActions;
 import com.google.common.collect.ListMultimap;
 
+/*-
+The MIT License (MIT)
+
+Copyright (c) 2016 Global Forge LLC
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 public class TestIsEqual {
-    static final String sampleMessage1 = "8=FIX.4.4" + '\u0001' + "9=1000"
-        + '\u0001' + "35=8" + '\u0001' + "43=-1" + '\u0001' + "-43=-1.25"
-        + '\u0001' + "-44=1" + '\u0001' + "44=3.142" + '\u0001'
-        + "60=20130412-19:30:00.686" + '\u0001' + "75=20130412" + '\u0001'
-        + "45=0" + '\u0001' + "47=0" + '\u0001' + "48=1.5" + '\u0001'
-        + "49=8dhosb" + '\u0001' + "382=2" + '\u0001' + "375=1.5" + '\u0001'
-        + "655=eb8cd" + '\u0001' + "375=3" + '\u0001' + "655=8dhosb" + '\u0001'
-        + "207=FOOBAR" + '\u0001' + "10=004";
+    static final String sampleMessage1 = "8=FIX.4.4" + '\u0001' + "9=1000" + '\u0001' + "35=8"
+        + '\u0001' + "43=-1" + '\u0001' + "-43=-1.25" + '\u0001' + "-44=1" + '\u0001' + "44=3.142"
+        + '\u0001' + "60=20130412-19:30:00.686" + '\u0001' + "75=20130412" + '\u0001' + "45=0"
+        + '\u0001' + "47=0" + '\u0001' + "48=1.5" + '\u0001' + "49=8dhosb" + '\u0001' + "382=2"
+        + '\u0001' + "375=1.5" + '\u0001' + "655=eb8cd" + '\u0001' + "375=3" + '\u0001'
+        + "655=8dhosb" + '\u0001' + "207=FOOBAR" + '\u0001' + "10=004";
     InfixActions rules = null;
     String sampleRule = null;
     String result = null;
@@ -134,8 +155,7 @@ public class TestIsEqual {
     @Test
     public void testIsEqualElse7() {
         try {
-            sampleRule =
-                "&49==&382[0]->&655 ? &655=\"FOO\" : &382[0]->&655=\"BAR\"";
+            sampleRule = "&49==&382[0]->&655 ? &655=\"FOO\" : &382[0]->&655=\"BAR\"";
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestIsEqual.sampleMessage1);
             resultStore = StaticTestingUtils.parseMessage(result);
@@ -149,8 +169,7 @@ public class TestIsEqual {
     @Test
     public void testIsEqualElse8() {
         try {
-            sampleRule =
-                "&49==\"8dhosb\" ? &382[0]->&655=\"FOO\" : &382[0]->&655=\"BAR\"";
+            sampleRule = "&49==\"8dhosb\" ? &382[0]->&655=\"FOO\" : &382[0]->&655=\"BAR\"";
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestIsEqual.sampleMessage1);
             resultStore = StaticTestingUtils.parseMessage(result);
@@ -164,8 +183,7 @@ public class TestIsEqual {
     @Test
     public void testIsEqualElse9() {
         try {
-            sampleRule =
-                "&49==\"8dhosb\" ? &382[0]->&655=\"FOO\" : &382[0]->&655=\"BAR\"";
+            sampleRule = "&49==\"8dhosb\" ? &382[0]->&655=\"FOO\" : &382[0]->&655=\"BAR\"";
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestIsEqual.sampleMessage1);
             resultStore = StaticTestingUtils.parseMessage(result);
@@ -179,8 +197,7 @@ public class TestIsEqual {
     @Test
     public void testIsEqualElse10() {
         try {
-            sampleRule =
-                "&49== ? &382[0]->&655=\"FOO\" : &382[0]->&655=\"BAR\"";
+            sampleRule = "&49== ? &382[0]->&655=\"FOO\" : &382[0]->&655=\"BAR\"";
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestIsEqual.sampleMessage1);
             Assert.fail();
@@ -193,8 +210,7 @@ public class TestIsEqual {
     @Test
     public void testIsEqualElse11() {
         try {
-            sampleRule =
-                "&49==\"\" ? &382[0]->&655=\"FOO\" : &382[0]->&655=\"BAR\"";
+            sampleRule = "&49==\"\" ? &382[0]->&655=\"FOO\" : &382[0]->&655=\"BAR\"";
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestIsEqual.sampleMessage1);
             Assert.fail();
@@ -207,8 +223,7 @@ public class TestIsEqual {
     @Test
     public void testIsEqualElse12() {
         try {
-            sampleRule =
-                "&49==\"8dhosb\" ? &382[0]->&655= : &382[0]->&655=\"BAR\"";
+            sampleRule = "&49==\"8dhosb\" ? &382[0]->&655= : &382[0]->&655=\"BAR\"";
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestIsEqual.sampleMessage1);
             Assert.fail();
@@ -286,8 +301,7 @@ public class TestIsEqual {
     @Test
     public void testIsEqualElseF3() {
         try {
-            sampleRule =
-                "&49==&382[0]->&655 ? &382[1]->&655=4.3 : &382[0]->&655=6.6";
+            sampleRule = "&49==&382[0]->&655 ? &382[1]->&655=4.3 : &382[0]->&655=6.6";
             rules = new InfixActions(sampleRule);
             long start = System.currentTimeMillis();
             result = rules.transformFIXMsg(TestIsEqual.sampleMessage1);
@@ -460,8 +474,7 @@ public class TestIsEqual {
     @Test
     public void testIsEqual18() {
         try {
-            sampleRule =
-                "&207=={com.globalforge.infix.example.ExampleUserAssignment} ? &45=1";
+            sampleRule = "&207=={com.globalforge.infix.example.ExampleUserAssignment} ? &45=1";
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestIsEqual.sampleMessage1);
             resultStore = StaticTestingUtils.parseMessage(result);
@@ -475,8 +488,7 @@ public class TestIsEqual {
     @Test
     public void testIsEqual19() {
         try {
-            sampleRule =
-                "&44=={com.globalforge.infix.example.ExampleUserAssignment} ? &45=1";
+            sampleRule = "&44=={com.globalforge.infix.example.ExampleUserAssignment} ? &45=1";
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestIsEqual.sampleMessage1);
             resultStore = StaticTestingUtils.parseMessage(result);

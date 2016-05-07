@@ -3,7 +3,7 @@ package com.globalforge.infix.api;
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2015 Global Forge LLC
+ Copyright (c) 2016 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,6 @@ package com.globalforge.infix.api;
  */
 /**
  * Allows a user to specify user defined behavior when parsing a fix rule.
- * 
  * @author Michael C. Starkie
  */
 public interface InfixUserContext {
@@ -40,7 +39,6 @@ public interface InfixUserContext {
      * The resulting FIX message will replace the original inside the InFIX
      * memory cache and subsequent transformatios will be applied until the
      * parser is finished.
-     * 
      * @param fixMessage A legal FIX protocol message with field values as they
      * exist in memory at the time of the call.
      * @return String A legal FIX protocol message with any changes. It is the
@@ -58,7 +56,6 @@ public interface InfixUserContext {
     /**
      * Obtain a handle to an API for in memory changes to a FIX message before
      * transformation into a FIX string
-     * 
      * @param infixApi
      */
     public void visitInfixAPI(InfixAPI infixApi);

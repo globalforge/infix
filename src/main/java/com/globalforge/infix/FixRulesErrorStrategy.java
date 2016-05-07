@@ -6,12 +6,11 @@ import org.antlr.v4.runtime.InputMismatchException;
 import org.antlr.v4.runtime.NoViableAltException;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.misc.NotNull;
 
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2015 Global Forge LLC
+ Copyright (c) 2016 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -32,9 +31,8 @@ import org.antlr.v4.runtime.misc.NotNull;
  SOFTWARE.
  */
 /**
- * An extension to the Antlr class allowing for more detailed error handling. * @see
- * DefaultErrorStrategy
- * 
+ * An extension to the Antlr class allowing for more detailed error handling.
+ * * @see DefaultErrorStrategy
  * @author Michael C. Starkie
  */
 public class FixRulesErrorStrategy extends DefaultErrorStrategy {
@@ -47,8 +45,7 @@ public class FixRulesErrorStrategy extends DefaultErrorStrategy {
      * @see DefaultErrorStrategy#reportFailedPredicate
      */
     @Override
-    protected void reportFailedPredicate(@NotNull Parser recognizer,
-        @NotNull FailedPredicateException e) {
+    protected void reportFailedPredicate(Parser recognizer, FailedPredicateException e) {
         super.reportFailedPredicate(recognizer, e);
     }
 
@@ -56,8 +53,7 @@ public class FixRulesErrorStrategy extends DefaultErrorStrategy {
      * @see DefaultErrorStrategy#reportInputMismatch
      */
     @Override
-    protected void reportInputMismatch(@NotNull Parser recognizer,
-        @NotNull InputMismatchException e) {
+    protected void reportInputMismatch(Parser recognizer, InputMismatchException e) {
         super.reportInputMismatch(recognizer, e);
     }
 
@@ -65,8 +61,7 @@ public class FixRulesErrorStrategy extends DefaultErrorStrategy {
      * @see DefaultErrorStrategy#reportNoViableAlternative
      */
     @Override
-    protected void reportNoViableAlternative(@NotNull Parser parser,
-        @NotNull NoViableAltException e) {
+    protected void reportNoViableAlternative(Parser parser, NoViableAltException e) {
         String msg = "can't choose between alternatives"; // nonstandard msg
         parser.notifyErrorListeners(e.getOffendingToken(), msg, e);
     }

@@ -4,10 +4,8 @@ allprojects {
         options.debug = false 
     }
     apply plugin: 'eclipse'
-    //apply plugin: 'findbugs'
-    //apply plugin: 'pmd'
     group = 'com.globalforge.infix'
-    version = '1.1'
+    version = '2.0'
 
     jar {
         manifest.attributes provider: 'GlobalForge'
@@ -34,31 +32,6 @@ allprojects {
            defaultOutputDir = file('build-eclipse')
         } 
     }
-    //findbugs {
-      // ignoreFailures = true
-      // sourceSets = [ sourceSets.main ]
-   // }
-   // tasks.withType(FindBugs) {
-     //  exclude '**/antlr/*'
-      // classes = classes.filter {
-        //  !it.path.contains(new File("antlr").path)
-      // }
-      // reports {
-       //   xml.enabled = false
-        //  html.enabled = true
-      // }
-   // }
-   // pmd {
-     //  ignoreFailures = true
-     //  sourceSets = [ sourceSets.main ]
-  //  }
-   // tasks.withType(Pmd) {
-     //  exclude '**/antlr/*'
-      // reports{
-        //  xml.enabled = false
-        //  html.enabled = true
-      // }
-  //  }
     task cleanAllProjects(dependsOn:'clean') << {
       println "Cleaning ${project.path}"
     }
@@ -68,7 +41,8 @@ apply plugin: 'distribution'
 distributions {
      main {
          contents {
-             from "libs/infix-1.1.jar"
+             from "libs/infix-2.0.jar"
+             from "libs/fix-2.0.jar"
              from "libs/antlr-4.5.1-complete.jar"
              from "libs/slf4j-api-1.7.7.jar"
              from "libs/slf4j-simple-1.7.7.jar"
@@ -103,34 +77,23 @@ task cleanAll(type: Delete) {
    dependsOn cleanAllProjects
    description 'cleans all the antlr generated source and xml in addition to clean.'
    delete "${rootProject.projectDir}/src/main/java/com/globalforge/infix/antlr"
-   delete "${rootProject.projectDir}/dict/src/main/java/com/globalforge/infix/antlr"
-   delete "${rootProject.projectDir}/src/main/java/com/globalforge/infix/FIX40Mgr.java"
-   delete "${rootProject.projectDir}/src/main/java/com/globalforge/infix/FIX41Mgr.java"
-   delete "${rootProject.projectDir}/src/main/java/com/globalforge/infix/FIX42Mgr.java"
-   delete "${rootProject.projectDir}/src/main/java/com/globalforge/infix/FIX43Mgr.java"
-   delete "${rootProject.projectDir}/src/main/java/com/globalforge/infix/FIX44Mgr.java"
-   delete "${rootProject.projectDir}/src/main/java/com/globalforge/infix/FIX50Mgr.java"
-   delete "${rootProject.projectDir}/src/main/java/com/globalforge/infix/FIX50SP1Mgr.java"
-   delete "${rootProject.projectDir}/src/main/java/com/globalforge/infix/FIX50SP2Mgr.java"
-   delete "${rootProject.projectDir}/src/main/java/com/globalforge/infix/FIXT11Mgr.java"
-   delete "${rootProject.projectDir}/src/main/resources/FIX.4.0Mgr.xml"
-   delete "${rootProject.projectDir}/src/main/resources/FIX.4.1Mgr.xml"
-   delete "${rootProject.projectDir}/src/main/resources/FIX.4.2Mgr.xml"
-   delete "${rootProject.projectDir}/src/main/resources/FIX.4.3Mgr.xml"
-   delete "${rootProject.projectDir}/src/main/resources/FIX.4.4Mgr.xml"
-   delete "${rootProject.projectDir}/src/main/resources/FIX.5.0Mgr.xml"
-   delete "${rootProject.projectDir}/src/main/resources/FIX.5.0SP1Mgr.xml"
-   delete "${rootProject.projectDir}/src/main/resources/FIX.5.0SP2Mgr.xml"
-   delete "${rootProject.projectDir}/src/main/resources/FIXT.1.1Mgr.xml"
-   delete "${rootProject.projectDir}/libs/fix-1.1.jar"
-   delete "${rootProject.projectDir}/libs/dict-1.1.jar"
-   delete "${rootProject.projectDir}/libs/infix-1.1.jar"
+   delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix40/auto"
+   delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix41/auto"
+   delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix42/auto"
+   delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix42gc/auto"
+   delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix43/auto"
+   delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix44/auto"
+   delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix50/auto"
+   delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix50sp1/auto"
+   delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix50sp2/auto"
+   delete "${rootProject.projectDir}/libs/fix-2.0.jar"
+   delete "${rootProject.projectDir}/libs/infix-2.0.jar"
    delete "${rootProject.projectDir}/build-eclipse"
    delete "${rootProject.projectDir}/fix/build-eclipse"
    delete "${rootProject.projectDir}/fix/build"
    delete "${rootProject.projectDir}/dict/build-eclipse"
    delete "${rootProject.projectDir}/dict/build"
-   delete "${rootProject.projectDir}/src/main/dist/infix-1.1.jar"
+   delete "${rootProject.projectDir}/src/main/dist/infix-2.0.jar"
    delete "${rootProject.projectDir}/src/main/dist/antlr-4.5.1-complete.jar"
    delete "${rootProject.projectDir}/src/main/dist/slf4j-simple-1.7.7.jar"
    delete "${rootProject.projectDir}/src/main/dist/slf4j-api-1.7.7.jar"
@@ -138,7 +101,6 @@ task cleanAll(type: Delete) {
 }
 
 compileJava.dependsOn("buildAntlr")
-//distTar.dependsOn("build")
 task wrapper(type: Wrapper) {
     gradleVersion = '2.10'
 }

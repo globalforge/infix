@@ -3,7 +3,7 @@ package com.globalforge.infix.api;
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2015 Global Forge LLC
+ Copyright (c) 2016 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,6 @@ package com.globalforge.infix.api;
  * results and may lead to data corruption or runtime exceptions.
  * <p>
  * <strong>THREAD SAFETY: NOT SAFE.</strong>
- * 
  * @author Michael C. Starkie
  */
 public interface InfixUserTerminal {
@@ -42,7 +41,6 @@ public interface InfixUserTerminal {
      * class is invoked during an assignment. It is the implementors
      * responsibility to ensure that a non-null/non-empty resut is returned to
      * complete the assignment.
-     * 
      * @param infixApi A handle to the internal engine.
      * @return String the result that will be used to complete the assignment.
      */

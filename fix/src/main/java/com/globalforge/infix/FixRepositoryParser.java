@@ -56,7 +56,7 @@ import org.slf4j.LoggerFactory;
  * the first tag in the group and finally a set of member tags. The id is that
  * that preceeds the repating group and used to determine how many repeating
  * groups follow. For example NoContraGrps (382) is the designated id for the
- * ContraGrp repeating group. Below is an example: <code> 
+ * ContraGrp repeating group. Below is an example: <code>
  *  ContraGroup
  *     Id : 382   (NoContraGrps)
  *     delim: 375 (ContraGrp)
@@ -68,13 +68,13 @@ import org.slf4j.LoggerFactory;
  * the program must make several pases in order to collect all data. The general
  * workflow is to parse group names, then blocks, followed by groups, and lastly
  * message. Each of these tasks parses the entire file.
- * 
+ * @deprecated Use quick fix data dictionaries instead.
  * @author Michael C. Starkie
  */
+@Deprecated
 public class FixRepositoryParser {
     /** logger */
-    final static Logger logger = LoggerFactory
-        .getLogger(FixRepositoryParser.class);
+    final static Logger logger = LoggerFactory.getLogger(FixRepositoryParser.class);
     private final XMLInputFactory factory = XMLInputFactory.newInstance();
     private PrintStream out = null;
     private boolean isMyCtx = false;
@@ -85,12 +85,10 @@ public class FixRepositoryParser {
     /** components defined as repeating groups in the fix spec */
     private Map<String, FixGroup> fixGroups = null;
     private Set<String> fixGroupNames = new HashSet<String>();
-    private Map<String, Set<String>> msgMap =
-        new TreeMap<String, Set<String>>();
+    private Map<String, Set<String>> msgMap = new TreeMap<String, Set<String>>();
     private Set<String> groupChecklist = new HashSet<String>();
     private Set<String> noHopVersions = Collections
-        .unmodifiableSet(new HashSet<String>(Arrays.asList("FIX.4.0",
-            "FIX.4.1", "FIX.4.2")));
+        .unmodifiableSet(new HashSet<String>(Arrays.asList("FIX.4.0", "FIX.4.1", "FIX.4.2")));
 
     public FixRepositoryParser() throws Exception {
     }
@@ -99,32 +97,27 @@ public class FixRepositoryParser {
      * Make sure we know where to find the FixRepository.xml file and the
      * location on the filesystem where the user has specified the location of
      * the output files.
-     * 
      * @param ver The fix version we are parsing.
      * @throws Exception When external dependencies are not recognized.
      */
     private void setUp(String ver) throws Exception {
         String CONFIG_DIR = System.getenv("CONFIG_DIR");
         if (CONFIG_DIR != null) {
-            FixRepositoryParser.logger.info(
-                "CONFIG_DIR is an ENV variable: {}", CONFIG_DIR);
+            FixRepositoryParser.logger.info("CONFIG_DIR is an ENV variable: {}", CONFIG_DIR);
         } else {
             CONFIG_DIR = System.getProperty("CONFIG_DIR");
             if (CONFIG_DIR != null) {
-                FixRepositoryParser.logger.info(
-                    "CONFIG_DIR is a System property: {}", CONFIG_DIR);
+                FixRepositoryParser.logger.info("CONFIG_DIR is a System property: {}", CONFIG_DIR);
             } else {
                 CONFIG_DIR = null;
             }
         }
         if (CONFIG_DIR == null) {
-            FixRepositoryParser.logger
-                .warn("No CONFIG_DIR provided.  Output stream is CONSOLE");
+            FixRepositoryParser.logger.warn("No CONFIG_DIR provided.  Output stream is CONSOLE");
             out = System.out;
         } else {
             File fixOut =
-                new File(CONFIG_DIR + System.getProperty("file.separator")
-                    + ver + "Mgr.xml");
+                new File(CONFIG_DIR + System.getProperty("file.separator") + ver + "Mgr.xml");
             out = new PrintStream(fixOut, "UTF-8");
         }
         fixBlocks = new HashMap<String, FixBlock>();
@@ -143,14 +136,14 @@ public class FixRepositoryParser {
 
     /**
      * Collects the names of all repeating groups.
-     * 
      * @param v The fix version to parse.
      * @throws XMLStreamException A corrupted FixRepository.xml file is found.
+     * @deprecated
      */
+    @Deprecated
     public void parseGroupNames(String v) throws XMLStreamException {
-        XMLStreamReader reader =
-            factory.createXMLStreamReader(ClassLoader
-                .getSystemResourceAsStream("FixRepository.xml"));
+        XMLStreamReader reader = factory
+            .createXMLStreamReader(ClassLoader.getSystemResourceAsStream("FixRepository.xml"));
         String fixVersion = v;
         while (reader.hasNext()) {
             int event = reader.next();
@@ -160,9 +153,8 @@ public class FixRepositoryParser {
                     if ("fix".equals(elementName)) {
                         fixVersion = reader.getAttributeValue(0);
                         if (fixVersion.equals(v)) {
-                            FixRepositoryParser.logger.info(
-                                "parsing group names for fix version: {}",
-                                fixVersion);
+                            FixRepositoryParser.logger
+                                .info("parsing group names for fix version: {}", fixVersion);
                         }
                     }
                     if (!fixVersion.equals(v)) {
@@ -170,13 +162,12 @@ public class FixRepositoryParser {
                     }
                     if ("component".equals(elementName)) {
                         curComponent = reader.getAttributeValue(0);
-                        String repeating =
-                            reader.getAttributeValue(null, "repeating");
+                        String repeating = reader.getAttributeValue(null, "repeating");
                         if ((repeating != null) && repeating.equals("1")) {
                             isMyCtx = true;
                         }
-                    } else if ("repeatingGroup".equals(elementName)
-                        && (curComponent != null) && isMyCtx) {
+                    } else if ("repeatingGroup".equals(elementName) && (curComponent != null)
+                        && isMyCtx) {
                         fixGroupNames.add(curComponent);
                     }
                     break;
@@ -198,14 +189,14 @@ public class FixRepositoryParser {
      * block and not to any nested repeating group. Collect the repeating groups
      * later and add in members collected here for any non-repeating block
      * references.
-     * 
+     * @deprecated
      * @param v The fix version we are parsing.
      * @throws XMLStreamException
      */
+    @Deprecated
     public void parseBlocks(String v) throws XMLStreamException {
-        XMLStreamReader reader =
-            factory.createXMLStreamReader(ClassLoader
-                .getSystemResourceAsStream("FixRepository.xml"));
+        XMLStreamReader reader = factory
+            .createXMLStreamReader(ClassLoader.getSystemResourceAsStream("FixRepository.xml"));
         String fixVersion = v;
         while (reader.hasNext()) {
             int event = reader.next();
@@ -215,8 +206,8 @@ public class FixRepositoryParser {
                     if ("fix".equals(elementName)) {
                         fixVersion = reader.getAttributeValue(0);
                         if (fixVersion.equals(v)) {
-                            FixRepositoryParser.logger.info(
-                                "parsing blocks fix version: {}", fixVersion);
+                            FixRepositoryParser.logger.info("parsing blocks fix version: {}",
+                                fixVersion);
                         }
                     }
                     if (!fixVersion.equals(v)) {
@@ -229,10 +220,8 @@ public class FixRepositoryParser {
                             FixBlock b = null;
                             if (fixGroupNames.contains(curName)) {
                                 FixRepositoryParser.logger
-                                    .error(
-                                        "Block already defined as a repeating group: {}"
-                                            + ". This is an error in the fix repository.",
-                                        curName);
+                                    .error("Block already defined as a repeating group: {}"
+                                        + ". This is an error in the fix repository.", curName);
                                 continue;
                             }
                             // System.out.println("found block: " + curName);
@@ -299,14 +288,15 @@ public class FixRepositoryParser {
 
     /**
      * Runs through the block data collected and checks it's integrtity.
+     * @deprecated
      */
+    @Deprecated
     public void checkBlockData() {
         Iterator<Entry<String, FixBlock>> it = fixBlocks.entrySet().iterator();
         while (it.hasNext()) {
             Entry<String, FixBlock> e = it.next();
             FixBlock b = e.getValue();
-            String[] members =
-                b.getMembers().toArray(new String[b.getMembers().size()]);
+            String[] members = b.getMembers().toArray(new String[b.getMembers().size()]);
             for (String mem : members) {
                 if (fixBlocks.containsKey(mem)) {
                     // remove any placeholders and replace with fields.
@@ -321,8 +311,7 @@ public class FixRepositoryParser {
                     Integer.parseInt(mem);
                 } catch (NumberFormatException ex) {
                     String m =
-                        "ABORT: Unresolved block name.  Need a thrid pass to resolve: "
-                            + mem;
+                        "ABORT: Unresolved block name.  Need a thrid pass to resolve: " + mem;
                     throw new RuntimeException(m, ex);
                 }
             }
@@ -331,8 +320,7 @@ public class FixRepositoryParser {
         while (it.hasNext()) {
             Entry<String, FixBlock> e = it.next();
             FixBlock b = e.getValue();
-            String[] members =
-                b.getMembers().toArray(new String[b.getMembers().size()]);
+            String[] members = b.getMembers().toArray(new String[b.getMembers().size()]);
             // remove any blocks that are empty (contained only repeating group
             // references)
             if (members.length == 0) {
@@ -346,7 +334,9 @@ public class FixRepositoryParser {
 
     /**
      * debug helper
+     * @deprecated
      */
+    @Deprecated
     public void printGroupNames() {
         Iterator<String> it = fixGroupNames.iterator();
         while (it.hasNext()) {
@@ -361,14 +351,14 @@ public class FixRepositoryParser {
      * references to blocks and other repeating groups. Does not include tags in
      * nested repeating groups as those tags will be consolidated under the
      * group they belong to.
-     * 
+     * @deprecated
      * @param v The fix version we are to parse.
      * @throws XMLStreamException XML file is corrupt.
      */
+    @Deprecated
     public void parseGroups(String v) throws XMLStreamException {
-        XMLStreamReader reader =
-            factory.createXMLStreamReader(ClassLoader
-                .getSystemResourceAsStream("FixRepository.xml"));
+        XMLStreamReader reader = factory
+            .createXMLStreamReader(ClassLoader.getSystemResourceAsStream("FixRepository.xml"));
         String fixVersion = v;
         while (reader.hasNext()) {
             int event = reader.next();
@@ -378,8 +368,8 @@ public class FixRepositoryParser {
                     if ("fix".equals(elementName)) {
                         fixVersion = reader.getAttributeValue(0);
                         if (fixVersion.equals(v)) {
-                            FixRepositoryParser.logger.info(
-                                "parsing groups fix version: {}", fixVersion);
+                            FixRepositoryParser.logger.info("parsing groups fix version: {}",
+                                fixVersion);
                         }
                     }
                     if (!fixVersion.equals(v)) {
@@ -390,10 +380,9 @@ public class FixRepositoryParser {
                         if (type.endsWith("Repeating")) {
                             curName = reader.getAttributeValue(0);
                             if (!fixGroupNames.contains(curName)) {
-                                FixRepositoryParser.logger
-                                    .error(
-                                        "Group has no repeatingGroup element.  Error in Fix repository.  Ignoring: {}",
-                                        curName);
+                                FixRepositoryParser.logger.error(
+                                    "Group has no repeatingGroup element.  Error in Fix repository.  Ignoring: {}",
+                                    curName);
                                 continue;
                             }
                             // System.out.println("found block: " + curBlock);
@@ -433,8 +422,7 @@ public class FixRepositoryParser {
                                 // belong
                                 // in a msgType we can find all of them in
                                 // fixGroups.
-                                curGroup.addGrpReferences(block
-                                    .getGroupReferences());
+                                curGroup.addGrpReferences(block.getGroupReferences());
                             }
                         } else {
                             if (fixGroupNames.contains(refName)) {
@@ -478,22 +466,22 @@ public class FixRepositoryParser {
      */
     /**
      * Checks the integrety of the groups after they are parsed.
+     * @deprecated
      */
+    @Deprecated
     public void checkGroupData() {
         Iterator<Entry<String, FixGroup>> it = fixGroups.entrySet().iterator();
         while (it.hasNext()) {
             Entry<String, FixGroup> e = it.next();
             FixGroup b = e.getValue();
-            String[] members =
-                b.getMembers().toArray(new String[b.getMembers().size()]);
+            String[] members = b.getMembers().toArray(new String[b.getMembers().size()]);
             for (String mem : members) {
                 try {
                     // make sure members contain only numbers
                     Integer.parseInt(mem);
                 } catch (NumberFormatException ex) {
                     String m =
-                        "ABORT: Unresolved group name.  Need a thrid pass to resolve: "
-                            + mem;
+                        "ABORT: Unresolved group name.  Need a thrid pass to resolve: " + mem;
                     throw new RuntimeException(m, ex);
                 }
             }
@@ -502,8 +490,7 @@ public class FixRepositoryParser {
         while (it.hasNext()) {
             Entry<String, FixGroup> e = it.next();
             FixGroup b = e.getValue();
-            String[] members =
-                b.getMembers().toArray(new String[b.getMembers().size()]);
+            String[] members = b.getMembers().toArray(new String[b.getMembers().size()]);
             // remove any blocks that are empty (contained only repeating group
             // references)
             if (members.length == 0) {
@@ -520,14 +507,14 @@ public class FixRepositoryParser {
      * that may legally found in each Message Type. Associations include
      * repeating groups, references to repeating groups within other repeating
      * groups and block.
-     * 
+     * @deprecated
      * @param v The fix version we should parse
      * @throws XMLStreamException XML file is corrupted.
      */
+    @Deprecated
     public void parseMessages(String v) throws XMLStreamException {
-        XMLStreamReader reader =
-            factory.createXMLStreamReader(ClassLoader
-                .getSystemResourceAsStream("FixRepository.xml"));
+        XMLStreamReader reader = factory
+            .createXMLStreamReader(ClassLoader.getSystemResourceAsStream("FixRepository.xml"));
         String fixVersion = v;
         while (reader.hasNext()) {
             int event = reader.next();
@@ -537,8 +524,7 @@ public class FixRepositoryParser {
                     if ("fix".equals(elementName)) {
                         fixVersion = reader.getAttributeValue(0);
                         if (fixVersion.equals(v)) {
-                            FixRepositoryParser.logger.info(
-                                "parsing messages for fix version: {}",
+                            FixRepositoryParser.logger.info("parsing messages for fix version: {}",
                                 fixVersion);
                         }
                     }
@@ -557,8 +543,7 @@ public class FixRepositoryParser {
                                 msgMap.put(curName, grps);
                             }
                             grps.add(refName);
-                            List<String> refs =
-                                fixGroups.get(refName).getGroupReferences();
+                            List<String> refs = fixGroups.get(refName).getGroupReferences();
                             if ((refs != null) && (refs.size() > 0)) {
                                 grps.addAll(refs);
                             }
@@ -581,11 +566,8 @@ public class FixRepositoryParser {
                                 // This is an XML bug in the repository.
                                 // In Fix 5.0 HopGrp is defined as ImplicitBlock
                                 // yet is has an elementName "repeating"
-                                if ((g == null) && !ref.equals("Hop")
-                                    && !ref.equals("HopGrp")) {
-                                    String m =
-                                        "ABORT.  Missing group in parseMessages: "
-                                            + ref;
+                                if ((g == null) && !ref.equals("Hop") && !ref.equals("HopGrp")) {
+                                    String m = "ABORT.  Missing group in parseMessages: " + ref;
                                     throw new RuntimeException(m);
                                 }
                                 // this can only be false if ref = Hop
@@ -616,9 +598,10 @@ public class FixRepositoryParser {
 
     /**
      * print info on a group for debug purposes.
-     * 
+     * @deprecated
      * @param group The group to print.
      */
+    @Deprecated
     public void printGroupInfo(FixGroup group) {
         FixRepositoryParser.logger.info("\t" + group);
         List<String> refs = group.getGroupReferences();
@@ -632,6 +615,10 @@ public class FixRepositoryParser {
         }
     }
 
+    /**
+     * @deprecated
+     */
+    @Deprecated
     public void printHops() {
         out.println("\t<Group name=\"HopGrp\">");
         out.println("\t\t<Id>627</Id>");
@@ -645,15 +632,15 @@ public class FixRepositoryParser {
      * Prints out the group information for a repating group in XML format. List
      * all repeating groups by name and include the id which defines the group,
      * it's delimiter and all member tags.
-     * 
+     * @deprecated
      * @param group The group to print.
      */
+    @Deprecated
     public void printGroupXMLInfo(FixGroup group) {
         if (groupChecklist.contains(group.name)) { return; }
         groupChecklist.add(group.name);
         out.println("\t<Group name=\"" + group.name + "\">");
-        String[] members =
-            group.getMembers().toArray(new String[group.getMembers().size()]);
+        String[] members = group.getMembers().toArray(new String[group.getMembers().size()]);
         for (int i = 0; i < members.length; i++) {
             String val = members[i];
             if (i == 0) {
@@ -667,8 +654,7 @@ public class FixRepositoryParser {
             out.println("\t\t<Member>" + val + "</Member>");
         }
         String[] ref_arr =
-            group.getGroupReferences().toArray(
-                new String[group.getGroupReferences().size()]);
+            group.getGroupReferences().toArray(new String[group.getGroupReferences().size()]);
         for (String val : ref_arr) {
             FixGroup g = fixGroups.get(val);
             out.println("\t\t<GrpRefID>" + g.getId() + "</GrpRefID>");
@@ -690,7 +676,9 @@ public class FixRepositoryParser {
 
     /**
      * Dump message info for debug purposes
+     * @deprecated
      */
+    @Deprecated
     public void printMsgInfo() {
         Iterator<Entry<String, Set<String>>> it = msgMap.entrySet().iterator();
         while (it.hasNext()) {
@@ -726,13 +714,14 @@ public class FixRepositoryParser {
      * Print the MsgType format of the output xml. Lists each message type along
      * with the names of all the repeating groups that may be found within that
      * message type.
-     * 
+     * @deprecated
      * @param msgType The message type to print.
      * @param fixVersion The current fix version we are printing msg info for.
      */
+    @Deprecated
     public void printMsgXMLInfo(String msgType, String fixVersion) {
         if (msgType.equals("8")) {
-            System.out.println("ExecutionReport");
+            // System.out.println("ExecutionReport");
         }
         out.println("\t<MsgType id=\"" + msgType + "\">");
         out.println("\t\t<Groups>");
@@ -760,9 +749,10 @@ public class FixRepositoryParser {
 
     /**
      * Begins the process of generating the programs XML output.
-     * 
+     * @deprecated
      * @param curFixVersion The fix version being printed.
      */
+    @Deprecated
     public void printDictionary(String curFixVersion) {
         out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         out.println("<!-- " + curFixVersion + " data dictionary -->");
@@ -776,8 +766,7 @@ public class FixRepositoryParser {
             FixGroup g = e.getValue();
             printGroupXMLInfo(g);
         }
-        Iterator<Entry<String, Set<String>>> msgIt =
-            msgMap.entrySet().iterator();
+        Iterator<Entry<String, Set<String>>> msgIt = msgMap.entrySet().iterator();
         while (msgIt.hasNext()) {
             Entry<String, Set<String>> e = msgIt.next();
             String msgId = e.getKey();
@@ -788,14 +777,14 @@ public class FixRepositoryParser {
 
     /**
      * It all begins here.
-     * 
+     * @deprecated
      * @param args The fix version must be in args[0].
      */
+    @Deprecated
     public static void main(String[] args) {
         try {
             if (args.length == 0) {
-                FixRepositoryParser.logger
-                    .error("Must provide an args[0] from the following set:");
+                FixRepositoryParser.logger.error("Must provide an args[0] from the following set:");
                 FixRepositoryParser.logger.error("FIX.4.0");
                 FixRepositoryParser.logger.error("FIX.4.1");
                 FixRepositoryParser.logger.error("FIX.4.2");
@@ -814,9 +803,8 @@ public class FixRepositoryParser {
                 eng.parseGroups(fixVersion);
                 // eng.parseNestedGroups(fixVersion);
                 eng.parseMessages(fixVersion);
-                FixRepositoryParser.logger.info(
-                    "\nParsing of fix version {} completed successfully.",
-                    fixVersion);
+                FixRepositoryParser.logger
+                    .info("\nParsing of fix version {} completed successfully.", fixVersion);
             }
         } catch (Throwable e) {
             e.printStackTrace();
@@ -824,6 +812,11 @@ public class FixRepositoryParser {
         }
     }
 
+    /**
+     * @deprecated
+     * @author Michael C. Starkie
+     */
+    @Deprecated
     public static class FixBlock {
         protected String name = null;
         protected final LinkedList<String> members = new LinkedList<String>();

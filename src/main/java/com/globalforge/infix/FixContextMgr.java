@@ -1,9 +1,11 @@
 package com.globalforge.infix;
 
+import com.globalforge.infix.qfix.MessageData;
+
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2015 Global Forge LLC
+ Copyright (c) 2016 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +28,6 @@ package com.globalforge.infix;
 /**
  * Dynamically instantiates a FixGroupMgr implementation given a proper Fix
  * version string.
- * 
  * @author Michael Starkie
  */
 public class FixContextMgr {
@@ -34,41 +35,34 @@ public class FixContextMgr {
 
     /**
      * Only 1 instance allowed.
-     * 
      * @return FixContextMgr The single static instance.
      */
     public static final FixContextMgr getInstance() {
         return FixContextMgr.instance;
     }
 
+    /**
+     * Singleton only
+     */
     private FixContextMgr() {
     }
 
     /**
-     * Uses reflaction to create an instance of the FixManager for the version
-     * given as an argument.
-     * 
-     * @param fixVersion The fix version that specifies what FixManager class to
-     * create an instance of.
-     * @return A sub-class of FixGroupMgr
-     * @throws ClassNotFoundException If the fix message contains a Fix version
-     * in tag 8 that is unrecognized the system will fail when it tries to
-     * instantiate a {@link FixGroupMgr} for that version at runtime.
-     * @throws IllegalAccessException If the class represented by the fix
-     * version or its nullary constructor is not accessible..
-     * @throws InstantiationException If the class represented by the fix
-     * version represents an abstract class, an interface, an array class, a
-     * primitive type, or void; or if the class has no nullary constructor; or
-     * if the instantiation fails for some other reason.
+     * Return an instance of MessageData. This is all the runtime data parsed
+     * from the data dictionary.
+     * @param fixVersion The FIX version whose data dictionary you want.
+     * @return MessageData
+     * @throws ClassNotFoundException reflection error
+     * @throws InstantiationException reflection error
+     * @throws IllegalAccessException reflection error
      */
-    public FixGroupMgr getGroupMgr(String fixVersion)
-        throws ClassNotFoundException, InstantiationException,
-        IllegalAccessException {
-        String versionIdent = fixVersion.replaceAll("[\",.]", "") + "Mgr";
-        FixGroupMgr.cleanStaticData();
-        Class<?> c =
-            FixContextMgr.class.getClassLoader().loadClass(
-                "com.globalforge.infix." + versionIdent);
-        return (FixGroupMgr) c.newInstance();
+    public MessageData getMessageData(String fixVersion)
+        throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+        String upperCaseVer = fixVersion.replaceAll("[\",.]", "");
+        String lowerCaseVer = upperCaseVer.toLowerCase();
+        String messageDataStr = "com.globalforge.infix.qfix." + lowerCaseVer + ".auto."
+            + upperCaseVer + "DynamicMessageData";
+        Class<?> c = FixContextMgr.class.getClassLoader().loadClass(messageDataStr);
+        return (MessageData) c.newInstance();
     }
 }

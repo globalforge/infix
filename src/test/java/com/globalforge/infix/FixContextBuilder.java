@@ -5,11 +5,12 @@ import java.util.Iterator;
 import java.util.concurrent.LinkedBlockingDeque;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.globalforge.infix.qfix.FixGroupMgr;
 
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2015 Global Forge LLC
+ Copyright (c) 2016 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -31,28 +32,29 @@ import org.slf4j.LoggerFactory;
  */
 /**
  * A class used to assist the implementation of InfixAPI.
- * 
  * @see FixAPIImpl
  * @author Michael C. Starkie
  */
 final class FixContextBuilder {
     /** logger */
-    final static Logger logger = LoggerFactory
-        .getLogger(FixContextBuilder.class);
+    final static Logger logger = LoggerFactory.getLogger(FixContextBuilder.class);
     public static final String REF = "->";
     private LinkedBlockingDeque<String> ctxs = null;
     private String tagNum = null;
 
+    public FixContextBuilder(String ctx) {
+        parseContext(ctx);
+    }
+
     /**
      * Converts a tag reference in rule sytax to a stack of context strings to
      * assist the group manager in locating the proper insertion order.
-     * 
      * @see FixMessageMgr#putContext(Deque, String, String)
      * @see FixGroupMgr#getContext(String, String, String, boolean)
      * @see FixAPIImpl#putContext(String, String)
      * @param ctx A tag reference in rule syntax.
      */
-    void parseContext(String ctx) {
+    private void parseContext(String ctx) {
         LinkedBlockingDeque<String> stack = new LinkedBlockingDeque<String>();
         tagNum = ctx.substring(ctx.lastIndexOf("&") + 1);
         stack.push(ctx);
@@ -76,7 +78,6 @@ final class FixContextBuilder {
      * &555[0]->
      * &555
      * </code>
-     * 
      * @see FixMessageMgr#putContext(Deque, String, String)
      * @see FixGroupMgr#getContext(String, String, String, boolean)
      * @see FixAPIImpl#putContext(String, String)
@@ -107,8 +108,7 @@ final class FixContextBuilder {
             // strip off the tag ref, push what is lef onto the stack and
             // return;
             int refIdx = top.lastIndexOf(FixContextBuilder.REF);
-            String nextTop =
-                top.substring(0, refIdx + FixContextBuilder.REF.length());
+            String nextTop = top.substring(0, refIdx + FixContextBuilder.REF.length());
             contexts.push(nextTop);
         }
         buildContext(contexts);
@@ -116,7 +116,6 @@ final class FixContextBuilder {
 
     /**
      * Return the build context.
-     * 
      * @see FixContextBuilder#buildContext
      * @return LinkedBlockingDeque<String>
      */
@@ -126,7 +125,6 @@ final class FixContextBuilder {
 
     /**
      * Return the tag number associated with this context.
-     * 
      * @return String the tag number associated with the context.
      */
     String getTagNum() {
@@ -136,15 +134,12 @@ final class FixContextBuilder {
     /**
      * Reverses the stack of the context hierarchy in the order needed by the
      * FixFieldMgr.
-     * 
      * @see FixMessageMgr#putContext(Deque, String, String)
      * @param stack The context of the context indicators.
      * @return LinkedBlockingDeque<String> A reversal of the parameter.
      */
-    private LinkedBlockingDeque<String> reverseStack(
-        LinkedBlockingDeque<String> stack) {
-        LinkedBlockingDeque<String> reversedStack =
-            new LinkedBlockingDeque<String>();
+    private LinkedBlockingDeque<String> reverseStack(LinkedBlockingDeque<String> stack) {
+        LinkedBlockingDeque<String> reversedStack = new LinkedBlockingDeque<String>();
         Iterator<String> it = stack.iterator();
         while (it.hasNext()) {
             String ctx = it.next();
@@ -155,7 +150,6 @@ final class FixContextBuilder {
 
     /**
      * Prints the context stack for debugging purposes.
-     * 
      * @param ctxs The context indicators for the tag.
      */
     static void printCtx(Deque<String> ctxs) {
@@ -186,23 +180,36 @@ final class FixContextBuilder {
 
     /**
      * Test it out.
-     * 
      * @param args
      */
     public static void main(String[] args) {
-        FixContextBuilder ctxBldr = new FixContextBuilder();
         String ctx = "&555[0]->&539[3]->&525";
-        ctxBldr.parseContext(ctx);
+        FixContextBuilder ctxBldr = new FixContextBuilder(ctx);
         System.out.println("-------------");
         String out = ctxBldr.toString();
         System.out.println(out);
         ctx = "&555";
-        ctxBldr.parseContext(ctx);
+        ctxBldr = new FixContextBuilder(ctx);
         System.out.println("-------------");
         out = ctxBldr.toString();
         System.out.println(out);
         ctx = "&555[0]->&539";
-        ctxBldr.parseContext(ctx);
+        ctxBldr = new FixContextBuilder(ctx);
+        System.out.println("-------------");
+        out = ctxBldr.toString();
+        System.out.println(out);
+        ctx = "&555[1]->&539";
+        ctxBldr = new FixContextBuilder(ctx);
+        System.out.println("-------------");
+        out = ctxBldr.toString();
+        System.out.println(out);
+        ctx = "&555[2]->&539[3]->&525";
+        ctxBldr = new FixContextBuilder(ctx);
+        System.out.println("-------------");
+        out = ctxBldr.toString();
+        System.out.println(out);
+        ctx = "&555[3]->&444";
+        ctxBldr = new FixContextBuilder(ctx);
         System.out.println("-------------");
         out = ctxBldr.toString();
         System.out.println(out);

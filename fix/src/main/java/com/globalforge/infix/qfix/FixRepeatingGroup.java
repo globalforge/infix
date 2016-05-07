@@ -1,13 +1,13 @@
-package com.globalforge.infix;
+package com.globalforge.infix.qfix;
 
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2015 Global Forge LLC
+ Copyright (c) 2016 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -29,25 +29,23 @@ import java.util.Set;
  */
 /**
  * The definition of a repeating group.
- * 
  * @author Michael
  */
-class FixRepeatingGroup {
+public class FixRepeatingGroup {
     protected final String groupId;
     protected final String groupDelim;
-    protected final Set<String> memberSet = new HashSet<String>();
-    protected final Set<String> grpReferenceSet = new HashSet<String>();
+    protected final LinkedHashSet<String> memberSet = new LinkedHashSet<String>();
+    protected final LinkedHashSet<String> referenceSet = new LinkedHashSet<String>();
 
     /**
      * A repeating group is defined principally by it's id and delimiter.
-     * 
      * @param id The tag in the fix spec that is used to indicate the number of
      * groups present in a particular repeating group (e.g., NoContraBrokers
      * (Tag = 382)).
      * @param delim The first tag in the repeating group. Used to determine when
      * a group repeats (e.g., ContraGroup (Tag = 375)).
      */
-    FixRepeatingGroup(String id, String delim) {
+    public FixRepeatingGroup(String id, String delim) {
         groupId = id;
         groupDelim = delim;
     }
@@ -57,7 +55,7 @@ class FixRepeatingGroup {
      * number of groups present in a particular repeating group (e.g.,
      * NoContraBrokers (Tag = 382)).
      */
-    String getId() {
+    public String getId() {
         return groupId;
     }
 
@@ -65,37 +63,43 @@ class FixRepeatingGroup {
      * @return String The first tag in the repeating group. Used to determine
      * when a group repeats (e.g., ContraGroup (Tag = 375)).
      */
-    String getDelimiter() {
+    public String getDelimiter() {
         return groupDelim;
     }
 
     /**
      * Determines if a tag is part of this repeating group.
-     * 
      * @param tagNum The tag to check
      * @return boolean if true.
      */
-    boolean containsMember(String tagNum) {
+    public boolean containsMember(String tagNum) {
         return memberSet.contains(tagNum);
     }
 
     /**
-     * Determines if a tag is part of this repeating group.
-     * 
-     * @param tagNum The tag to check
-     * @return boolean if true.
+     * Determines of a field is the beginning of a nested repeating group within
+     * a repeating group.
+     * @param tagNum the member field of a group
+     * @return boolean
      */
-    boolean containsNestedGrp(String tagNum) {
-        return grpReferenceSet.contains(tagNum);
+    public boolean containsReference(String tagNum) {
+        return referenceSet.contains(tagNum);
     }
 
     /**
      * Returns the set of all members of a repeating group. This does not
      * include the id tag but does include the delimiter tag.
-     * 
      * @return Set<String> The tag members belonging to this group.
      */
-    Set<String> getMemberSet() {
+    public Set<String> getMemberSet() {
         return Collections.unmodifiableSet(memberSet);
+    }
+
+    /**
+     * Returns all the nested group identifiers found within a repeating group
+     * @return Set<String>
+     */
+    public Set<String> getReferenceSet() {
+        return Collections.unmodifiableSet(referenceSet);
     }
 }

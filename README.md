@@ -7,6 +7,8 @@ This feature allows FIX connectivity hubs, trading systems, and exchanges to def
 
 InFIX greatly reduces the number of code releases needed when on-boarding new FIX clients, reduces the on-boarding time considerably and allows support personnel to establish connectivity with diverse requirements without developer involvement.
 
+InFIX has also successfully been used in production to increase order flow and allow business with new clients that may not have been possible without it.  This is due to it's ability to transform working order types allowing both parties to conduct business where they might not have been able to.
+
 Preamble
 --------
 InFIX is a Java 1.8 application that is known to build on Windows and OS X but it should be buildable on any UNIX platform.

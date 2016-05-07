@@ -1,4 +1,4 @@
-# infix
+# InFIX
 FIX Protocol Message Transformer
 --------------------------------
 InFIX is a Java based FIX Protocol Message transformer tool that allows financial trading applications to address and transform data contained in a FIX messages in constant time by applying rules defined in an easy to use text language.

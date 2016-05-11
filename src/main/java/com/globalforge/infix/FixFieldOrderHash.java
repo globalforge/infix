@@ -66,13 +66,11 @@ public class FixFieldOrderHash {
     public BigDecimal getFieldPosition(String msgType, String ctxString) {
         BigDecimal ctxOrder = null;
         if (msgType == null) {
-            // tested
             String fldOrder = msgData.getFieldOrderMap("0").getFieldOrder(ctxString);
             return new BigDecimal(fldOrder, MathContext.DECIMAL32);
         }
         boolean isGroupRef = FixFieldOrderHash.containsRef(ctxString);
         if (isGroupRef) {
-            // not tested
             String genRef = ctxString.replaceAll("\\[\\d+\\]", "[*]");
             String fldOrder = msgData.getFieldOrderMap(msgType).getFieldOrder(genRef);
             if (fldOrder == null) { throw new RuntimeException(
@@ -83,11 +81,7 @@ public class FixFieldOrderHash {
             return ctxOrder;
         }
         String fldOrder = msgData.getFieldOrderMap(msgType).getFieldOrder(ctxString);
-        if (fldOrder != null) {
-            // tested
-            return new BigDecimal(fldOrder, MathContext.DECIMAL32);
-        }
-        // tested
+        if (fldOrder != null) { return new BigDecimal(fldOrder, MathContext.DECIMAL32); }
         return new BigDecimal(customTagPos++, MathContext.DECIMAL32);
     }
 

@@ -192,9 +192,9 @@ public abstract class MessageParser {
             }
         }
         // a hack to make sure the trailer fields are last.
-        newMsgFieldMap.put("&93", 1999998 + "");
-        newMsgFieldMap.put("&89", 1999999 + "");
-        newMsgFieldMap.put("&10", 2000000 + "");
+        newMsgFieldMap.put("&93", 2999998 + "");
+        newMsgFieldMap.put("&89", 2999999 + "");
+        newMsgFieldMap.put("&10", 3000000 + "");
         return newMsgFieldMap;
     }
 

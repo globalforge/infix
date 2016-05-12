@@ -45,7 +45,8 @@ public class FixFieldOrderHash {
      * Assigns an increasing number to tag contexts as they appear in a fix
      * message thus preserving their order.
      */
-    private int customTagPos = 1500000;
+    private int interFirmCustomTagPos = 1000000;
+    private int intraFirmCustomTagPos = 2000000;
     // the precision is based on the largest repeating group. there should be no
     // group with more than 1000 members (000-999).
     // public static MathContext mathCtx = new MathContext(3,
@@ -82,7 +83,15 @@ public class FixFieldOrderHash {
         }
         String fldOrder = msgData.getFieldOrderMap(msgType).getFieldOrder(ctxString);
         if (fldOrder != null) { return new BigDecimal(fldOrder, MathContext.DECIMAL32); }
-        return new BigDecimal(customTagPos++, MathContext.DECIMAL32);
+        String tagNumS = getTagNumber(ctxString);
+        int tagNum = Integer.parseInt(tagNumS);
+        int customFieldPos;
+        if (tagNum < 10000) {
+            customFieldPos = interFirmCustomTagPos++;
+        } else {
+            customFieldPos = intraFirmCustomTagPos++;
+        }
+        return new BigDecimal(customFieldPos++, MathContext.DECIMAL32);
     }
 
     /**

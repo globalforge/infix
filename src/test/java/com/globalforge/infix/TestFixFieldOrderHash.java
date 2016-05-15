@@ -35,9 +35,9 @@ public class TestFixFieldOrderHash {
         MessageData msgData = FixContextMgr.getInstance().getMessageData("FIX.4.4");
         FixFieldOrderHash orderHash = new FixFieldOrderHash(msgData);
         BigDecimal pos = orderHash.getFieldPosition("AS", "&42");
-        org.junit.Assert.assertEquals("1500000", pos.toString());
+        org.junit.Assert.assertEquals("1000000", pos.toString());
         pos = orderHash.getFieldPosition("AS", "&44");
-        org.junit.Assert.assertEquals("1500001", pos.toString());
+        org.junit.Assert.assertEquals("1000001", pos.toString());
     }
 
     @Test
@@ -313,5 +313,17 @@ public class TestFixFieldOrderHash {
         Assert.assertTrue(m1100.compareTo(m1010) == 1);
         // &73[1]->&78[1]->&539[0]->&804[1]->&545
         Assert.assertTrue(m1101.compareTo(m1100) == 1);
+    }
+
+    @Test
+    public void t4() throws Exception {
+        String msgType = "E";
+        MessageData msgData = FixContextMgr.getInstance().getMessageData("FIX.4.4");
+        FixFieldOrderHash orderHash = new FixFieldOrderHash(msgData);
+        BigDecimal ord1 = orderHash.getFieldPosition(msgType, "&10000");
+        System.out.println("&10000 = " + ord1.toPlainString());
+        BigDecimal ord2 = orderHash.getFieldPosition(msgType, "&5000");
+        System.out.println("&5000 = " + ord2.toPlainString());
+        Assert.assertTrue(ord1.compareTo(ord2) == 1);
     }
 }

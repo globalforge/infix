@@ -47,7 +47,7 @@ import com.globalforge.infix.qfix.MessageData;
  * in the message. A second map is used to map the ordinal value to a
  * {@link InfixField} which contains the fix field data (tag number and value).
  * The only way to access information is via a "context" which is defined as a
- * refernce to a fix field in rule syntax.
+ * reference to a fix field in rule syntax.
  * @author Michael Starkie
  */
 public class FixMessageMgr {
@@ -147,7 +147,8 @@ public class FixMessageMgr {
         if (tagStr.equals("8")) {
             if (msgMap.containsKey("&8")) {
                 FixMessageMgr.logger.warn(
-                    "Field BeginString(8) is already defined.  Using pre-defined dictionary.");
+                    "Field BeginString(8) is already defined.  Using pre-defined dictionary = "
+                        + msgMap.get("&8"));
                 return;
             } else {
                 init(tagVal);

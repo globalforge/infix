@@ -39,16 +39,21 @@ import java.util.Map;
  */
 public interface InfixAPI {
     /**
-     * Removes a FIX tag from the in-memory message.
+     * Removes a FIX field from the in-memory message.
      * @param ctx The tag number in action syntax (e.g., &44).
      */
     public void removeContext(String ctx);
 
+    /**
+     * Inserts a FIX field.
+     * @param key The tag number in Infix syntax (e.g., &44)
+     * @param value The tag value (e.g., 42.0000)
+     */
     public void putContext(String key, String value);
 
     /**
-     * Returns an object containing the tag num and tag value associated with
-     * tag number.
+     * Returns an object containing the Field field, including tag number and
+     * value as well as it's relative order within the FIX message
      * @param ctx The tag number in action syntax (e.g., &44).
      * @return InfixField Tag number and tag value.
      * @see InfixField
@@ -59,7 +64,8 @@ public interface InfixAPI {
      * Insert FIX fields into the parsed message. Keys are tag numbers in action
      * syntax and values are the tag values associated with the keys. This
      * method will replace any fields already parsed. Insert order must be
-     * preserved for the integrity of repeating groups.
+     * preserved for the integrity of repeating groups but it's up to the caller
+     * to ensure order of keys.
      * @param msgDict LinkedHashMap<String, String> The FIX fields to insert in
      * the form of a dictionary of tag numbers in action syntax to tag values.
      */

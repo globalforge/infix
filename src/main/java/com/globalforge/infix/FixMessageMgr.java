@@ -145,10 +145,10 @@ public class FixMessageMgr {
         String tagStr = fixField.substring(0, index);
         String tagVal = fixField.substring(index + 1);
         if (tagStr.equals("8")) {
-            if (msgMap.containsKey("&8")) {
+            if (msgMap.containsKey("8")) {
                 FixMessageMgr.logger.warn(
                     "Field BeginString(8) is already defined.  Using pre-defined dictionary = "
-                        + msgMap.get("&8"));
+                        + msgMap.get("8"));
                 return;
             } else {
                 init(tagVal);
@@ -158,7 +158,7 @@ public class FixMessageMgr {
         try {
             tagNum = Integer.parseInt(tagStr);
         } catch (NumberFormatException e) {
-            FixMessageMgr.logger.warn("Dropping non-numeric tag number: " + tagNum);
+            FixMessageMgr.logger.warn("Dropping non-numeric tag number: [" + tagNum + "]");
             return;
         }
         putField(tagNum, tagVal);
@@ -202,7 +202,7 @@ public class FixMessageMgr {
         String msgType = getMsgType();
         String ctx = null;
         if (msgType == null) {
-            ctx = "&" + tagNum;
+            ctx = "" + tagNum;
         } else {
             ctx = msgData.getGroupMgr(msgType).getContext(tagStr);
         }
@@ -217,6 +217,8 @@ public class FixMessageMgr {
      * Infix context
      */
     void putContext(String ctx, String tagVal) {
+        // if (ctx.contains("&")) { throw new RuntimeException("Don't use '&' in
+        // context key!"); }
         InfixFieldInfo fldPos = msgMap.get(ctx);
         if (fldPos != null) {
             msgMap.put(ctx, new InfixFieldInfo(fldPos.getField().getTagNum() + "", tagVal,
@@ -227,7 +229,7 @@ public class FixMessageMgr {
         try {
             Integer.parseInt(tagNum);
         } catch (NumberFormatException e) {
-            FixMessageMgr.logger.warn("Dropping non-numeric tag number: " + tagNum);
+            FixMessageMgr.logger.warn("Dropping non-numeric tag number: [" + tagNum + "]");
             return;
         }
         BigDecimal pos = posGen.getFieldPosition(getMsgType(), ctx);
@@ -240,13 +242,13 @@ public class FixMessageMgr {
      * @return The FixField mapped to the tag number.
      */
     private InfixFieldInfo getField(int tagNum) {
-        return getContext("&" + tagNum);
+        return getContext("" + tagNum);
     }
 
     /**
      * Returns a {@link InfixField} associated with the tag number in rule
      * syntax.
-     * @param ctx The tag number to look up in rule syntax (e.g., &35).
+     * @param ctx The tag number to look up in rule syntax (e.g., 35).
      * @return The FixField mapped to the tag number.
      */
     InfixFieldInfo getContext(String ctx) {
@@ -266,12 +268,12 @@ public class FixMessageMgr {
      * @param ctx The tag number in rule syntax.
      */
     void removeContext(String ctx) {
-        if (ctx.equals("&8") || ctx.equals("&35")) {
+        if (ctx.equals("8") || ctx.equals("35")) {
             FixMessageMgr.logger.info("Context not allowed for deletion: " + ctx);
             return;
         }
         remove(ctx);
-        int idxOfTagRef = ctx.lastIndexOf("&");
+        int idxOfTagRef = ctx.lastIndexOf(">");
         String tagNum = ctx.substring(idxOfTagRef + 1);
         boolean isGroupId = msgData.getGroupMgr(getMsgType()).containsGrpId(tagNum);
         if (isGroupId) {
@@ -325,10 +327,10 @@ public class FixMessageMgr {
             str.append(fieldStr);
         }
         putField(9, Integer.toString(bodyLength));
-        InfixFieldInfo bodyLen = getContext("&9");
+        InfixFieldInfo bodyLen = getContext("9");
         fieldStr = bodyLen.getField().toString() + '\u0001';
         str.insert(0, fieldStr);
-        InfixFieldInfo version = getContext("&8");
+        InfixFieldInfo version = getContext("8");
         fieldStr = version.getField().toString() + '\u0001';
         str.insert(0, fieldStr);
         char[] inputChars = str.toString().toCharArray();
@@ -337,7 +339,7 @@ public class FixMessageMgr {
             checkSum += aChar;
         }
         putField(10, String.format("%03d", checkSum % 256));
-        InfixFieldInfo chksum = getContext("&10");
+        InfixFieldInfo chksum = getContext("10");
         str.append(chksum.getField()).append('\u0001');
         return str.toString();
     }

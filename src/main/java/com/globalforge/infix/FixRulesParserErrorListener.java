@@ -62,7 +62,6 @@ public class FixRulesParserErrorListener extends BaseErrorListener {
         } else {
             try {
                 Integer.parseInt(s);
-                logMsg += " may be tag missing '&'.";
             } catch (NumberFormatException ex) {
                 logMsg += " not a number. ";
             }

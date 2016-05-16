@@ -57,11 +57,9 @@ class FixAPIImpl implements InfixAPI {
      */
     @Override
     public void putContext(String ctx, String value) {
-        if (!ctx.startsWith("&")) { throw new IllegalArgumentException(
-            "field must start with '&' in putContext()."); }
-        if (ctx.equals("&8")) { throw new IllegalArgumentException(
+        if (ctx.equals("8")) { throw new IllegalArgumentException(
             "Invalid context change.  Can't change FIX Version."); }
-        if (ctx.equals("&35")) { throw new IllegalArgumentException(
+        if (ctx.equals("35")) { throw new IllegalArgumentException(
             "Invalid context change.  Can't change Msg Type."); }
         msgMgr.putContext(ctx, value);
     }
@@ -76,13 +74,13 @@ class FixAPIImpl implements InfixAPI {
      */
     @Override
     public void putMessageDict(LinkedHashMap<String, String> msgDict) {
-        if (msgMgr.getContext("&8") == null) {
+        if (msgMgr.getContext("8") == null) {
             if (!msgDict
-                .containsKey("&8")) { throw new RuntimeException("Can't find tag 8 anywhere!"); }
+                .containsKey("8")) { throw new RuntimeException("Can't find tag 8 anywhere!"); }
         }
-        if (msgMgr.getContext("&35") == null) {
+        if (msgMgr.getContext("35") == null) {
             if (!msgDict
-                .containsKey("&35")) { throw new RuntimeException("Can't find tag 35 anywhere!"); }
+                .containsKey("35")) { throw new RuntimeException("Can't find tag 35 anywhere!"); }
         }
         String[] keys = msgDict.keySet().toArray(new String[msgDict.size()]);
         for (String k : keys) {

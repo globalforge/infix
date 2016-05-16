@@ -192,9 +192,9 @@ public abstract class MessageParser {
             }
         }
         // a hack to make sure the trailer fields are last.
-        newMsgFieldMap.put("&93", 2999998 + "");
-        newMsgFieldMap.put("&89", 2999999 + "");
-        newMsgFieldMap.put("&10", 3000000 + "");
+        newMsgFieldMap.put("93", 2999998 + "");
+        newMsgFieldMap.put("89", 2999999 + "");
+        newMsgFieldMap.put("10", 3000000 + "");
         return newMsgFieldMap;
     }
 
@@ -261,7 +261,7 @@ public abstract class MessageParser {
      * @return String a tag number
      */
     public static String getTagNumber(String ctxString) {
-        int tagIdx = ctxString.lastIndexOf("&");
+        int tagIdx = ctxString.lastIndexOf(">");
         String tagNum = ctxString.substring(tagIdx + 1);
         return tagNum;
     }

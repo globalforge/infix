@@ -179,6 +179,9 @@ public class GroupDataStore {
      * @param rg the repeating group to insert.
      */
     public void putComponentGroup(String grpId, RepeatingGroupBuilder rg) {
+        if (grpId.contains("48")) {
+            System.out.println();
+        }
         componentGroups.put(grpId, rg);
     }
 

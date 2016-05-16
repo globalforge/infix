@@ -34,6 +34,6 @@ public class TestMsgMgr {
         FixMessageMgr msgMgr = new FixMessageMgr(StaticTestingUtils.FIX_44_NEW_ORDER_CROSS);
         Map<String, InfixFieldInfo> msgMap = msgMgr.getInfixMessageMap();
         System.out.println(msgMap);
-        Assert.assertTrue(msgMap.containsKey("&8"));
+        Assert.assertTrue(msgMap.containsKey("8"));
     }
 }

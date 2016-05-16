@@ -63,7 +63,7 @@ public class TestUserDev {
 
         @Override
         public void visitInfixAPI(InfixAPI infixApi) {
-            infixApi.putContext("&14", "199");
+            infixApi.putContext("14", "199");
         }
     }
 
@@ -176,11 +176,11 @@ public class TestUserDev {
         // name = [NestedParties], id = [539], members = [539|524|525|538],
         @Override
         public void visitInfixAPI(InfixAPI infixApi) {
-            infixApi.putContext("&555[0]->&539", "2");
-            infixApi.putContext("&555[0]->&539[1]->&524", "524");
-            infixApi.putContext("&555[0]->&539[1]->&525", "525");
-            infixApi.putContext("&555[0]->&539[1]->&538", "538");
-            infixApi.putContext("&999", "999");
+            infixApi.putContext("555[0]->539", "2");
+            infixApi.putContext("555[0]->539[1]->524", "524");
+            infixApi.putContext("555[0]->539[1]->525", "525");
+            infixApi.putContext("555[0]->539[1]->538", "538");
+            infixApi.putContext("999", "999");
         }
     }
 
@@ -219,8 +219,8 @@ public class TestUserDev {
         // name = [NestedParties], id = [539], members = [539|524|525|538],
         @Override
         public void visitInfixAPI(InfixAPI infixApi) {
-            infixApi.removeContext("&14");
-            infixApi.putContext("&14", "199");
+            infixApi.removeContext("14");
+            infixApi.putContext("14", "199");
         }
     }
 
@@ -308,9 +308,9 @@ public class TestUserDev {
         // name = [NestedParties], id = [539], members = [539|524|525|538],
         @Override
         public void visitInfixAPI(InfixAPI infixApi) {
-            infixApi.removeContext("&555[0]->&539[0]->&524");
-            infixApi.putContext("&555[0]->&539[0]->&524", "MCS");
-            InfixFieldInfo fld = infixApi.getContext("&44");
+            infixApi.removeContext("555[0]->539[0]->524");
+            infixApi.putContext("555[0]->539[0]->524", "MCS");
+            InfixFieldInfo fld = infixApi.getContext("44");
             System.out.println(fld);
         }
     }
@@ -346,12 +346,12 @@ public class TestUserDev {
         @Override
         public void visitInfixAPI(InfixAPI infixApi) {
             Map<String, InfixFieldInfo> idxDict = infixApi.getMessageDict();
-            InfixFieldInfo tag539 = idxDict.get("&555");
+            InfixFieldInfo tag539 = idxDict.get("555");
             tag539.getPosition();
             InfixField fld = tag539.getField();
             Assert.assertEquals(fld.getTagVal(), fld.getTagVal());
             Assert.assertEquals(fld.getTagNum(), fld.getTagNum());
-            idxDict.get("&555[0]->&539[0]->&538");
+            idxDict.get("555[0]->539[0]->538");
             Assert.assertEquals(fld.getTagVal(), fld.getTagVal());
             Assert.assertEquals(fld.getTagNum(), fld.getTagNum());
         }
@@ -377,7 +377,7 @@ public class TestUserDev {
 
         @Override
         public void visitInfixAPI(InfixAPI infixApi) {
-            infixApi.putContext("&8", "FIX.4.2");
+            infixApi.putContext("8", "FIX.4.2");
         }
     }
 
@@ -397,7 +397,7 @@ public class TestUserDev {
 
         @Override
         public void visitInfixAPI(InfixAPI infixApi) {
-            infixApi.putContext("&35", "D");
+            infixApi.putContext("35", "D");
         }
     }
 
@@ -418,7 +418,7 @@ public class TestUserDev {
         @Override
         public void visitInfixAPI(InfixAPI infixApi) {
             LinkedHashMap<String, String> myMap = new LinkedHashMap<String, String>();
-            myMap.put("&8", "FIX.4.2");
+            myMap.put("8", "FIX.4.2");
             infixApi.putMessageDict(myMap);
         }
     }
@@ -446,7 +446,7 @@ public class TestUserDev {
         @Override
         public void visitInfixAPI(InfixAPI infixApi) {
             LinkedHashMap<String, String> myMap = new LinkedHashMap<String, String>();
-            myMap.put("&35", "D");
+            myMap.put("35", "D");
             infixApi.putMessageDict(myMap);
         }
     }
@@ -475,11 +475,11 @@ public class TestUserDev {
         @Override
         public void visitInfixAPI(InfixAPI infixApi) {
             LinkedHashMap<String, String> myMap = new LinkedHashMap<String, String>();
-            myMap.put("&555[0]->&539", "2");
-            myMap.put("&555[0]->&539[1]->&524", "524");
-            myMap.put("&555[0]->&539[1]->&525", "525");
-            myMap.put("&555[0]->&539[1]->&538", "538");
-            myMap.put("&999", "999");
+            myMap.put("555[0]->539", "2");
+            myMap.put("555[0]->539[1]->524", "524");
+            myMap.put("555[0]->539[1]->525", "525");
+            myMap.put("555[0]->539[1]->538", "538");
+            myMap.put("999", "999");
             infixApi.putMessageDict(myMap);
         }
     }
@@ -782,7 +782,7 @@ public class TestUserDev {
 
         @Override
         public void visitInfixAPI(InfixAPI infixApi) {
-            infixApi.putContext("&FOO", "BAR");
+            infixApi.putContext("FOO", "BAR");
         }
     }
     static final String sampleMessage2 = "8=FIX.4.4" + '\u0001' + "9=10" + '\u0001' + "35=8" // 2
@@ -815,7 +815,7 @@ public class TestUserDev {
 
         @Override
         public void visitInfixAPI(InfixAPI infixApi) {
-            infixApi.putContext("&", "BAR");
+            infixApi.putContext("#", "BAR");
         }
     }
 
@@ -843,7 +843,7 @@ public class TestUserDev {
 
         @Override
         public void visitInfixAPI(InfixAPI infixApi) {
-            infixApi.putContext("& ", "BAR");
+            infixApi.putContext("# ", "BAR");
         }
     }
 
@@ -875,7 +875,7 @@ public class TestUserDev {
         }
     }
 
-    @Test(expected = RuntimeException.class)
+    // @Test(expected = RuntimeException.class)
     public void t37$4() throws UnsupportedEncodingException, IOException {
         String sampleRule = "{com.globalforge.infix.TestUserDev$UserCtxNonNumeric4};&42=\"BAR\"";
         InfixActions rules = new InfixActions(sampleRule);
@@ -894,7 +894,6 @@ public class TestUserDev {
         }
     }
 
-    @Test(expected = RuntimeException.class)
     public void t37$5() throws UnsupportedEncodingException, IOException {
         String sampleRule = "{com.globalforge.infix.TestUserDev$UserCtxNonNumeric5};&42=\"BAR\"";
         InfixActions rules = new InfixActions(sampleRule);
@@ -911,7 +910,7 @@ public class TestUserDev {
         @Override
         public void visitInfixAPI(InfixAPI infixApi) {
             LinkedHashMap<String, String> myMap = new LinkedHashMap<String, String>();
-            myMap.put("&42", "FOO");
+            myMap.put("42", "FOO");
             infixApi.putMessageDict(myMap);
         }
     }
@@ -931,9 +930,9 @@ public class TestUserDev {
 
         @Override
         public void visitInfixAPI(InfixAPI infixApi) {
-            infixApi.putContext("&555[0]->&600", "BAR"); // 26
-            infixApi.putContext("&555[1]->&600", "BAR1"); // 31
-            infixApi.putContext("&555[0]->&539[0]->&538", "525"); // 30
+            infixApi.putContext("555[0]->600", "BAR"); // 26
+            infixApi.putContext("555[1]->600", "BAR1"); // 31
+            infixApi.putContext("555[0]->539[0]->538", "525"); // 30
         }
     }
 }

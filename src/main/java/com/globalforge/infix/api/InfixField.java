@@ -85,7 +85,8 @@ public final class InfixField implements Serializable {
     }
 
     /**
-     * Return a string representation of this instance.
+     * Return a string representation of this instance. <br>
+     * Warning: DO NOT CHANGE THIS METHOD IN ANY WAY!
      */
     @Override
     public String toString() {

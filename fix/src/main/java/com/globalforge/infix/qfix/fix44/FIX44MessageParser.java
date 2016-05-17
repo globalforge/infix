@@ -103,7 +103,7 @@ public class FIX44MessageParser extends MessageParser {
                         String componentName = reader.getAttributeValue(null, "name");
                         LinkedList<String> components = ctxStore.getComponentContext(componentName);
                         if ("7".equals(curMessage)) {
-                            System.out.println();
+                            // System.out.println();
                         }
                         addComponents(curMessage, components, "", null);
                     }

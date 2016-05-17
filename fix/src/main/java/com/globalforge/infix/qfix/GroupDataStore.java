@@ -180,7 +180,7 @@ public class GroupDataStore {
      */
     public void putComponentGroup(String grpId, RepeatingGroupBuilder rg) {
         if (grpId.contains("48")) {
-            System.out.println();
+            // System.out.println();
         }
         componentGroups.put(grpId, rg);
     }

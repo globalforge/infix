@@ -59,6 +59,22 @@ public class InfixFieldInfo implements Serializable, Comparable<InfixFieldInfo> 
     }
 
     /**
+     * return the tag number associated with this field.
+     * @return int The tag number.
+     */
+    public int getTagNum() {
+        return field.getTagNum();
+    }
+
+    /**
+     * Return the tag value associated with this field.
+     * @return int The tag value.
+     */
+    public String getTagVal() {
+        return field.getTagVal();
+    }
+
+    /**
      * Get the Field Object
      * @return InfixField
      */
@@ -76,7 +92,12 @@ public class InfixFieldInfo implements Serializable, Comparable<InfixFieldInfo> 
 
     @Override
     public String toString() {
-        return field.toString() + "|" + position;
+        return "[tagNum = " + getTagNum() + ", tagVal = " + getTagVal() + "]";
+    }
+
+    public String toLongString() {
+        return "[tagNum = " + getTagNum() + ", tagVal = " + getTagVal() + ", relative pos = "
+            + getPosition() + "]";
     }
 
     @Override

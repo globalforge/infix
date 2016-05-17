@@ -92,7 +92,7 @@ public class FIX44ComponentParser extends ComponentParser {
                         String name = reader.getAttributeValue(0);
                         curComponent = name;
                         if ("Instrument".equals(curComponent)) {
-                            System.out.println();
+                            // System.out.println();
                         }
                         componentMgr.initializeComponent(name);
                     } else if ("component".equals(elementName)

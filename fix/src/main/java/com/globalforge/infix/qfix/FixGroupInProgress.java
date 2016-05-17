@@ -90,7 +90,7 @@ class FixGroupInProgress {
 
     @Override
     public String toString() {
-        return '&' + group.getId() + '[' + getCurGroupNumber() + "]->";
+        return group.getId() + '[' + getCurGroupNumber() + "]->";
     }
 
     @Override

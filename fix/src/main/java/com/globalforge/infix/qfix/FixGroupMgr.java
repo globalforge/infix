@@ -56,7 +56,7 @@ public abstract class FixGroupMgr {
      * @return String the context string.
      */
     public String getContext(String tagNum) {
-        String ctxString = '&' + tagNum;
+        String ctxString = tagNum;
         FixRepeatingGroup group = getGroup(tagNum);
         // Start of a group. Might be nested.
         if (group != null) {

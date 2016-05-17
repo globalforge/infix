@@ -94,7 +94,7 @@ public class InfixActions {
             try {
                 final String sampleMessage1 = "8=" + fixVersion + '\u0001' + "9=10" + '\u0001'
                     + "35=8" + '\u0001' + "45=1" + '\u0001' + "10=004";
-                InfixActions rules = new InfixActions("&45=2");
+                InfixActions rules = new InfixActions("45=2");
                 rules.transformFIXMsg(sampleMessage1);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -157,7 +157,7 @@ public class InfixActions {
 
     public static void main(String[] args) {
         try {
-            String sampleRule = "&55>=&65 && &40<=2 -> &60=\"FOO\"";
+            String sampleRule = "55>=65 && 40<=2 -> 60=\"FOO\"";
             InfixActions msgHandler = new InfixActions(sampleRule);
             System.out.println(msgHandler);
         } catch (Exception e) {

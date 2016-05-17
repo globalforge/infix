@@ -51,7 +51,7 @@ public class ExampleUserContext implements InfixUserContext {
      */
     @Override
     public void visitInfixAPI(InfixAPI infixApi) {
-        infixApi.putContext("&44", Double.toString(Math.E));
+        infixApi.putContext("44", Double.toString(Math.E));
     }
 
     /**

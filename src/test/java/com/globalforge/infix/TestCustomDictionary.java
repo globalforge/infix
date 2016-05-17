@@ -43,9 +43,9 @@ public class TestCustomDictionary {
     public void t1() throws Exception {
         MessageData msgData = FixContextMgr.getInstance().getMessageData("FIX.4.2GC");
         FixFieldOrderHash orderHash = new FixFieldOrderHash(msgData);
-        BigDecimal pos = orderHash.getFieldPosition("D", "&382");
+        BigDecimal pos = orderHash.getFieldPosition("D", "382");
         org.junit.Assert.assertEquals("47", pos.toString());
-        pos = orderHash.getFieldPosition("D", "&382[0]->&655");
+        pos = orderHash.getFieldPosition("D", "382[0]->655");
         org.junit.Assert.assertEquals("47.000000833", pos.toString());
     }
 
@@ -53,15 +53,15 @@ public class TestCustomDictionary {
     public void t2() {
         FixGroupMgr grpMgr = new FIX42GC_D_68_GroupMgr();
         String ctx = grpMgr.getContext("382");
-        Assert.assertEquals(ctx, "&382");
+        Assert.assertEquals(ctx, "382");
         ctx = grpMgr.getContext("375");
-        Assert.assertEquals(ctx, "&382[0]->&375");
+        Assert.assertEquals(ctx, "382[0]->375");
         ctx = grpMgr.getContext("437");
-        Assert.assertEquals(ctx, "&382[0]->&437");
+        Assert.assertEquals(ctx, "382[0]->437");
         ctx = grpMgr.getContext("438");
-        Assert.assertEquals(ctx, "&382[0]->&438");
+        Assert.assertEquals(ctx, "382[0]->438");
         ctx = grpMgr.getContext("655");
-        Assert.assertEquals(ctx, "&382[0]->&655");
+        Assert.assertEquals(ctx, "382[0]->655");
     }
     static final String customMsg1 =
         "8=FIX.4.2GC" + '\u0001' + "9=52" + '\u0001' + "35=8" + '\u0001' + "44=3.142" + '\u0001'

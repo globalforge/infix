@@ -48,7 +48,7 @@ import com.globalforge.infix.qfix.AbstractXMLParser.CurrentContext;
 public class HeaderParser {
     /** logger */
     protected final static Logger logger = LoggerFactory.getLogger(HeaderParser.class);
-    /** Map of field context (e.g., &8) to order it appears in the header */
+    /** Map of field context (e.g., 8) to order it appears in the header */
     private final LinkedHashMap<String, String> ctxMap = new LinkedHashMap<String, String>();
     private final Deque<CurrentContext> elementStack = new ArrayDeque<CurrentContext>(100);
     private final Deque<String> curGroupStack = new ArrayDeque<String>(100);
@@ -120,7 +120,7 @@ public class HeaderParser {
                     if ("group".equals(elementName) && (curContext == CurrentContext.HEADER)) {
                         String tagName = reader.getAttributeValue(null, "name");
                         String tagNum = fParser.getTagNum(tagName);
-                        String tagCtx = "&" + tagNum;
+                        String tagCtx = tagNum;
                         ctxMap.put(tagCtx, fieldOrder.incrementAndGet() + "");
                         elementStack.push(CurrentContext.GROUP);
                         curGroupStack.push(tagNum);
@@ -131,7 +131,7 @@ public class HeaderParser {
                     if ("field".equals(elementName) && (curContext == CurrentContext.HEADER)) {
                         String tagName = reader.getAttributeValue(null, "name");
                         String tagNum = fParser.getTagNum(tagName);
-                        String tagCtx = "&" + tagNum;
+                        String tagCtx = tagNum;
                         ctxMap.put(tagCtx, fieldOrder.incrementAndGet() + "");
                     }
                     if ("component".equals(elementName) && (curContext == CurrentContext.HEADER)) {
@@ -142,7 +142,7 @@ public class HeaderParser {
                     if ("field".equals(elementName) && (curContext == CurrentContext.GROUP)) {
                         String tagName = reader.getAttributeValue(null, "name");
                         String tagNum = fParser.getTagNum(tagName);
-                        String tagCtx = groupCtxStack.peek() + "[*]->" + "&" + tagNum;
+                        String tagCtx = groupCtxStack.peek() + "[*]->" + tagNum;
                         ctxMap.put(tagCtx, fieldOrder + ".*" + memberOrder++);
                         // FIX.4.4 and below only
                         ctxStore.addMessageGroupMember("HEADER", curGroupStack.peek(), tagNum);
@@ -183,7 +183,7 @@ public class HeaderParser {
         String groupId = null;
         while (i.hasNext()) {
             String ctx = i.next();
-            int tagIdx = ctx.lastIndexOf('&');
+            int tagIdx = ctx.lastIndexOf('>');
             String tagNum = ctx.substring(tagIdx + 1);
             if (memberOrder == 0) {
                 ctxMap.put(ctx, fieldOrder.incrementAndGet() + "");
@@ -192,7 +192,7 @@ public class HeaderParser {
                 groupId = tagNum;
                 ctxStore.startMessageGroup("HEADER", groupId);
             } else {
-                String tagCtx = curGrp + "[*]->" + "&" + tagNum;
+                String tagCtx = curGrp + "[*]->" + tagNum;
                 ctxMap.put(tagCtx, fieldOrder + ".*" + memberOrder++);
                 ctxStore.addMessageGroupMember("HEADER", groupId, tagNum);
             }

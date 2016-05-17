@@ -134,6 +134,16 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     }
 
     /**
+     * Number after last '>'
+     * @param ctxString Full context of field reference.
+     * @return String a tag number
+     */
+    public static String removePointers(String ctxString) {
+        String mapString = ctxString.replaceAll("&", "");
+        return mapString;
+    }
+
+    /**
      * Handle tag assignment.
      * @return String the right hand side of an assignment.
      * @see FixRulesParser.AssignContext
@@ -198,31 +208,10 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         return visitChildren(ctx);
     }
 
-    /**
-     * Do something with a tag reference. Keeps track of all elements of the
-     * context in which the tag reference appears and forms a stack based tree.
-     * For example: A tag reference belonging to a nested repeating group looks
-     * like the following in rule syntax: &555[1]->&539[0]->&524. This rule can
-     * be thought of as a reference hierarchy consisting of &555 (the outer
-     * group id), &555[1]->&539 (the inner group id), and &555[1]->&539[0]->&524
-     * (the tag being referenced in the inner-most group). Tag &524 may not
-     * exist in the original message. If it does exist than tag &524 can be
-     * looked up directly using the full reference string
-     * "&555[1]->&539[0]->&524". Perhaps the user intends to start a new nested
-     * group defined by the groupId &539 and insert it at the end of the group
-     * defined by &555[1]. If that is the case then we would need to know the
-     * location of &555[1]->&539 first before we could insert
-     * &555[1]->&539[0]->&524 in order to maintain a valid tag ordering.
-     * Breaking up the reference string into hierarchies is most efficiently and
-     * easily done in this class during a rule parse. We can then hand off the
-     * reference hierarchy to the message manager which understands how to look
-     * them up by popping the stack and inserting the tag so that it appears in
-     * the correct order.
-     * @return String representation of a tag references in rule syntax.
-     */
     @Override
     public String visitTagref(FixRulesParser.TagrefContext ctx) {
         String txt = ctx.getText();
+        txt = removePointers(txt);
         fullParseCtx += txt;
         return visitChildren(ctx);
     }
@@ -267,6 +256,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      */
     private String getTag(String context) {
         String tagValue = null;
+        context = removePointers(context);
         InfixFieldInfo field = msgMgr.getContext(context);
         if (field != null) {
             tagValue = field.getField().getTagVal();
@@ -661,6 +651,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     @Override
     public String visitDeleteTag(FixRulesParser.DeleteTagContext ctx) {
         String txt = ctx.tg.getText();
+        txt = removePointers(txt);
         msgMgr.removeContext(txt);
         return null;
     }
@@ -675,11 +666,12 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         Set<String> infixKeys = msgMap.keySet();
         Iterator<TagnumContext> it = tagList.iterator();
         while (it.hasNext()) {
-            String tagCtx = '&' + it.next().getText();
+            String tagCtx = it.next().getText();
             if (infixKeys.contains(tagCtx)) {
                 if (tagCtx.equals("&8") || tagCtx.equals("&35")) {
                     continue;
                 }
+                tagCtx = removePointers(tagCtx);
                 msgMgr.removeContext(tagCtx);
             }
         }
@@ -706,7 +698,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
             String infixKey = infixKeyIt.next();
             String rootTagNum = FixFieldOrderHash.getRootTagNumber(infixKey);
             if (!keepSet.contains(rootTagNum)) {
-                if (infixKey.equals("&8") || infixKey.equals("&35")) {
+                if (infixKey.equals("8") || infixKey.equals("35")) {
                     continue;
                 }
                 infixKeyIt.remove();

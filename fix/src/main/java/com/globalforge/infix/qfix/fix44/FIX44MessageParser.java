@@ -93,7 +93,7 @@ public class FIX44MessageParser extends MessageParser {
                     }
                     if ("field".equals(elementName) && (curContext == CurrentContext.MESSAGE)) {
                         String tagName = reader.getAttributeValue(null, "name");
-                        String tagCtx = "&" + fParser.getTagNum(tagName);
+                        String tagCtx = fParser.getTagNum(tagName);
                         LinkedHashMap<String, String> fieldMap = messageMap.get(curMessage);
                         fieldMap.put(tagCtx, null);
                     }
@@ -102,6 +102,9 @@ public class FIX44MessageParser extends MessageParser {
                     if ("component".equals(elementName) && (curContext == CurrentContext.MESSAGE)) {
                         String componentName = reader.getAttributeValue(null, "name");
                         LinkedList<String> components = ctxStore.getComponentContext(componentName);
+                        if ("7".equals(curMessage)) {
+                            // System.out.println();
+                        }
                         addComponents(curMessage, components, "", null);
                     }
                     if ("group".equals(elementName) && (curContext == CurrentContext.MESSAGE)) {
@@ -109,7 +112,7 @@ public class FIX44MessageParser extends MessageParser {
                         String tagName = reader.getAttributeValue(null, "name");
                         String tagNum = fParser.getTagNum(tagName);
                         curGroupStack.push(tagNum);
-                        String tagCtx = "&" + tagNum;
+                        String tagCtx = tagNum;
                         LinkedHashMap<String, String> fieldMap = messageMap.get(curMessage);
                         fieldMap.put(tagCtx, null);
                         groupCtxStack.push(tagCtx);
@@ -118,7 +121,7 @@ public class FIX44MessageParser extends MessageParser {
                     if ("field".equals(elementName) && (curContext == CurrentContext.GROUP)) {
                         String tagName = reader.getAttributeValue(null, "name");
                         String tagNum = fParser.getTagNum(tagName);
-                        String tagCtx = groupCtxStack.peek() + "[*]->" + "&" + tagNum;
+                        String tagCtx = groupCtxStack.peek() + "[*]->" + tagNum;
                         LinkedHashMap<String, String> fieldMap = messageMap.get(curMessage);
                         fieldMap.put(tagCtx, null);
                         ctxStore.addMessageGroupMember(curMessage, curGroupStack.peek(), tagNum);
@@ -142,7 +145,7 @@ public class FIX44MessageParser extends MessageParser {
                         }
                         ctxStore.addMessageGroupReference(curMessage, curGroupStack.peek(), tagNum);
                         curGroupStack.push(tagNum);
-                        String tagCtx = "&" + tagNum;
+                        String tagCtx = tagNum;
                         String curGrpCtx = groupCtxStack.peek() + "[*]->" + tagCtx;
                         groupCtxStack.push(curGrpCtx);
                         LinkedHashMap<String, String> fieldMap = messageMap.get(curMessage);

@@ -98,7 +98,7 @@ public class RepeatingGroupStateManager {
         if (transitionState != ComponentContextState.GROUP_MEMBER) { throw new RuntimeException(
             "State Transition Error moving from a group member to free field"); }
         while (!groupInProgess.isEmpty()) {
-            String groupIdCtx = "&" + groupInProgess.peek() + "[*]->";
+            String groupIdCtx = groupInProgess.peek() + "[*]->";
             int idx = compCtx.indexOf(groupIdCtx);
             if (idx >= 0) { return false; }
             groupInProgess.pop();
@@ -161,10 +161,11 @@ public class RepeatingGroupStateManager {
     public void groupIdToMemberStateTransition(String msgType, String compCtx) {
         if (transitionState != ComponentContextState.GROUP_START) { throw new RuntimeException(
             "State Transition Error moving from a group ID to group member"); }
-        String groupIdCtx = "&" + groupInProgess.peek() + "[*]->";
+        String groupIdCtx = groupInProgess.peek() + "[*]->";
         int idx = compCtx.indexOf(groupIdCtx);
         if (idx < 0) { throw new RuntimeException(
-            "State Transition Error.  No members following a Group ID."); }
+            "State Transition Error.  Member not part of group. [msgtyp=" + msgType + ", group="
+                + groupIdCtx + ", member=" + compCtx + "]"); }
         String tagNum = MessageParser.getTagNumber(compCtx);
         if (isComponentGroup(tagNum)) {
             String help =

@@ -91,7 +91,7 @@ public class FIX50MessageParser extends MessageParser {
                     }
                     if ("field".equals(elementName) && (curContext == CurrentContext.MESSAGE)) {
                         String tagName = reader.getAttributeValue(null, "name");
-                        String tagCtx = "&" + fParser.getTagNum(tagName);
+                        String tagCtx = fParser.getTagNum(tagName);
                         LinkedHashMap<String, String> fieldMap = messageMap.get(curMessage);
                         fieldMap.put(tagCtx, null);
                     }

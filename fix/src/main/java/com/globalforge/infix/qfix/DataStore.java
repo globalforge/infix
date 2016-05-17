@@ -110,6 +110,9 @@ public class DataStore {
      * @return true if true
      */
     public boolean isMessageGroup(String curMessage, String groupId) {
+        if ("48".equals(groupId)) {
+            // System.out.println();
+        }
         return groupStore.isMessageGroup(curMessage, groupId);
     }
 
@@ -147,6 +150,9 @@ public class DataStore {
      * @param rg The group.
      */
     public void putComponentGroup(String grpId, RepeatingGroupBuilder rg) {
+        if ("48".equals(grpId)) {
+            // System.out.println();
+        }
         groupStore.putComponentGroup(grpId, rg);;
     }
 

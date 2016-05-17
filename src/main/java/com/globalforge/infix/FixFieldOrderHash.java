@@ -107,12 +107,12 @@ public class FixFieldOrderHash {
     }
 
     /**
-     * Number after last '&'
+     * Number after last '>'
      * @param ctxString Full context of field reference.
      * @return String a tag number
      */
     public static String getTagNumber(String ctxString) {
-        int tagIdx = ctxString.lastIndexOf("&");
+        int tagIdx = ctxString.lastIndexOf(">");
         String tagNum = ctxString.substring(tagIdx + 1);
         return tagNum;
     }
@@ -124,8 +124,8 @@ public class FixFieldOrderHash {
      */
     public static String getRootTagNumber(String ctxString) {
         int bracketIdx = ctxString.indexOf("[");
-        if (bracketIdx < 0) { return ctxString.substring(1); }
-        String groupIdCtx = ctxString.substring(1, bracketIdx);
+        if (bracketIdx < 0) { return ctxString; }
+        String groupIdCtx = ctxString.substring(0, bracketIdx);
         return groupIdCtx;
     }
 
@@ -138,7 +138,7 @@ public class FixFieldOrderHash {
      */
     public static String getRootTagCtx(String ctxString) {
         int bracketIdx = ctxString.indexOf("[");
-        if (bracketIdx < 0) { return ctxString.substring(1); }
+        if (bracketIdx < 0) { return ctxString; }
         String groupIdCtx = ctxString.substring(0, bracketIdx);
         return groupIdCtx;
     }

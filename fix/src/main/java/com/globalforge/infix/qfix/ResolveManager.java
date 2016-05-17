@@ -140,8 +140,7 @@ public class ResolveManager {
      * Given a component name from the quick fix data dictionary, convert all
      * the member fields contained within it to infix syntax.
      * @param member The component name as defined by a quickfix dictionary.
-     * @param resolveList The list of field members conververted to infix
-     * syntax.
+     * @param resolveList The list of field members converted to infix syntax.
      * @return LinkedList<String> THe list of member fields converted to infix
      * syntax.
      */
@@ -152,7 +151,7 @@ public class ResolveManager {
             int cIdx = mem.indexOf("@");
             int gIdx = mem.indexOf("#");
             if ((cIdx < 0) && (gIdx < 0)) {
-                String ctx = "&" + this.fParser.getTagNum(mem);
+                String ctx = fParser.getTagNum(mem);
                 resolveList.add(ctx);
             } else {
                 if (gIdx < 0) {
@@ -203,7 +202,7 @@ public class ResolveManager {
             } else {
                 int gIdx = mem.indexOf("#");
                 if (gIdx < 0) {
-                    String ctx = "&" + this.fParser.getTagNum(mem);
+                    String ctx = fParser.getTagNum(mem);
                     resolveList.add(ctx);
                 } else {
                     resolveList.add(mem);
@@ -233,7 +232,7 @@ public class ResolveManager {
      * @param grpId the group identifier
      */
     private void startGroup(String grpId) {
-        grpId = grpId.substring(1);
+        // grpId = grpId.substring(1);
         RepeatingGroupBuilder rg = new RepeatingGroupBuilder(grpId);
         ctxStore.putComponentGroup(grpId, rg);
     }
@@ -244,8 +243,8 @@ public class ResolveManager {
      * @param mem the member
      */
     private void addGroupMember(String grpId, String mem) {
-        grpId = grpId.substring(1);
-        mem = mem.substring(1);
+        // grpId = grpId.substring(1);
+        // mem = mem.substring(1);
         ctxStore.addComponentGroupMember(grpId, mem);
     }
 

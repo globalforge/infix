@@ -865,13 +865,6 @@
       <field name="SecurityID" required="N"/>
       <field name="IDSource" required="N"/>
       <field name="SecurityType" required="N"/>
-      <group name="NoContraBrokers" required="N">
-        <field name="ContraBroker" required="N"/>
-        <field name="ContraTrader" required="N"/>
-        <field name="ContraTradeQty" required="N"/>
-        <field name="ContraTradeTime" required="N"/>
-        <field name="ContraLegRefID" required="N"/>
-      </group>
       <field name="MaturityMonthYear" required="N"/>
       <field name="MaturityDay" required="N"/>
       <field name="PutOrCall" required="N"/>
@@ -924,6 +917,14 @@
       <field name="DiscretionOffset" required="N"/>
       <field name="ClearingFirm" required="N"/>
       <field name="ClearingAccount" required="N"/>
+      <group name="NoRungs" required="N">
+        <field name="RungClOrdID" required="N"/>
+        <field name="RungSide" required="N"/>
+        <field name="RungOrderQty" required="N"/>
+        <field name="RungPegOffset" required="N"/>
+        <field name="RungMinQty" required="N"/>
+        <field name="RungMaxContra" required="N"/>
+      </group>
     </message>
     <message name="ExecutionReport" msgtype="8" msgcat="app">
       <field name="OrderID" required="Y"/>
@@ -2673,6 +2674,12 @@
     <field number="444" name="ListStatusText" type="STRING"/>
     <field number="445" name="EncodedListStatusTextLen" type="INT"/>
     <field number="446" name="EncodedListStatusText" type="DATA"/>
-    <field number="655" name="ContraLegRefID" type="STRING"/>
+    <field number="9000" name="NoRungs" type="NUMINGROUP"/>
+    <field number="9001" name="RungClOrdID" type="STRING"/>
+    <field number="9002" name="RungSide" type="CHAR"/>
+    <field number="9003" name="RungOrderQty" type="QTY"/>
+    <field number="9004" name="RungPegOffset" type="PRICEOFFSET"/>
+    <field number="9005" name="RungMinQty" type="QTY"/>
+    <field number="9006" name="RungMaxContra" type="QTY"/>
   </fields>
 </fix>

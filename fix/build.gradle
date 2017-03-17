@@ -15,16 +15,16 @@ project.ext {
    rootLib = "${rootProject.libDir}"
 }
 
-task parseCustomFIX42GC(
+task parseCustomFIX42Aqua(
    type: JavaExec, dependsOn:classes) {
    main = project.ext.mainClass
    classpath sourceSets.main.runtimeClasspath
    systemProperty 'SRC_DIR', project.ext.srcDir
-   args 'FIX42GC'
+   args 'FIX42Aqua'
 }
 
 task parseFIX( 
-   type: JavaExec, dependsOn:parseCustomFIX42GC) {
+   type: JavaExec, dependsOn:parseCustomFIX42Aqua) {
    main = project.ext.mainClass
    classpath sourceSets.main.runtimeClasspath 
    systemProperty 'SRC_DIR', project.ext.srcDir 

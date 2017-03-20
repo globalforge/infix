@@ -5,8 +5,10 @@ import java.math.MathContext;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.globalforge.infix.qfix.MessageData;
 
 /*-
@@ -68,7 +70,10 @@ public class FixFieldOrderHash {
         BigDecimal ctxOrder = null;
         if (msgType == null) {
             String fldOrder = msgData.getFieldOrderMap("0").getFieldOrder(ctxString);
-            return new BigDecimal(fldOrder, MathContext.DECIMAL32);
+			if (fldOrder != null) {
+				return new BigDecimal(fldOrder, MathContext.DECIMAL32);
+			}
+			return getCustomTagPos(ctxString);
         }
         boolean isGroupRef = FixFieldOrderHash.containsRef(ctxString);
         if (isGroupRef) {
@@ -82,8 +87,14 @@ public class FixFieldOrderHash {
             return ctxOrder;
         }
         String fldOrder = msgData.getFieldOrderMap(msgType).getFieldOrder(ctxString);
-        if (fldOrder != null) { return new BigDecimal(fldOrder, MathContext.DECIMAL32); }
-        String tagNumS = getTagNumber(ctxString);
+		if (fldOrder != null) {
+			return new BigDecimal(fldOrder, MathContext.DECIMAL32);
+		}
+		return getCustomTagPos(ctxString);
+	}
+
+	public BigDecimal getCustomTagPos(String ctxString) {
+		String tagNumS = getTagNumber(ctxString);
         int tagNum = Integer.parseInt(tagNumS);
         int customFieldPos;
         if (tagNum < 10000) {

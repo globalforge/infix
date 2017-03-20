@@ -5,9 +5,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.globalforge.infix.api.InfixAPI;
 import com.globalforge.infix.api.InfixField;
 import com.globalforge.infix.api.InfixFieldInfo;
@@ -54,12 +55,13 @@ public class FixMessageMgr {
     /** logger */
     final static Logger logger = LoggerFactory.getLogger(FixMessageMgr.class);
     /** maps a tag in rule syntax to a relative point in the message */
-    private Map<String, InfixFieldInfo> msgMap = new HashMap<String, InfixFieldInfo>();
+	private HashMap<String, InfixFieldInfo> msgMap =
+		new HashMap<String, InfixFieldInfo>();
     /** a cache of user defined impl by class name */
-    private final Map<String, InfixUserContext> userContextMap =
+	private final HashMap<String, InfixUserContext> userContextMap =
         new HashMap<String, InfixUserContext>();
     /** a cache of user defined impl by class name */
-    private final Map<String, InfixUserTerminal> userAssignMap =
+	private final HashMap<String, InfixUserTerminal> userAssignMap =
         new HashMap<String, InfixUserTerminal>();
     private MessageData msgData = null;
     private FixFieldOrderHash posGen = null;
@@ -103,7 +105,7 @@ public class FixMessageMgr {
      * Get the raw underlying FIX map
      * @return Map<String, InfixFieldInfo>
      */
-    public Map<String, InfixFieldInfo> getInfixMessageMap() {
+	public HashMap<String, InfixFieldInfo> getInfixMessageMap() {
         return msgMap;
     }
 

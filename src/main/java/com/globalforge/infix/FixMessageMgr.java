@@ -20,7 +20,7 @@ import com.globalforge.infix.qfix.MessageData;
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2016 Global Forge LLC
+ Copyright (c) 2017 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -43,12 +43,11 @@ import com.globalforge.infix.qfix.MessageData;
 /**
  * Holds the state of the fix message being transformed. Tag and value lookups
  * are based on maps for speed. Tag order is maintained. Ordered mappings are
- * achieved as follows. One map is used to map a context string (a reference to
- * a tag in the rule syntax) to an ordinal value representing the tag's position
- * in the message. A second map is used to map the ordinal value to a
- * {@link InfixField} which contains the fix field data (tag number and value).
- * The only way to access information is via a "context" which is defined as a
- * reference to a fix field in rule syntax.
+ * maintained as tag number to InfixFieldInfo where InfixFieldInfo contains a
+ * FixField and a number representing the position of the field in the message.
+ * <p>
+ * Order is important because Repeating Groups are ordered sets of fields.
+ * 
  * @author Michael Starkie
  */
 public class FixMessageMgr {
@@ -76,6 +75,23 @@ public class FixMessageMgr {
         return str.matches("^-?\\d+$");
     }
 
+	/**
+	 * You better know what you're doing.
+	 * <p>
+	 * Use this constructor when you want to build the message map from scratch.
+	 * <br>
+	 * You should call the constructor and then make repeated calls to
+	 * parseField(). <br>
+	 * Start with tags 8 and 35 to be safe (e.g., parseField("8=FIX.4.2")
+	 * followed by parseField("35=D")) or parseField("8", "FIX.4.2") followed by
+	 * parseField("35", "D")
+	 * <p>
+	 * Take care when adding repeating groups. Delimiter fields in groups are an
+	 * absolute necessity.
+	 */
+	public FixMessageMgr() {
+	}
+
     /**
      * Parses a fix message in raw fix format, assigns context, and keeps state.
      * @param baseMsg The input message
@@ -100,6 +116,40 @@ public class FixMessageMgr {
         parseField("8=" + tag8Value);
         parseMessage(baseMsg);
     }
+
+	/**
+	 * Initialize the message manager with a map.
+	 * 
+	 * @param mMap A map of tag number to InfixFieldInfo
+	 * @throws Exception Tag 8 and Tag 35 mandatory.
+	 */
+	public FixMessageMgr(HashMap<String, InfixFieldInfo> mMap)
+		throws Exception {
+		InfixFieldInfo f8 = mMap.get("8");
+		if (f8 == null) {
+			throw new Exception(
+				"tag 8 required when initializing from map");
+		}
+		InfixFieldInfo f35 = mMap.get("35");
+		if (f35 == null) {
+			throw new Exception(
+				"tag 35 required when initializing from map");
+		}
+		parseField("8", f8.getTagVal());
+		parseField("35", f35.getTagVal());
+
+		ArrayList<InfixFieldInfo> orderedFields =
+			new ArrayList<InfixFieldInfo>(mMap.values());
+		Collections.sort(orderedFields);
+		for (InfixFieldInfo fieldInfo : orderedFields) {
+			InfixField field = fieldInfo.getField();
+			if ((field.getTagNum() == 8) || (field.getTagNum() == 9)
+				|| (field.getTagNum() == 10) || field.getTagNum() == 35) {
+				continue;
+			}
+			parseField(field.getTagNum() + "", field.getTagVal());
+		}
+	}
 
     /**
      * Get the raw underlying FIX map
@@ -142,29 +192,44 @@ public class FixMessageMgr {
      * @throws Exception can't create the runtime classes specified by the FIX
      * version.
      */
-    private void parseField(String fixField) throws Exception {
+	public void parseField(String fixField) throws Exception {
         int index = fixField.indexOf('=');
         String tagStr = fixField.substring(0, index);
         String tagVal = fixField.substring(index + 1);
-        if (tagStr.equals("8")) {
-            if (msgMap.containsKey("8")) {
-                FixMessageMgr.logger.warn(
-                    "Field BeginString(8) is already defined.  Using pre-defined dictionary = "
-                        + msgMap.get("8"));
-                return;
-            } else {
-                init(tagVal);
-            }
-        }
-        int tagNum = 0;
-        try {
-            tagNum = Integer.parseInt(tagStr);
-        } catch (NumberFormatException e) {
-            FixMessageMgr.logger.warn("Dropping non-numeric tag number: [" + tagNum + "]");
-            return;
-        }
-        putField(tagNum, tagVal);
+		parseField(tagStr, tagVal);
     }
+
+	/**
+	 * Parses a string in the form "35=D" into a tag number (35) and tag value
+	 * (D) and calls {@link FixMessageMgr#putField(int, String)} to map the
+	 * results.
+	 * 
+	 * @param fixField The string representing a Fix field as it is found in a
+	 * Fix message.
+	 * @throws Exception can't create the runtime classes specified by the FIX
+	 * version.
+	 */
+	public void parseField(String tagStr, String tagVal) throws Exception {
+		if (tagStr.equals("8")) {
+			if (msgMap.containsKey("8")) {
+				FixMessageMgr.logger.warn(
+					"Field BeginString(8) is already defined.  Using pre-defined dictionary = "
+						+ msgMap.get("8"));
+				return;
+			} else {
+				init(tagVal);
+			}
+		}
+		int tagNum = 0;
+		try {
+			tagNum = Integer.parseInt(tagStr);
+		} catch (NumberFormatException e) {
+			FixMessageMgr.logger
+				.warn("Dropping non-numeric tag number: [" + tagNum + "]");
+			return;
+		}
+		putField(tagNum, tagVal);
+	}
 
     /**
      * Dynamically creates a {@link FixGroupMgr} representing the fixVersion at

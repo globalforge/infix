@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2016 Global Forge LLC
+ Copyright (c) 2017 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -92,13 +92,9 @@ public class InfixFieldInfo implements Serializable, Comparable<InfixFieldInfo> 
 
     @Override
     public String toString() {
-        return "[tagNum = " + getTagNum() + ", tagVal = " + getTagVal() + "]";
+		return "[" + field + ", pos=" + position + "]";
     }
 
-    public String toLongString() {
-        return "[tagNum = " + getTagNum() + ", tagVal = " + getTagVal() + ", relative pos = "
-            + getPosition() + "]";
-    }
 
     @Override
     public int compareTo(InfixFieldInfo o) {

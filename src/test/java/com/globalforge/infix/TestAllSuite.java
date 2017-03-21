@@ -6,7 +6,7 @@ import org.junit.runners.Suite;
 /*-
 The MIT License (MIT)
 
-Copyright (c) 2016 Global Forge LLC
+Copyright (c) 2017 Global Forge LLC
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -35,6 +35,7 @@ SOFTWARE.
     TestFixField.class, TestGroup.class, TestIs.class, TestIsEqual.class, TestIsGreater.class,
     TestIsGreaterEquals.class, TestIsLess.class, TestIsLessEquals.class, TestIsNotEqual.class,
     TestNot.class, TestUnary.class, TestUserDev.class, TestExchange.class, TestGrp44Mgr.class,
-    TestGrp50Mgr.class, TestFixFieldOrderHash.class, TestMsgMgr.class, TestCustomDictionary.class })
+	TestGrp50Mgr.class, TestFixFieldOrderHash.class, TestMsgMgr.class,
+	TestCustomDictionary.class, TestMessageMap.class })
 public class TestAllSuite {
 }

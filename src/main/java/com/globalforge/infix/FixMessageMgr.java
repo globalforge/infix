@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.globalforge.infix.api.InfixAPI;
 import com.globalforge.infix.api.InfixField;
 import com.globalforge.infix.api.InfixFieldInfo;
+import com.globalforge.infix.api.InfixMap;
 import com.globalforge.infix.api.InfixUserContext;
 import com.globalforge.infix.api.InfixUserTerminal;
 import com.globalforge.infix.qfix.FixGroupMgr;
@@ -123,7 +125,7 @@ public class FixMessageMgr {
 	 * @param mMap A map of tag number to InfixFieldInfo
 	 * @throws Exception Tag 8 and Tag 35 mandatory.
 	 */
-	public FixMessageMgr(HashMap<String, InfixFieldInfo> mMap)
+	public FixMessageMgr(Map<String, InfixFieldInfo> mMap)
 		throws Exception {
 		InfixFieldInfo f8 = mMap.get("8");
 		if (f8 == null) {
@@ -159,6 +161,15 @@ public class FixMessageMgr {
         return msgMap;
     }
 
+	/**
+	 * Get the raw underlying FIX map wrapped in a convenience class.
+	 * 
+	 * @return InfixMap
+	 */
+	public InfixMap getInfixMap() {
+		return new InfixMap(msgMap);
+	}
+
     /**
      * Parses a raw fix message
      * @param baseMsg the raw fix message
@@ -184,14 +195,15 @@ public class FixMessageMgr {
     }
 
     /**
-     * Parses a string in the form "35=D" into a tag number (35) and tag value
-     * (D) and calls {@link FixMessageMgr#putField(int, String)} to map the
-     * results.
-     * @param fixField The string representing a Fix field as it is found in a
-     * Fix message.
-     * @throws Exception can't create the runtime classes specified by the FIX
-     * version.
-     */
+	 * Parses a string in the form "35=D" into a tag number (35) and tag value
+	 * (D) and calls {@link FixMessageMgr#putField(int, String)} to map the
+	 * results.
+	 * 
+	 * @param fixField The string representing a Fix field as it is found in a
+	 * Fix message.
+	 * @throws Exception can't create the runtime classes specified by the FIX
+	 * version.
+	 */
 	public void parseField(String fixField) throws Exception {
         int index = fixField.indexOf('=');
         String tagStr = fixField.substring(0, index);
@@ -380,34 +392,35 @@ public class FixMessageMgr {
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
-        int bodyLength = 0;
+		int bodyLength = 0;
         ArrayList<InfixFieldInfo> orderedFields = new ArrayList<InfixFieldInfo>(msgMap.values());
         Collections.sort(orderedFields);
         String fieldStr = null;
         for (InfixFieldInfo fieldInfo : orderedFields) {
             InfixField field = fieldInfo.getField();
-            if ((field.getTagNum() == 8) || (field.getTagNum() == 9) || (field.getTagNum() == 10)) {
-                continue;
-            }
+			if ((field.getTagNum() == 8) || (field.getTagNum() == 9)
+				|| (field.getTagNum() == 10)) {
+				continue;
+			}
             fieldStr = field.toString() + '\u0001';
-            bodyLength += fieldStr.length();
+			bodyLength += fieldStr.length();
             str.append(fieldStr);
         }
-        putField(9, Integer.toString(bodyLength));
-        InfixFieldInfo bodyLen = getContext("9");
-        fieldStr = bodyLen.getField().toString() + '\u0001';
-        str.insert(0, fieldStr);
-        InfixFieldInfo version = getContext("8");
-        fieldStr = version.getField().toString() + '\u0001';
-        str.insert(0, fieldStr);
-        char[] inputChars = str.toString().toCharArray();
-        int checkSum = 0;
-        for (int aChar : inputChars) {
-            checkSum += aChar;
-        }
-        putField(10, String.format("%03d", checkSum % 256));
-        InfixFieldInfo chksum = getContext("10");
-        str.append(chksum.getField()).append('\u0001');
+		putField(9, Integer.toString(bodyLength));
+		InfixFieldInfo bodyLen = getContext("9");
+		fieldStr = bodyLen.getField().toString() + '\u0001';
+		str.insert(0, fieldStr);
+		InfixFieldInfo version = getContext("8");
+		fieldStr = version.getField().toString() + '\u0001';
+		str.insert(0, fieldStr);
+		char[] inputChars = str.toString().toCharArray();
+		int checkSum = 0;
+		for (int aChar : inputChars) {
+			checkSum += aChar;
+		}
+		putField(10, String.format("%03d", checkSum % 256));
+		InfixFieldInfo chksum = getContext("10");
+		str.append(chksum.getField()).append('\u0001');
         return str.toString();
     }
 

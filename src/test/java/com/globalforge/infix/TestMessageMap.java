@@ -5,7 +5,9 @@ import java.util.HashMap;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.globalforge.infix.api.InfixActions;
 import com.globalforge.infix.api.InfixFieldInfo;
+import com.globalforge.infix.api.InfixMap;
 
 /*-
 The MIT License (MIT)
@@ -123,6 +125,47 @@ public class TestMessageMap {
 			String fix1 = msgMgr.toString();
 			String fix2 = newMgr.toString();
 			Assert.assertEquals(fix1, fix2);
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
+	}
+
+	@Test
+	public void t5() {
+		try {
+			FixMessageMgr msgMgr =
+				new FixMessageMgr(StaticTestingUtils.FIX_44_NEW_ORDER_CROSS);
+			InfixMap infixMap = msgMgr.getInfixMap();
+			Assert.assertNotNull(infixMap);
+			String tag35 = infixMap.getTagValue(35);
+			Assert.assertEquals(tag35, "s");
+			String tag448 = infixMap.getTagValue("552[0]->453[0]->448");
+			Assert.assertEquals(tag448, "8");
+			String tag54 = infixMap.getGroupTagValue(552, 0, 54);
+			Assert.assertEquals(tag54, "1");
+			String tag54$2 = infixMap.getGroupTagValue(552, 1, 54);
+			Assert.assertEquals(tag54$2, "2");
+			String tag448$2 = infixMap.getTagValue("552[1]->453[1]->448");
+			Assert.assertEquals(tag448$2, "aaa");
+			//sampleRule = "&552[0]->&453[0]->&448=\"STARK\"";
+		} catch (Exception e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
+	}
+
+	@Test
+	public void t6() {
+		try {
+			String sampleRule = "&49=\"sender\"";
+			InfixActions rules = new InfixActions(sampleRule);
+			String result = rules
+				.transformFIXMsg(StaticTestingUtils.FIX_44_NEW_ORDER_CROSS);
+			FixMessageMgr fixMgr = new FixMessageMgr(result);
+			InfixMap infixMap = fixMgr.getInfixMap();
+			String mapStr = infixMap.toString();
+			Assert.assertEquals(result, mapStr);
 		} catch (Exception e) {
 			e.printStackTrace();
 			Assert.fail();

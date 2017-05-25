@@ -49,7 +49,7 @@ public class TestCustomDictionary {
 		BigDecimal pos = orderHash.getFieldPosition("D", "9000");
 		org.junit.Assert.assertEquals("99", pos.toString());
 		pos = orderHash.getFieldPosition("D", "9000[0]->9001");
-		org.junit.Assert.assertEquals("99.000000143", pos.toString());
+        org.junit.Assert.assertEquals("99.000000125", pos.toString());
     }
 
     @Test

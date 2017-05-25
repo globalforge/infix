@@ -924,6 +924,7 @@
         <field name="RungPegOffset" required="N"/>
         <field name="RungMinQty" required="N"/>
         <field name="RungMaxContra" required="N"/>
+        <field name="RungPrice" required="N"/>
       </group>
     </message>
     <message name="ExecutionReport" msgtype="8" msgcat="app">
@@ -2681,5 +2682,6 @@
     <field number="9004" name="RungPegOffset" type="PRICEOFFSET"/>
     <field number="9005" name="RungMinQty" type="QTY"/>
     <field number="9006" name="RungMaxContra" type="QTY"/>
+    <field number="9007" name="RungPrice" type="PRICE"/>
   </fields>
 </fix>

@@ -150,9 +150,19 @@ public class InfixMap implements Serializable {
 		String fieldStr = null;
 		for (InfixFieldInfo fieldInfo : orderedFields) {
 			InfixField field = fieldInfo.getField();
-			fieldStr = field.toString() + '\u0001';
+            fieldStr = field.toString() + '\u0001';
 			str.append(fieldStr);
 		}
 		return str.toString();
 	}
+
+    /**
+     * Produces a human readable FIX message for logging purposes
+     * 
+     * @return String A human-readable FIX string.
+     */
+    public String toLogString() {
+        String result = toString();
+        return result.replaceAll("\u0001", "|");
+    }
 }

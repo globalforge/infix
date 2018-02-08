@@ -4,9 +4,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
+
 // import quickfix.InvalidMessage;
 // import quickfix.Message;
 import com.globalforge.infix.FixRulesErrorStrategy;
@@ -94,7 +96,7 @@ public class InfixActions {
             try {
                 final String sampleMessage1 = "8=" + fixVersion + '\u0001' + "9=10" + '\u0001'
                     + "35=8" + '\u0001' + "45=1" + '\u0001' + "10=004";
-                InfixActions rules = new InfixActions("45=2");
+                InfixActions rules = new InfixActions("&45=2");
                 rules.transformFIXMsg(sampleMessage1);
             } catch (Exception e) {
                 e.printStackTrace();

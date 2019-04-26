@@ -1,5 +1,5 @@
 grammar FixRules;
-/* 
+/*
 Author: Michael C. Starkie
 */
 
@@ -30,8 +30,10 @@ Author: Michael C. Starkie
 parseRules      :   fixrules;
 
 fixrules        :   action (';' action)* ';'? ;
-														
-action          :   assign | exchange | unary | conditional | userdef;
+
+action          :   rvalue | conditional ;
+
+rvalue          :   assign | exchange | unary | userdef | '(' conditional ')' ;
 
 conditional     :   iff then (els)? ;
 
@@ -42,14 +44,14 @@ userTerm        :   '{' className=qualifiedName '}' ;
 qualifiedName   :   Identifier ('.' Identifier)* ;
 
 Identifier      :   Letter (Letter|JavaIDDigit)* ;
-			
+
 assign          :   tag EQ (CAST)? expr;
 
 exchange        :   tag FLP tag;
 
-tag             :   ref* tagref;        // (&382[1]->)*&375  
+tag             :   ref* tagref;        // (&382 [1]->)* &375
 
-ref             :   tagref idxref;      // &382[1]->
+ref             :   tagref idxref;      // &382 [1]->
 
 tagref          :   '&' tn=tagnum;      // &375
 
@@ -63,7 +65,7 @@ unary           :   DEL tg=tag                          #DeleteTag
                 |   DEL '&[' (tagnum ',')* tagnum ']'   #DeleteTagSet
                 |   ADD '&[' (tagnum ',')* tagnum ']'   #KeepTagSet
                 ;
-			
+
 expr            :   expr op=(MUL|DIV) expr      # MulDiv
                 |   expr op=(ADD|MINUS) expr    # AddSub
                 |   expr CT expr                # Cat
@@ -71,20 +73,20 @@ expr            :   expr op=(MUL|DIV) expr      # MulDiv
                 |   template                    # AutoGen
                 |   '(' expr ')'                # Parens
                 ;
-			
+
 terminal        :   tag             # myTag
                 |   userTerm        # myUserTerm
                 |   VAL             # Val
                 |   MINUS? INT      # Int
                 |   MINUS? FLOAT    # Float
                 ;
-			
+
 template        :   DATETIME        # DateTime
                 |   DATE            # Date
                 ;
-			
+
 iff             :   iff op=(AND|OR) iff     # AndOr
-                |   is_equal                # IsEqual			
+                |   is_equal                # IsEqual
                 |   not_equal               # NotEqual
                 |   is_greater              # IsGreater
                 |   is_less                 # IsLess
@@ -92,9 +94,9 @@ iff             :   iff op=(AND|OR) iff     # AndOr
                 |   is_greatEq              # IsGreaterEq
                 |   not                     # NotTrue
                 |   is                      # IsTrue
-                |   '(' iff ')'             # BoolParens	
+                |   '(' iff ')'             # BoolParens
                 ;
-			
+
 is_equal        :   tg=terminal IEQ op=terminal ;
 not_equal       :   tg=terminal NEQ op=terminal ;
 is_greater      :   tg=terminal GT  op=terminal ;
@@ -103,9 +105,9 @@ is_lessEq       :   tg=terminal LE  op=terminal ;
 is_greatEq      :   tg=terminal GE  op=terminal ;
 not             :   NOT tg=terminal ;
 is              :   IS tg=terminal ;
-		
-then            :   ('?' action) | ('?' '[' fixrules ']');
-els             :   (':' action) | (':' '[' fixrules ']');
+
+then            :   ('?' rvalue) | ('?' '[' fixrules ']');
+els             :   (':' rvalue) | (':' '[' fixrules ']');
 
 CAST			: '(int)' ;
 FLP				: '<->';
@@ -120,17 +122,17 @@ GE              : '>=' ;
 EQ              : '='  ;
 NOT             : '!'  ;
 IS              : '^'  ;
-MUL             : '*'  ; 										
+MUL             : '*'  ;
 DIV             : '/'  ;
 ADD             : '+'  ;
 MINUS           : '-'  ;
 AND             : '&&' ;
-OR              : '||' ; 
+OR              : '||' ;
 REF             : '->' ;
 DATETIME        : '<DATETIME>' ;
 DATE            : '<DATE>' ;
 VAL             : ('"' ('""'|~'"')+  '"') 	;
-WS              : [\t\r\n ]+ -> skip ;						
+WS              : [\t\r\n ]+ -> skip ;
 INT             : DIGIT+ ;
 FLOAT           : MINUS? INT+ '.' DIGIT+
                 | '.' DIGIT+
@@ -155,7 +157,7 @@ Letter
 
 fragment
 JavaIDDigit
-    :  '\u0030'..'\u0039' |    // 0-9  
+    :  '\u0030'..'\u0039' |    // 0-9
        '\u0660'..'\u0669' |    // International
        '\u06f0'..'\u06f9' |
        '\u0966'..'\u096f' |
@@ -171,5 +173,5 @@ JavaIDDigit
        '\u0ed0'..'\u0ed9' |
        '\u1040'..'\u1049'
    ;
-						
+
 

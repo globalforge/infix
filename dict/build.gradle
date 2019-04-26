@@ -4,7 +4,7 @@ configurations {
    dict 
 }
 dependencies {
-   dict "com.globalforge.infix:dict:1.1"
+   dict "com.globalforge.infix:dict:1.2"
    runtime "org.slf4j:slf4j-simple:1.7.7"
 }
 project.ext {
@@ -17,11 +17,11 @@ project.ext {
 }
 
 task buildLexer(type:Exec) {
-   commandLine 'java', '-jar', "${project.ext.libDir}/antlr-4.5.1-complete.jar", '-package', 'com.globalforge.infix.antlr', '-o', project.ext.outputDir, '-visitor', '-listener', "${project.ext.resourceDir}/XMLLexer.g4"
+   commandLine 'java', '-jar', "${project.ext.libDir}/antlr-4.7.2-complete.jar", '-package', 'com.globalforge.infix.antlr', '-o', project.ext.outputDir, '-visitor', '-listener', "${project.ext.resourceDir}/XMLLexer.g4"
 }
 
 task buildParser(type:Exec) {
-   commandLine 'java', '-jar', "${project.ext.libDir}/antlr-4.5.1-complete.jar", '-package', 'com.globalforge.infix.antlr', '-o', project.ext.outputDir, '-visitor', '-listener', "${project.ext.resourceDir}/XMLParser.g4"
+   commandLine 'java', '-jar', "${project.ext.libDir}/antlr-4.7.2-complete.jar", '-package', 'com.globalforge.infix.antlr', '-o', project.ext.outputDir, '-visitor', '-listener', "${project.ext.resourceDir}/XMLParser.g4"
 }
 
 task(copyLib, dependsOn:assemble) {

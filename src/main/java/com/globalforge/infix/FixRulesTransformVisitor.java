@@ -9,12 +9,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.globalforge.infix.antlr.FixRulesBaseVisitor;
 import com.globalforge.infix.antlr.FixRulesParser;
-import com.globalforge.infix.antlr.FixRulesParser.ActionContext;
 import com.globalforge.infix.antlr.FixRulesParser.FixrulesContext;
+import com.globalforge.infix.antlr.FixRulesParser.RvalueContext;
 import com.globalforge.infix.antlr.FixRulesParser.TagnumContext;
 import com.globalforge.infix.antlr.FixRulesParser.TerminalContext;
 import com.globalforge.infix.api.InfixFieldInfo;
@@ -25,13 +26,14 @@ import com.globalforge.infix.api.InfixFieldInfo;
  * rule syntax grammar are implemented here. Methods in this class correspond to
  * tokens in the grammer. Each method is visited as the rules are parsed. See
  * the Antlr documentation for more detail.
+ *
  * @see FixRulesBaseVisitor
  * @author Michael
  */
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2015 Global Forge LLC
+ Copyright (c) 2019-2020 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -60,12 +62,14 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     private final SimpleDateFormat datetime = new SimpleDateFormat("yyyyMMdd-HH:mm:ss.SSS");
     private final SimpleDateFormat date = new SimpleDateFormat("yyyyMMdd");
     private final String fixMessage;
-    private boolean isStatementTrue = false;
+    // private boolean isStatementTrue = false;
+    private final Stack<Boolean> conditionalStack = new Stack<>();
     private final String tag8Value;
     private String fullParseCtx = "";
 
     /**
      * Initialize the rule engine with a Fix input string.
+     *
      * @param fixMsg The input message
      */
     public FixRulesTransformVisitor(String fixMsg) {
@@ -76,6 +80,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     /**
      * Initialize the rule engine with a Fix input string and custom FIX
      * version.
+     *
      * @param fixMsg The FIX input message
      * @param tag8Value The customer FIX version.
      */
@@ -114,6 +119,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
 
     /**
      * Begin parsing a set of rules.
+     *
      * @return String a fully formatted Fix String representing the results of
      * rule invocations.
      * @see FixRulesParser.FixrulesContext
@@ -126,6 +132,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     /**
      * Handle an action. This is really the first method that get's invoked for
      * every rule. It is the place where all temporary data stores are reset.
+     *
      * @see FixRulesParser.ActionContext
      */
     @Override
@@ -135,6 +142,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
 
     /**
      * Number after last '>'
+     *
      * @param ctxString Full context of field reference.
      * @return String a tag number
      */
@@ -145,11 +153,15 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
 
     /**
      * Handle tag assignment.
+     *
      * @return String the right hand side of an assignment.
      * @see FixRulesParser.AssignContext
      */
     @Override
     public String visitAssign(FixRulesParser.AssignContext ctx) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("visitAssign");
+        }
         String tagCtx = ctx.tag().tagref().getText();
         String tagVal = visit(ctx.expr());
         // This prevents any assignment
@@ -191,6 +203,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
 
     /**
      * Do something with a tag. Just continues on visiting the children.
+     *
      * @see FixRulesParser.TagContext
      */
     @Override
@@ -201,6 +214,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
 
     /**
      * Do something with a reference. Just continues on visiting the children.
+     *
      * @see FixRulesParser.RefContext
      */
     @Override
@@ -221,6 +235,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      * the nesting level of a repeating group. Also used to build the stack
      * based tree of references described in
      * {@link FixRulesTransformVisitor#visitTagref}
+     *
      * @see FixRulesTransformVisitor#visitTagref
      */
     @Override
@@ -233,6 +248,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     /**
      * Do something with a terminal node. Just continues on visiting the
      * children.
+     *
      * @see FixRulesParser.TermContext
      */
     @Override
@@ -242,6 +258,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
 
     /**
      * Given a tag in rule syntax lookup and return it's value.
+     *
      * @return String the value of a fix tag given a tag number.
      * @see FixRulesParser.MyTagContext
      */
@@ -266,6 +283,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
 
     /**
      * Return the value of an integer in rule syntax.
+     *
      * @return String An integer in string format.
      * @see FixRulesParser.IntContext
      */
@@ -276,6 +294,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
 
     /**
      * Return the value of a float in rule syntax.
+     *
      * @return String a float in string format.
      * @see FixRulesParser.FloatContext
      */
@@ -287,6 +306,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
 
     /**
      * Strips the quotes off of a String value in rule syntax.
+     *
      * @return String A string literal stripped of quotes.
      * @see FixRulesParser.ValContext
      */
@@ -304,6 +324,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
 
     /**
      * Formats a time stamp string in rule syntax into a FIX UTC time stamp.
+     *
      * @return String the datetime in format yyyyMMdd-HH:mm:ss.SSS
      * @see FixRulesParser.DateTimeContext
      */
@@ -314,6 +335,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
 
     /**
      * Formats a date string in rule syntax into a FIX UTC timestamp.
+     *
      * @return String the date in format yyyyMMdd
      * @see FixRulesParser.DateContext
      */
@@ -324,6 +346,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
 
     /**
      * Perform addition and subtraction on operands in rule syntax.
+     *
      * @return String the result of an addition or subtraction of two operands
      * depending upon the context.
      * @see FixRulesParser.AddSubContext
@@ -351,6 +374,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     /**
      * Perform multiplication & division on operands in rule syntax depending
      * upon the context.
+     *
      * @return String the result of a multiplication or division of two
      * operands.
      * @see FixRulesParser.MulDivContext
@@ -377,6 +401,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
 
     /**
      * Performs tag concatenation of values.
+     *
      * @return String the concatenation of two values
      * @see FixRulesParser.CatContext
      */
@@ -400,6 +425,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      * between numbers. If any exceptions result from comparing non-numbers then
      * a string comparison is attempted. Any boolean operations on alphabetic
      * strings that end up here may have unexpected results.
+     *
      * @param lVal A value on the left side of an expression to compare.
      * @param rVal A value on the right side of an to compare the left against.
      * @return -1, 0, or 1 if the tag values associated with the context is
@@ -429,6 +455,17 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     }
 
     /**
+     * updates the current state of a conditional expression currently being
+     * evaluated.
+     *
+     * @param isStatementTrue the new state of the conditional expression.
+     */
+    private void updateConditionalState(boolean isStatementTrue) {
+        conditionalStack.pop();
+        conditionalStack.push(isStatementTrue);
+    }
+
+    /**
      * Determines if a boolean "=" operation is true or false. The operation may
      * exists as part of a larger boolean expression consisting of multiple
      * boolean operators within a single action.
@@ -439,11 +476,13 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         TerminalContext rVal = ctx.op;
         String rResult = visit(rVal);
         String lResult = visit(lVal);
+        boolean isStatementTrue = false;
         if ((rResult != null) && (lResult != null)) {
             isStatementTrue = rResult.equals(lResult);
         } else {
             isStatementTrue = false;
         }
+        updateConditionalState(isStatementTrue);
         return null;
     }
 
@@ -458,11 +497,13 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         TerminalContext rVal = ctx.op;
         String rResult = visit(rVal);
         String lResult = visit(lVal);
+        boolean isStatementTrue = false;
         if ((rResult != null) && (lResult != null)) {
             isStatementTrue = !rResult.equals(lResult);
         } else {
             isStatementTrue = false;
         }
+        updateConditionalState(isStatementTrue);
         return null;
     }
 
@@ -477,12 +518,14 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         TerminalContext rVal = ctx.op;
         String rResult = visit(rVal);
         String lResult = visit(lVal);
+        boolean isStatementTrue = false;
         if ((rResult != null) && (lResult != null)) {
             int compareTo = doCompare(lResult, rResult);
             isStatementTrue = compareTo > 0 ? true : false;
         } else {
             isStatementTrue = false;
         }
+        updateConditionalState(isStatementTrue);
         return null;
     }
 
@@ -497,12 +540,14 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         TerminalContext rVal = ctx.op;
         String rResult = visit(rVal);
         String lResult = visit(lVal);
+        boolean isStatementTrue = false;
         if ((rResult != null) && (lResult != null)) {
             int compareTo = doCompare(lResult, rResult);
             isStatementTrue = compareTo < 0 ? true : false;
         } else {
             isStatementTrue = false;
         }
+        updateConditionalState(isStatementTrue);
         return null;
     }
 
@@ -517,12 +562,14 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         TerminalContext rVal = ctx.op;
         String rResult = visit(rVal);
         String lResult = visit(lVal);
+        boolean isStatementTrue = false;
         if ((rResult != null) && (lResult != null)) {
             int compareTo = doCompare(lResult, rResult);
             isStatementTrue = compareTo <= 0 ? true : false;
         } else {
             isStatementTrue = false;
         }
+        updateConditionalState(isStatementTrue);
         return null;
     }
 
@@ -537,12 +584,14 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         TerminalContext rVal = ctx.op;
         String rResult = visit(rVal);
         String lResult = visit(lVal);
+        boolean isStatementTrue = false;
         if ((rResult != null) && (lResult != null)) {
             int compareTo = doCompare(lResult, rResult);
             isStatementTrue = compareTo >= 0 ? true : false;
         } else {
             isStatementTrue = false;
         }
+        updateConditionalState(isStatementTrue);
         return null;
     }
 
@@ -555,7 +604,8 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     public String visitNot(FixRulesParser.NotContext ctx) {
         TerminalContext lVal = ctx.tg;
         String lResult = visit(lVal);
-        isStatementTrue = lResult == null ? true : false;
+        boolean isStatementTrue = lResult == null ? true : false;
+        updateConditionalState(isStatementTrue);
         return null;
     }
 
@@ -568,7 +618,8 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     public String visitIs(FixRulesParser.IsContext ctx) {
         TerminalContext lVal = ctx.tg;
         String lResult = visit(lVal);
-        isStatementTrue = lResult != null ? true : false;
+        boolean isStatementTrue = lResult != null ? true : false;
+        updateConditionalState(isStatementTrue);
         return null;
     }
 
@@ -581,8 +632,13 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      */
     @Override
     public String visitConditional(FixRulesParser.ConditionalContext ctx) {
+        // String iff = ctx.iff().getText();
+        // String then = ctx.then().getText();
+        // String els = ctx.els().getText();
+        conditionalStack.push(false);
         visitChildren(ctx);
-        isStatementTrue = false;
+        // isStatementTrue = false;
+        conditionalStack.pop();
         return null;
     }
 
@@ -592,8 +648,10 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      */
     @Override
     public String visitThen(FixRulesParser.ThenContext ctx) {
+        boolean isStatementTrue = conditionalStack.peek();
         if (!isStatementTrue) { return null; }
-        ActionContext actionCtx = ctx.action();
+        // ActionContext actionCtx = ctx.action();
+        RvalueContext actionCtx = ctx.rvalue();
         FixrulesContext rulesCtx = ctx.fixrules();
         if (actionCtx != null) { return visit(actionCtx); }
         if (rulesCtx != null) { return visit(rulesCtx); }
@@ -606,8 +664,10 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      */
     @Override
     public String visitEls(FixRulesParser.ElsContext ctx) {
+        boolean isStatementTrue = conditionalStack.peek();
         if (isStatementTrue) { return null; }
-        ActionContext actionCtx = ctx.action();
+        // ActionContext actionCtx = ctx.action();
+        RvalueContext actionCtx = ctx.rvalue();
         FixrulesContext rulesCtx = ctx.fixrules();
         if (actionCtx != null) { return visit(actionCtx); }
         if (rulesCtx != null) { return visit(rulesCtx); }
@@ -629,19 +689,21 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     @Override
     public String visitAndOr(FixRulesParser.AndOrContext ctx) {
         visit(ctx.iff(FixRulesTransformVisitor.LEFT)); // left
-        boolean leftIsTrue = isStatementTrue;
+        boolean leftIsTrue = conditionalStack.peek();
         visit(ctx.iff(FixRulesTransformVisitor.RIGHT)); // right
+        boolean isStatementTrue = false;
         switch (ctx.op.getType()) {
             case FixRulesParser.AND:
-                isStatementTrue = leftIsTrue && isStatementTrue;
+                isStatementTrue = leftIsTrue && conditionalStack.peek();;
                 break;
             case FixRulesParser.OR:
-                isStatementTrue = leftIsTrue || isStatementTrue;
+                isStatementTrue = leftIsTrue || conditionalStack.peek();;
                 break;
             default:
                 throw new RuntimeException(
                     "Don't know how to handle boolean and/or operation: " + ctx.getText());
         }
+        updateConditionalState(isStatementTrue);
         return null;
     }
 
@@ -722,6 +784,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     /**
      * Invokes a user-defined class that is responsible for generating the right
      * hand side of an assignment.
+     *
      * @return String The right hand side of the assignment.
      */
     @Override

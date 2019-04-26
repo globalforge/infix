@@ -31,11 +31,11 @@ The above command will parse the FIX data dictionaries (Quick FIX/J) and generat
 
 ./gradlew buildFIX
 
-The above command will compile all the FIX data source code into a seperate library called fix-2.0.jar
+The above command will compile all the FIX data source code into a seperate library called fix-2.1.jar
 
 ./gradlew build
 
-The above command will build and test the Infix code against fix-2.0.jar and create a library called infix-2.0.jar.  infix-2.0.jar is dependent upon fix-2.0.jar at both compile time and run time.
+The above command will build and test the Infix code against fix-2.1.jar and create a library called infix-2.1.jar.  infix-2.1.jar is dependent upon fix-2.1.jar at both compile time and run time.
 
 ./gradlew distTar
 

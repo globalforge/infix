@@ -5,7 +5,7 @@ allprojects {
     }
     apply plugin: 'eclipse'
     group = 'com.globalforge.infix'
-    version = '2.0'
+    version = '2.1'
 
     jar {
         manifest.attributes provider: 'GlobalForge'
@@ -41,9 +41,9 @@ apply plugin: 'distribution'
 distributions {
      main {
          contents {
-             from "libs/infix-2.0.jar"
-             from "libs/fix-2.0.jar"
-             from "libs/antlr-4.5.1-complete.jar"
+             from "libs/infix-2.1.jar"
+             from "libs/fix-2.1.jar"
+             from "libs/antlr-4.7.2-complete.jar"
              from "libs/slf4j-api-1.7.7.jar"
              from "libs/slf4j-simple-1.7.7.jar"
              from "libs/guava-18.0.jar"
@@ -70,7 +70,7 @@ task(copyLib, dependsOn:assemble) {
 }
 
 task buildAntlr(type:Exec) {
-   commandLine 'java', '-jar', "${project.ext.libDir}/antlr-4.5.1-complete.jar", '-package', 'com.globalforge.infix.antlr', '-o', project.ext.outputDir, '-visitor', '-listener', "${project.ext.resourceDir}/FixRules.g4"
+   commandLine 'java', '-jar', "${project.ext.libDir}/antlr-4.7.2-complete.jar", '-package', 'com.globalforge.infix.antlr', '-o', project.ext.outputDir, '-visitor', '-listener', "${project.ext.resourceDir}/FixRules.g4"
 }
 
 task cleanAll(type: Delete) {
@@ -86,15 +86,15 @@ task cleanAll(type: Delete) {
    delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix50/auto"
    delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix50sp1/auto"
    delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix50sp2/auto"
-   delete "${rootProject.projectDir}/libs/fix-2.0.jar"
-   delete "${rootProject.projectDir}/libs/infix-2.0.jar"
+   delete "${rootProject.projectDir}/libs/fix-2.1.jar"
+   delete "${rootProject.projectDir}/libs/infix-2.1.jar"
    delete "${rootProject.projectDir}/build-eclipse"
    delete "${rootProject.projectDir}/fix/build-eclipse"
    delete "${rootProject.projectDir}/fix/build"
    delete "${rootProject.projectDir}/dict/build-eclipse"
    delete "${rootProject.projectDir}/dict/build"
-   delete "${rootProject.projectDir}/src/main/dist/infix-2.0.jar"
-   delete "${rootProject.projectDir}/src/main/dist/antlr-4.5.1-complete.jar"
+   delete "${rootProject.projectDir}/src/main/dist/infix-2.1.jar"
+   delete "${rootProject.projectDir}/src/main/dist/antlr-4.7.2-complete.jar"
    delete "${rootProject.projectDir}/src/main/dist/slf4j-simple-1.7.7.jar"
    delete "${rootProject.projectDir}/src/main/dist/slf4j-api-1.7.7.jar"
    delete "${rootProject.projectDir}/build/distributions"

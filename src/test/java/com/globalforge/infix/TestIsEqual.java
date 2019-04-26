@@ -2,13 +2,15 @@ package com.globalforge.infix;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.globalforge.infix.api.InfixActions;
 import com.google.common.collect.ListMultimap;
 
 /*-
 The MIT License (MIT)
 
-Copyright (c) 2017 Global Forge LLC
+Copyright (c) 2019-2020 Global Forge LLC
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,6 +31,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 public class TestIsEqual {
+    static Logger logger = LoggerFactory.getLogger(TestIsEqual.class);
+    static {
+    }
     static final String sampleMessage1 = "8=FIX.4.4" + '\u0001' + "9=1000" + '\u0001' + "35=8"
         + '\u0001' + "43=-1" + '\u0001' + "-43=-1.25" + '\u0001' + "-44=1" + '\u0001' + "44=3.142"
         + '\u0001' + "60=20130412-19:30:00.686" + '\u0001' + "75=20130412" + '\u0001' + "45=0"
@@ -237,6 +242,21 @@ public class TestIsEqual {
             sampleRule = "&49==\"8dhosc\" ? &382[0]->&655=111 : &382[0]->&655=";
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestIsEqual.sampleMessage1);
+            String text = StaticTestingUtils.rs(result);
+            Assert.fail();
+        } catch (Exception e) {
+        }
+    }
+
+    @Test
+    public void testIsEqualElse13b() {
+        try {
+            // sampleRule = "&49==\"8dhosc\" ? &382[0]->&655=111 :
+            // &382[0]->&655=";
+            sampleRule = "&49==\"8dhosc\" ? &382[0]->&655=\"FOO\" : &382[0]->&655=\"";
+            rules = new InfixActions(sampleRule);
+            result = rules.transformFIXMsg(TestIsEqual.sampleMessage1);
+            String text = StaticTestingUtils.rs(result);
             Assert.fail();
         } catch (Exception e) {
         }

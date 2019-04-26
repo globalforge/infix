@@ -11,7 +11,7 @@ import com.google.common.collect.ListMultimap;
 /*-
 The MIT License (MIT)
 
-Copyright (c) 2017 Global Forge LLC
+Copyright (c) 2019-2020 Global Forge LLC
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -216,6 +216,97 @@ public class TestConditionals {
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();
+        }
+    }
+
+    @Test
+    public void t12() {
+        try {
+            String sampleRule = "&35==\"D\" ? &47=1200 : &47=4";
+            ListMultimap<Integer, String> resultStore = getResults(sampleRule);
+            Assert.assertEquals("4", resultStore.get(47).get(0));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void t13() {
+        try {
+            String sampleRule = "&35==\"D\" ? &47=1200 : &47=";
+            ListMultimap<Integer, String> resultStore = getResults(sampleRule);
+            Assert.fail();
+        } catch (Exception e) {
+        }
+    }
+
+    @Test
+    public void t14() {
+        try {
+            String sampleRule = "&35==8 ? &47=";
+            ListMultimap<Integer, String> resultStore = getResults(sampleRule);
+            Assert.fail();
+        } catch (Exception e) {
+        }
+    }
+
+    /*-
+    static final String sampleMessage = "8=FIX.5.0SP2" + '\u0001' + "9=1000" + '\u0001' + "34=8"
+        + '\u0001' + "35=8" + '\u0001' + "627=1" + '\u0001' + "628=COMPID" + '\u0001'
+        + "629=20130412-19:30:00.686" + '\u0001' + "630=7" + '\u0001' + "44=3.142" + '\u0001'
+        + "52=20140617-09:30:00.686" + '\u0001' + "75=20130412" + '\u0001' + "45=0" + '\u0001'
+        + "47=0" + '\u0001' + "48=1.5" + '\u0001' + "49=SENDERCOMP" + '\u0001' + "56=TARGETCOMP"
+        + '\u0001' + "382=2" + '\u0001' + "375=1.5" + '\u0001' + "655=fubi" + '\u0001' + "375=3"
+        + '\u0001' + "655=yubl" + '\u0001' + "10=004";
+    */
+    @Test
+    public void t15() {
+        try {
+            String sampleRule = "&35==8 ? (&47==8 ? &47=4 : &47=6) : &47=2";
+            ListMultimap<Integer, String> resultStore = getResults(sampleRule);
+            Assert.assertEquals("6", resultStore.get(47).get(0));
+        } catch (Exception e) {
+        }
+    }
+
+    @Test
+    public void t15b() {
+        try {
+            String sampleRule = "&35==8 ? (&47==0 ? &47=4 : &47=6) : &47=2";
+            ListMultimap<Integer, String> resultStore = getResults(sampleRule);
+            Assert.assertEquals("4", resultStore.get(47).get(0));
+        } catch (Exception e) {
+        }
+    }
+
+    @Test
+    public void t15c() {
+        try {
+            String sampleRule = "&35==\"D\" ? (&47==0 ? &47=4 : &47=6) : &47=2";
+            ListMultimap<Integer, String> resultStore = getResults(sampleRule);
+            Assert.assertEquals("2", resultStore.get(47).get(0));
+        } catch (Exception e) {
+        }
+    }
+
+    @Test
+    public void t16() {
+        try {
+            String sampleRule = "&35==8 ? &47=4 : &47=6";
+            ListMultimap<Integer, String> resultStore = getResults(sampleRule);
+            Assert.assertEquals("4", resultStore.get(47).get(0));
+        } catch (Exception e) {
+        }
+    }
+
+    @Test
+    public void t17() {
+        try {
+            String sampleRule = "&35==7 ? &47=4 : &47=6";
+            ListMultimap<Integer, String> resultStore = getResults(sampleRule);
+            Assert.assertEquals("6", resultStore.get(47).get(0));
+        } catch (Exception e) {
         }
     }
 

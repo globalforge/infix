@@ -9,7 +9,7 @@ import com.google.common.collect.ListMultimap;
 /*-
 The MIT License (MIT)
 
-Copyright (c) 2017 Global Forge LLC
+Copyright (c) 2019-2020 Global Forge LLC
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -332,6 +332,18 @@ public class TestExprAdd {
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();
+        }
+    }
+
+    @Test
+    public void testExpr1() {
+        try {
+            sampleRule = "&75="; //
+            rules = new InfixActions(sampleRule);
+            result = rules.transformFIXMsg(TestExprAdd.sampleMessage1);
+            resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.fail();
+        } catch (Exception e) {
         }
     }
 }

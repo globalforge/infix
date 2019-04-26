@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2015 Global Forge LLC
+ Copyright (c) 2019-2020 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -68,6 +68,7 @@ import org.slf4j.LoggerFactory;
  * the program must make several pases in order to collect all data. The general
  * workflow is to parse group names, then blocks, followed by groups, and lastly
  * message. Each of these tasks parses the entire file.
+ * 
  * @deprecated Use quick fix data dictionaries instead.
  * @author Michael C. Starkie
  */
@@ -97,6 +98,7 @@ public class FixRepositoryParser {
      * Make sure we know where to find the FixRepository.xml file and the
      * location on the filesystem where the user has specified the location of
      * the output files.
+     * 
      * @param ver The fix version we are parsing.
      * @throws Exception When external dependencies are not recognized.
      */
@@ -136,6 +138,7 @@ public class FixRepositoryParser {
 
     /**
      * Collects the names of all repeating groups.
+     * 
      * @param v The fix version to parse.
      * @throws XMLStreamException A corrupted FixRepository.xml file is found.
      * @deprecated
@@ -189,6 +192,7 @@ public class FixRepositoryParser {
      * block and not to any nested repeating group. Collect the repeating groups
      * later and add in members collected here for any non-repeating block
      * references.
+     * 
      * @deprecated
      * @param v The fix version we are parsing.
      * @throws XMLStreamException
@@ -288,6 +292,7 @@ public class FixRepositoryParser {
 
     /**
      * Runs through the block data collected and checks it's integrtity.
+     * 
      * @deprecated
      */
     @Deprecated
@@ -334,6 +339,7 @@ public class FixRepositoryParser {
 
     /**
      * debug helper
+     * 
      * @deprecated
      */
     @Deprecated
@@ -351,6 +357,7 @@ public class FixRepositoryParser {
      * references to blocks and other repeating groups. Does not include tags in
      * nested repeating groups as those tags will be consolidated under the
      * group they belong to.
+     * 
      * @deprecated
      * @param v The fix version we are to parse.
      * @throws XMLStreamException XML file is corrupt.
@@ -466,6 +473,7 @@ public class FixRepositoryParser {
      */
     /**
      * Checks the integrety of the groups after they are parsed.
+     * 
      * @deprecated
      */
     @Deprecated
@@ -507,6 +515,7 @@ public class FixRepositoryParser {
      * that may legally found in each Message Type. Associations include
      * repeating groups, references to repeating groups within other repeating
      * groups and block.
+     * 
      * @deprecated
      * @param v The fix version we should parse
      * @throws XMLStreamException XML file is corrupted.
@@ -598,6 +607,7 @@ public class FixRepositoryParser {
 
     /**
      * print info on a group for debug purposes.
+     * 
      * @deprecated
      * @param group The group to print.
      */
@@ -632,6 +642,7 @@ public class FixRepositoryParser {
      * Prints out the group information for a repating group in XML format. List
      * all repeating groups by name and include the id which defines the group,
      * it's delimiter and all member tags.
+     * 
      * @deprecated
      * @param group The group to print.
      */
@@ -676,6 +687,7 @@ public class FixRepositoryParser {
 
     /**
      * Dump message info for debug purposes
+     * 
      * @deprecated
      */
     @Deprecated
@@ -714,6 +726,7 @@ public class FixRepositoryParser {
      * Print the MsgType format of the output xml. Lists each message type along
      * with the names of all the repeating groups that may be found within that
      * message type.
+     * 
      * @deprecated
      * @param msgType The message type to print.
      * @param fixVersion The current fix version we are printing msg info for.
@@ -749,6 +762,7 @@ public class FixRepositoryParser {
 
     /**
      * Begins the process of generating the programs XML output.
+     * 
      * @deprecated
      * @param curFixVersion The fix version being printed.
      */
@@ -777,6 +791,7 @@ public class FixRepositoryParser {
 
     /**
      * It all begins here.
+     * 
      * @deprecated
      * @param args The fix version must be in args[0].
      */

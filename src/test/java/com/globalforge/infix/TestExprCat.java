@@ -33,7 +33,7 @@ public class TestExprCat {
         + '\u0001' + "43=-1" + '\u0001' + "-43=-1" + '\u0001' + "-44=1" + '\u0001' + "44=3.142"
         + '\u0001' + "60=20130412-19:30:00.686" + '\u0001' + "75=20130412" + '\u0001' + "45=0"
         + '\u0001' + "382=2" + '\u0001' + "375=1.5" + '\u0001' + "337=eb8cd" + '\u0001' + "375=3"
-        + '\u0001' + "337=8dhosb" + '\u0001' + "10=004";
+        + '\u0001' + "337=8dhosb" + '\u0001' + "55=BRK" + '\u0001' + "65=B" + '\u0001' + "10=004";
     static StaticTestingUtils msgStore = null;
     InfixActions rules = null;
     String sampleRule = null;
@@ -219,6 +219,36 @@ public class TestExprCat {
             result = rules.transformFIXMsg(TestExprCat.sampleMessage1);
             resultStore = StaticTestingUtils.parseMessage(result);
             Assert.assertEquals("-11", resultStore.get(375).get(1));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void test14() {
+        try {
+            sampleRule = "&55=&55|\"/\"|&65";
+            rules = new InfixActions(sampleRule);
+            result = rules.transformFIXMsg(TestExprCat.sampleMessage1);
+            resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertEquals("BRK/B", resultStore.get(55).get(0));
+            Assert.assertEquals("B", resultStore.get(65).get(0));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void test15() {
+        try {
+            sampleRule = "&55=&55|\"/\"|&65;~&65";
+            rules = new InfixActions(sampleRule);
+            result = rules.transformFIXMsg(TestExprCat.sampleMessage1);
+            resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertEquals("BRK/B", resultStore.get(55).get(0));
+            Assert.assertTrue(resultStore.get(65).isEmpty());
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();

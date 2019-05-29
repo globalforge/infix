@@ -6,10 +6,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.globalforge.infix.api.InfixAPI;
 import com.globalforge.infix.api.InfixField;
 import com.globalforge.infix.api.InfixFieldInfo;
@@ -49,20 +47,19 @@ import com.globalforge.infix.qfix.MessageData;
  * FixField and a number representing the position of the field in the message.
  * <p>
  * Order is important because Repeating Groups are ordered sets of fields.
- * 
+ *
  * @author Michael Starkie
  */
 public class FixMessageMgr {
     /** logger */
     final static Logger logger = LoggerFactory.getLogger(FixMessageMgr.class);
     /** maps a tag in rule syntax to a relative point in the message */
-	private HashMap<String, InfixFieldInfo> msgMap =
-		new HashMap<String, InfixFieldInfo>();
+    private HashMap<String, InfixFieldInfo> msgMap = new HashMap<String, InfixFieldInfo>();
     /** a cache of user defined impl by class name */
-	private final HashMap<String, InfixUserContext> userContextMap =
+    private final HashMap<String, InfixUserContext> userContextMap =
         new HashMap<String, InfixUserContext>();
     /** a cache of user defined impl by class name */
-	private final HashMap<String, InfixUserTerminal> userAssignMap =
+    private final HashMap<String, InfixUserTerminal> userAssignMap =
         new HashMap<String, InfixUserTerminal>();
     private MessageData msgData = null;
     private FixFieldOrderHash posGen = null;
@@ -70,6 +67,7 @@ public class FixMessageMgr {
     /**
      * Test if string is an integer. It allows for negative field numbers. Yes,
      * I've seen them used.
+     *
      * @param str The string to test.
      * @return true if integer
      */
@@ -77,25 +75,26 @@ public class FixMessageMgr {
         return str.matches("^-?\\d+$");
     }
 
-	/**
-	 * You better know what you're doing.
-	 * <p>
-	 * Use this constructor when you want to build the message map from scratch.
-	 * <br>
-	 * You should call the constructor and then make repeated calls to
-	 * parseField(). <br>
-	 * Start with tags 8 and 35 to be safe (e.g., parseField("8=FIX.4.2")
-	 * followed by parseField("35=D")) or parseField("8", "FIX.4.2") followed by
-	 * parseField("35", "D")
-	 * <p>
-	 * Take care when adding repeating groups. Delimiter fields in groups are an
-	 * absolute necessity.
-	 */
-	public FixMessageMgr() {
-	}
+    /**
+     * You better know what you're doing.
+     * <p>
+     * Use this constructor when you want to build the message map from scratch.
+     * <br>
+     * You should call the constructor and then make repeated calls to
+     * parseField(). <br>
+     * Start with tags 8 and 35 to be safe (e.g., parseField("8=FIX.4.2")
+     * followed by parseField("35=D")) or parseField("8", "FIX.4.2") followed by
+     * parseField("35", "D")
+     * <p>
+     * Take care when adding repeating groups. Delimiter fields in groups are an
+     * absolute necessity.
+     */
+    public FixMessageMgr() {
+    }
 
     /**
      * Parses a fix message in raw fix format, assigns context, and keeps state.
+     *
      * @param baseMsg The input message
      * @throws Exception reflection error
      */
@@ -109,6 +108,7 @@ public class FixMessageMgr {
      * you are applying a custom dictionary defined by the tag8Value argument
      * but the client is sending a standard FIX version in tag 8. You basically
      * trick the system into thinking the client sent 8=<custom fix version>.
+     *
      * @param baseMsg The input message
      * @param tag8Value The value must be the version in a custom FIX data
      * dictionary
@@ -119,59 +119,52 @@ public class FixMessageMgr {
         parseMessage(baseMsg);
     }
 
-	/**
-	 * Initialize the message manager with a map.
-	 * 
-	 * @param mMap A map of tag number to InfixFieldInfo
-	 * @throws Exception Tag 8 and Tag 35 mandatory.
-	 */
-	public FixMessageMgr(Map<String, InfixFieldInfo> mMap)
-		throws Exception {
-		InfixFieldInfo f8 = mMap.get("8");
-		if (f8 == null) {
-			throw new Exception(
-				"tag 8 required when initializing from map");
-		}
-		InfixFieldInfo f35 = mMap.get("35");
-		if (f35 == null) {
-			throw new Exception(
-				"tag 35 required when initializing from map");
-		}
-		parseField("8", f8.getTagVal());
-		parseField("35", f35.getTagVal());
-
-		ArrayList<InfixFieldInfo> orderedFields =
-			new ArrayList<InfixFieldInfo>(mMap.values());
-		Collections.sort(orderedFields);
-		for (InfixFieldInfo fieldInfo : orderedFields) {
-			InfixField field = fieldInfo.getField();
-			if ((field.getTagNum() == 8) || (field.getTagNum() == 9)
-				|| (field.getTagNum() == 10) || field.getTagNum() == 35) {
-				continue;
-			}
-			parseField(field.getTagNum() + "", field.getTagVal());
-		}
-	}
+    /**
+     * Initialize the message manager with a map.
+     *
+     * @param mMap A map of tag number to InfixFieldInfo
+     * @throws Exception Tag 8 and Tag 35 mandatory.
+     */
+    public FixMessageMgr(Map<String, InfixFieldInfo> mMap) throws Exception {
+        InfixFieldInfo f8 = mMap.get("8");
+        if (f8 == null) { throw new Exception("tag 8 required when initializing from map"); }
+        InfixFieldInfo f35 = mMap.get("35");
+        if (f35 == null) { throw new Exception("tag 35 required when initializing from map"); }
+        parseField("8", f8.getTagVal());
+        parseField("35", f35.getTagVal());
+        ArrayList<InfixFieldInfo> orderedFields = new ArrayList<InfixFieldInfo>(mMap.values());
+        Collections.sort(orderedFields);
+        for (InfixFieldInfo fieldInfo : orderedFields) {
+            InfixField field = fieldInfo.getField();
+            if ((field.getTagNum() == 8) || (field.getTagNum() == 9) || (field.getTagNum() == 10)
+                || field.getTagNum() == 35) {
+                continue;
+            }
+            parseField(field.getTagNum() + "", field.getTagVal());
+        }
+    }
 
     /**
      * Get the raw underlying FIX map
+     *
      * @return Map<String, InfixFieldInfo>
      */
-	public HashMap<String, InfixFieldInfo> getInfixMessageMap() {
+    public HashMap<String, InfixFieldInfo> getInfixMessageMap() {
         return msgMap;
     }
 
-	/**
-	 * Get the raw underlying FIX map wrapped in a convenience class.
-	 * 
-	 * @return InfixMap
-	 */
-	public InfixMap getInfixMap() {
-		return new InfixMap(msgMap);
-	}
+    /**
+     * Get the raw underlying FIX map wrapped in a convenience class.
+     *
+     * @return InfixMap
+     */
+    public InfixMap getInfixMap() {
+        return new InfixMap(msgMap);
+    }
 
     /**
      * Parses a raw fix message
+     *
      * @param baseMsg the raw fix message
      * @throws Exception can't create the runtime classes specified by the FIX
      * version.
@@ -195,58 +188,58 @@ public class FixMessageMgr {
     }
 
     /**
-	 * Parses a string in the form "35=D" into a tag number (35) and tag value
-	 * (D) and calls {@link FixMessageMgr#putField(int, String)} to map the
-	 * results.
-	 * 
-	 * @param fixField The string representing a Fix field as it is found in a
-	 * Fix message.
-	 * @throws Exception can't create the runtime classes specified by the FIX
-	 * version.
-	 */
-	public void parseField(String fixField) throws Exception {
+     * Parses a string in the form "35=D" into a tag number (35) and tag value
+     * (D) and calls {@link FixMessageMgr#putField(int, String)} to map the
+     * results.
+     *
+     * @param fixField The string representing a Fix field as it is found in a
+     * Fix message.
+     * @throws Exception can't create the runtime classes specified by the FIX
+     * version.
+     */
+    public void parseField(String fixField) throws Exception {
         int index = fixField.indexOf('=');
         String tagStr = fixField.substring(0, index);
         String tagVal = fixField.substring(index + 1);
-		parseField(tagStr, tagVal);
+        parseField(tagStr, tagVal);
     }
 
-	/**
-	 * Parses a string in the form "35=D" into a tag number (35) and tag value
-	 * (D) and calls {@link FixMessageMgr#putField(int, String)} to map the
-	 * results.
-	 * 
-	 * @param fixField The string representing a Fix field as it is found in a
-	 * Fix message.
-	 * @throws Exception can't create the runtime classes specified by the FIX
-	 * version.
-	 */
-	public void parseField(String tagStr, String tagVal) throws Exception {
-		if (tagStr.equals("8")) {
-			if (msgMap.containsKey("8")) {
-				FixMessageMgr.logger.warn(
-					"Field BeginString(8) is already defined.  Using pre-defined dictionary = "
-						+ msgMap.get("8"));
-				return;
-			} else {
-				init(tagVal);
-			}
-		}
-		int tagNum = 0;
-		try {
-			tagNum = Integer.parseInt(tagStr);
-		} catch (NumberFormatException e) {
-			FixMessageMgr.logger
-				.warn("Dropping non-numeric tag number: [" + tagNum + "]");
-			return;
-		}
-		putField(tagNum, tagVal);
-	}
+    /**
+     * Parses a string in the form "35=D" into a tag number (35) and tag value
+     * (D) and calls {@link FixMessageMgr#putField(int, String)} to map the
+     * results.
+     *
+     * @param fixField The string representing a Fix field as it is found in a
+     * Fix message.
+     * @throws Exception can't create the runtime classes specified by the FIX
+     * version.
+     */
+    public void parseField(String tagStr, String tagVal) throws Exception {
+        if (tagStr.equals("8")) {
+            if (msgMap.containsKey("8")) {
+                FixMessageMgr.logger.warn(
+                    "Field BeginString(8) is already defined.  Using pre-defined dictionary = "
+                        + msgMap.get("8"));
+                return;
+            } else {
+                init(tagVal);
+            }
+        }
+        int tagNum = 0;
+        try {
+            tagNum = Integer.parseInt(tagStr);
+        } catch (NumberFormatException e) {
+            FixMessageMgr.logger.warn("Dropping non-numeric tag number: [" + tagNum + "]");
+            return;
+        }
+        putField(tagNum, tagVal);
+    }
 
     /**
      * Dynamically creates a {@link FixGroupMgr} representing the fixVersion at
      * runtime. Each fixVersion is assigned a unique FixGroupMgr because each
      * fix version has new definitions of repeating groups.
+     *
      * @param fixVersion The value found in tag 8 in a Fix message.
      * @throws Exception can't create the runtime classes specified by the FIX
      */
@@ -258,6 +251,7 @@ public class FixMessageMgr {
 
     /**
      * Obtain the Fix message type of the message being transformed.
+     *
      * @return String The Fix message type.
      */
     private String getMsgType() {
@@ -273,6 +267,7 @@ public class FixMessageMgr {
      * Inserts a fix field into the mapping. Converts a tag number and value
      * into a rule context and inserts the context and associated field data
      * into the mappings. Order of tag data within the message is maintained.
+     *
      * @param tagNum The tag number
      * @param tagVal The tag value
      */
@@ -291,6 +286,7 @@ public class FixMessageMgr {
 
     /**
      * Inserts an Infix context directly into the message map
+     *
      * @param ctx The Infix context
      * @param tagVal The tag value and order of the field referenced by the
      * Infix context
@@ -317,6 +313,7 @@ public class FixMessageMgr {
 
     /**
      * Returns a {@link InfixField} associated with the tag number.
+     *
      * @param tagNum The tag number to look up.
      * @return The FixField mapped to the tag number.
      */
@@ -327,6 +324,7 @@ public class FixMessageMgr {
     /**
      * Returns a {@link InfixField} associated with the tag number in rule
      * syntax.
+     *
      * @param ctx The tag number to look up in rule syntax (e.g., 35).
      * @return The FixField mapped to the tag number.
      */
@@ -336,6 +334,7 @@ public class FixMessageMgr {
 
     /**
      * Removes a context and it's value from memory.
+     *
      * @param ctx The tag context to remove.
      */
     private InfixFieldInfo remove(String ctx) {
@@ -344,6 +343,7 @@ public class FixMessageMgr {
 
     /**
      * Removes a fix field given a tag reference in rule syntax.
+     *
      * @param ctx The tag number in rule syntax.
      */
     void removeContext(String ctx) {
@@ -366,6 +366,7 @@ public class FixMessageMgr {
 
     /**
      * Determines if a tag in rule syntax is present.
+     *
      * @param ctx The tag in rule syntax
      * @return boolean true if tag is present.
      */
@@ -387,40 +388,40 @@ public class FixMessageMgr {
 
     /**
      * Produces a valid FIX string from the state of this instance.
+     *
      * @return String A valid FIX string.
      */
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
-		int bodyLength = 0;
+        int bodyLength = 0;
         ArrayList<InfixFieldInfo> orderedFields = new ArrayList<InfixFieldInfo>(msgMap.values());
         Collections.sort(orderedFields);
         String fieldStr = null;
         for (InfixFieldInfo fieldInfo : orderedFields) {
             InfixField field = fieldInfo.getField();
-			if ((field.getTagNum() == 8) || (field.getTagNum() == 9)
-				|| (field.getTagNum() == 10)) {
-				continue;
-			}
+            if ((field.getTagNum() == 8) || (field.getTagNum() == 9) || (field.getTagNum() == 10)) {
+                continue;
+            }
             fieldStr = field.toString() + '\u0001';
-			bodyLength += fieldStr.length();
+            bodyLength += fieldStr.length();
             str.append(fieldStr);
         }
-		putField(9, Integer.toString(bodyLength));
-		InfixFieldInfo bodyLen = getContext("9");
-		fieldStr = bodyLen.getField().toString() + '\u0001';
-		str.insert(0, fieldStr);
-		InfixFieldInfo version = getContext("8");
-		fieldStr = version.getField().toString() + '\u0001';
-		str.insert(0, fieldStr);
-		char[] inputChars = str.toString().toCharArray();
-		int checkSum = 0;
-		for (int aChar : inputChars) {
-			checkSum += aChar;
-		}
-		putField(10, String.format("%03d", checkSum % 256));
-		InfixFieldInfo chksum = getContext("10");
-		str.append(chksum.getField()).append('\u0001');
+        putField(9, Integer.toString(bodyLength));
+        InfixFieldInfo bodyLen = getContext("9");
+        fieldStr = bodyLen.getField().toString() + '\u0001';
+        str.insert(0, fieldStr);
+        InfixFieldInfo version = getContext("8");
+        fieldStr = version.getField().toString() + '\u0001';
+        str.insert(0, fieldStr);
+        char[] inputChars = str.toString().toCharArray();
+        int checkSum = 0;
+        for (int aChar : inputChars) {
+            checkSum += aChar;
+        }
+        putField(10, String.format("%03d", checkSum % 256));
+        InfixFieldInfo chksum = getContext("10");
+        str.append(chksum.getField()).append('\u0001');
         return str.toString();
     }
 
@@ -430,6 +431,7 @@ public class FixMessageMgr {
      * of the state contained in an instance of this class. The caller can
      * manipulate the message and pass it back where it will be parsed creating
      * a new in memory state.
+     *
      * @param userCtx The caller's class to call back into with the FIX string.
      */
     private void handleCallVisitMessage(InfixUserContext userCtx) {
@@ -457,6 +459,7 @@ public class FixMessageMgr {
      * Calls into the class provided as an argument with an instance of an API
      * handle to an instance of this class allowing the argument class to call
      * back using a limited number of read-only operations.
+     *
      * @param userCtx The class that is allowed to call back using the API.
      * @see InfixUserContext
      */
@@ -467,6 +470,7 @@ public class FixMessageMgr {
     /**
      * Create an instance of a user defined implementation of InfixUserContext
      * and call the visit method
+     *
      * @param className The name of the class to instantiate.
      */
     void handleUserDefinedContext(String className, String methodName) {
@@ -505,6 +509,7 @@ public class FixMessageMgr {
 
     /**
      * Calls into a user defined class to obtain a value for an assignment.
+     *
      * @param userCtx The user's implementation of the class producting the
      * value in the assignment.
      * @see InfixUserTerminal#visitTerminal(InfixAPI)
@@ -516,6 +521,7 @@ public class FixMessageMgr {
 
     /**
      * Calls into a user defined class to obtain a value for an assignment.
+     *
      * @param className an implementation of
      * {@linkInfixUserAssignment#visitAssignment(InfixAPI)}
      * @see FixMessageMgr#handleCallVisitUserTerm(InfixUserTerminal)

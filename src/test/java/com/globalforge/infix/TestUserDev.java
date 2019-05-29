@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import org.junit.Assert;
@@ -14,6 +15,7 @@ import com.globalforge.infix.api.InfixField;
 import com.globalforge.infix.api.InfixFieldInfo;
 import com.globalforge.infix.api.InfixUserContext;
 import com.globalforge.infix.api.InfixUserTerminal;
+import com.google.common.collect.ListMultimap;
 
 /*-
 The MIT License (MIT)
@@ -862,6 +864,86 @@ public class TestUserDev {
             Assert.fail();
         }
     }
+    static final String sampleMessageSymSuffixCombined = "8=FIX.4.2" + '\u0001' + "9=1042"
+        + '\u0001' + "35=8" + '\u0001' + "55=ACL/U" + '\u0001' + "421=US" + '\u0001' + "10=004";
+
+    @Test
+    public void testSymbolSuffixSplit() throws UnsupportedEncodingException, IOException {
+        try {
+            String sampleRule = "{com.globalforge.infix.TestUserDev$SymbolSuffixSplit}";
+            InfixActions rules = new InfixActions(sampleRule);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessageSymSuffixCombined);
+            ListMultimap<Integer, String> resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertEquals("ACL", resultStore.get(55).get(0));
+            Assert.assertEquals("U", resultStore.get(65).get(0));
+            result = StaticTestingUtils.rs(result);
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
+    static final String sampleMessageSymSuffixCombined2 = "8=FIX.4.2" + '\u0001' + "9=1042"
+        + '\u0001' + "35=8" + '\u0001' + "55=ACL" + '\u0001' + "421=US" + '\u0001' + "10=004";
+
+    @Test
+    public void testSymbolSuffixSplit2() throws UnsupportedEncodingException, IOException {
+        try {
+            String sampleRule = "{com.globalforge.infix.TestUserDev$SymbolSuffixSplit}";
+            InfixActions rules = new InfixActions(sampleRule);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessageSymSuffixCombined2);
+            ListMultimap<Integer, String> resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertEquals("ACL", resultStore.get(55).get(0));
+            List<String> suffix = resultStore.get(65);
+            Assert.assertTrue(suffix.isEmpty());
+            result = StaticTestingUtils.rs(result);
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
+    static final String sampleMessageSymSuffixSplit =
+        "8=FIX.4.2" + '\u0001' + "9=1042" + '\u0001' + "35=D" + '\u0001' + "55=ACL" + '\u0001'
+            + "65=U" + '\u0001' + "421=US" + '\u0001' + "10=004";
+
+    @Test
+    public void testSymbolSuffixCombine() throws UnsupportedEncodingException, IOException {
+        try {
+            String sampleRule = "{com.globalforge.infix.TestUserDev$SymbolSuffixCombine}";
+            InfixActions rules = new InfixActions(sampleRule);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessageSymSuffixSplit);
+            ListMultimap<Integer, String> resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertEquals("ACL/U", resultStore.get(55).get(0));
+            List<String> suffix = resultStore.get(65);
+            Assert.assertTrue(suffix.isEmpty());
+            result = StaticTestingUtils.rs(result);
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
+    static final String sampleMessageSymSuffixSplit2 = "8=FIX.4.2" + '\u0001' + "9=1042" + '\u0001'
+        + "35=D" + '\u0001' + "55=ACL" + '\u0001' + "421=US" + '\u0001' + "10=004";
+
+    @Test
+    public void testSymbolSuffixCombine2() throws UnsupportedEncodingException, IOException {
+        try {
+            String sampleRule = "{com.globalforge.infix.TestUserDev$SymbolSuffixCombine}";
+            InfixActions rules = new InfixActions(sampleRule);
+            String result = rules.transformFIXMsg(TestUserDev.sampleMessageSymSuffixSplit2);
+            ListMultimap<Integer, String> resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertEquals("ACL", resultStore.get(55).get(0));
+            List<String> suffix = resultStore.get(65);
+            Assert.assertTrue(suffix.isEmpty());
+            result = StaticTestingUtils.rs(result);
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
 
     public static class UserCtxNonNumeric4 implements InfixUserContext {
         @Override
@@ -933,6 +1015,40 @@ public class TestUserDev {
             infixApi.putContext("555[0]->600", "BAR"); // 26
             infixApi.putContext("555[1]->600", "BAR1"); // 31
             infixApi.putContext("555[0]->539[0]->538", "525"); // 30
+        }
+    }
+
+    public static class SymbolSuffixSplit implements InfixUserContext {
+        @Override
+        public String visitMessage(String fixMessage) {
+            return fixMessage;
+        }
+
+        @Override
+        public void visitInfixAPI(InfixAPI infixApi) {
+            InfixFieldInfo field55 = infixApi.getContext("55");
+            if (field55 == null) { return; }
+            String[] symsfx = field55.getTagVal().split(Pattern.quote("/"));
+            if (symsfx == null || symsfx.length != 2) { return; }
+            infixApi.putContext("55", symsfx[0]);
+            infixApi.putContext("65", symsfx[1]);
+        }
+    }
+
+    public static class SymbolSuffixCombine implements InfixUserContext {
+        @Override
+        public String visitMessage(String fixMessage) {
+            return fixMessage;
+        }
+
+        @Override
+        public void visitInfixAPI(InfixAPI infixApi) {
+            InfixFieldInfo field55 = infixApi.getContext("55");
+            if (field55 == null) { return; }
+            InfixFieldInfo field65 = infixApi.getContext("65");
+            if (field65 == null) { return; }
+            infixApi.putContext("55", field55.getTagVal() + "/" + field65.getTagVal());
+            infixApi.removeContext("65");
         }
     }
 }

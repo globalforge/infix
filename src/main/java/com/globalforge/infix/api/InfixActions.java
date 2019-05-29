@@ -4,13 +4,10 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-
-import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
-
-// import quickfix.InvalidMessage;
-// import quickfix.Message;
 import com.globalforge.infix.FixRulesErrorStrategy;
 import com.globalforge.infix.FixRulesLexerErrorListener;
 import com.globalforge.infix.FixRulesParserErrorListener;
@@ -44,11 +41,12 @@ import com.globalforge.infix.antlr.FixRulesParser;
 /**
  * The main entry point to the engine. This is the class which transforms a fix
  * message given a string in rule syntax.
+ *
  * @author Michael C. Starkie
  */
 public class InfixActions {
     // create a CharStream that reads from standard input
-    private ANTLRInputStream input = null;
+    private CharStream input = null;
     // create a lexer that feeds off of input CharStream
     private FixRulesLexer lexer = null;
     // create a buffer of tokens pulled from the lexer
@@ -59,11 +57,12 @@ public class InfixActions {
 
     /**
      * Initialize the engine and runs the engine given a rule or set of rules.
+     *
      * @param ruleInput The list of rules
      * @throws IOException When the rule input can not be read.
      */
     public InfixActions(InputStream ruleInput) throws IOException {
-        input = new ANTLRInputStream(ruleInput);
+        input = CharStreams.fromStream(ruleInput);
         lexer = new FixRulesLexer(input);
         lexer.removeErrorListeners();
         lexer.addErrorListener(FixRulesLexerErrorListener.INSTANCE);
@@ -77,6 +76,7 @@ public class InfixActions {
 
     /**
      * Initializes the rule engine with a string in rule syntax.
+     *
      * @param ruleInput The rules to apply in rule syntax.
      * @throws UnsupportedEncodingException
      * @throws IOException
@@ -89,6 +89,7 @@ public class InfixActions {
      * An optional method to load classes before parsing rules. This reduces the
      * time it takes to parse the first rule by loading static data into memory
      * before any rule processing.
+     *
      * @param fixVersion The fix version static data to load.
      */
     public static void primeEngine(String fixVersion) {
@@ -108,12 +109,13 @@ public class InfixActions {
      * Parses the rules into a syntax tree for debugging.
      */
     private void parseRules() {
-        tree = parser.parseRules();
+        tree = parser.fixrules();
     }
 
     /**
      * Accepts a fix message, applies the rules, and returns a transformed fix
      * message. Used for debugging purposes.
+     *
      * @param fixMessage The fix message to transform
      * @param printDictionary true if you want a dump of internal dictionaries.
      * @return String the transformed fix message.
@@ -130,6 +132,7 @@ public class InfixActions {
     /**
      * Accepts a fix message, applies the rules, and returns a transformed fix
      * message.
+     *
      * @param fixMessage The fix message to transform
      * @return String the transformed fix message.
      */

@@ -16,6 +16,7 @@ import com.globalforge.infix.antlr.FixRulesBaseVisitor;
 import com.globalforge.infix.antlr.FixRulesParser;
 import com.globalforge.infix.antlr.FixRulesParser.FixrulesContext;
 import com.globalforge.infix.antlr.FixRulesParser.RvalueContext;
+import com.globalforge.infix.antlr.FixRulesParser.TagContext;
 import com.globalforge.infix.antlr.FixRulesParser.TagnumContext;
 import com.globalforge.infix.antlr.FixRulesParser.TerminalContext;
 import com.globalforge.infix.api.InfixFieldInfo;
@@ -55,17 +56,16 @@ import com.globalforge.infix.api.InfixFieldInfo;
  */
 public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     /** logger */
-    final static Logger logger = LoggerFactory.getLogger(FixRulesTransformVisitor.class);
+    final static Logger log = LoggerFactory.getLogger(FixRulesTransformVisitor.class);
     private static final int LEFT = 0;
     private static final int RIGHT = 1;
     private FixMessageMgr msgMgr = null;
     private final SimpleDateFormat datetime = new SimpleDateFormat("yyyyMMdd-HH:mm:ss.SSS");
     private final SimpleDateFormat date = new SimpleDateFormat("yyyyMMdd");
     private final String fixMessage;
-    // private boolean isStatementTrue = false;
     private final Stack<Boolean> conditionalStack = new Stack<>();
     private final String tag8Value;
-    private String fullParseCtx = "";
+    private String tagParseCtx = "";
 
     /**
      * Initialize the rule engine with a Fix input string.
@@ -97,27 +97,6 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     }
 
     /**
-     * The default implementation returns the result of calling
-     * {@link #visitChildren} on {@code ctx}.
-     */
-    @Override
-    public String visitParseRules(FixRulesParser.ParseRulesContext ctx) {
-        try {
-            if (tag8Value != null) {
-                msgMgr = new FixMessageMgr(fixMessage, tag8Value);
-            } else {
-                msgMgr = new FixMessageMgr(fixMessage);
-            }
-        } catch (Exception e) {
-            FixRulesTransformVisitor.logger
-                .error("Bad message or unsupported fix version....parser HALT.", e);
-            return null;
-        }
-        visitChildren(ctx);
-        return msgMgr.toString();
-    }
-
-    /**
      * Begin parsing a set of rules.
      *
      * @return String a fully formatted Fix String representing the results of
@@ -126,7 +105,20 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      */
     @Override
     public String visitFixrules(FixRulesParser.FixrulesContext ctx) {
-        return visitChildren(ctx);
+        log.debug("visitParseRules");
+        try {
+            if (tag8Value != null) {
+                msgMgr = new FixMessageMgr(fixMessage, tag8Value);
+            } else {
+                msgMgr = new FixMessageMgr(fixMessage);
+            }
+        } catch (Exception e) {
+            FixRulesTransformVisitor.log
+                .error("Bad message or unsupported fix version....parser HALT.", e);
+            return null;
+        }
+        visitChildren(ctx);
+        return msgMgr.toString();
     }
 
     /**
@@ -159,8 +151,8 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      */
     @Override
     public String visitAssign(FixRulesParser.AssignContext ctx) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("visitAssign");
+        if (log.isTraceEnabled()) {
+            log.trace("visitAssign");
         }
         String tagCtx = ctx.tag().tagref().getText();
         String tagVal = visit(ctx.expr());
@@ -174,7 +166,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
                 tagVal = intVal + "";
             }
         }
-        msgMgr.putContext(fullParseCtx, tagVal);
+        msgMgr.putContext(tagParseCtx, tagVal);
         return null;
     }
 
@@ -190,9 +182,9 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         if (lCtx.equals("&8") || lCtx.equals("&35")) { return null; }
         if (rCtx.equals("&8") || rCtx.equals("&35")) { return null; }
         visit(ctx.tag(FixRulesTransformVisitor.LEFT));
-        String lRef = fullParseCtx;
+        String lRef = tagParseCtx;
         visit(ctx.tag(FixRulesTransformVisitor.RIGHT));
-        String rRef = fullParseCtx;
+        String rRef = tagParseCtx;
         InfixFieldInfo lValue = msgMgr.getContext(lRef);
         InfixFieldInfo rValue = msgMgr.getContext(rRef);
         if ((lValue == null) || (rValue == null)) { return null; }
@@ -208,7 +200,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      */
     @Override
     public String visitTag(FixRulesParser.TagContext ctx) {
-        fullParseCtx = "";
+        tagParseCtx = "";
         return visitChildren(ctx);
     }
 
@@ -226,7 +218,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     public String visitTagref(FixRulesParser.TagrefContext ctx) {
         String txt = ctx.getText();
         txt = removePointers(txt);
-        fullParseCtx += txt;
+        tagParseCtx += txt;
         return visitChildren(ctx);
     }
 
@@ -241,7 +233,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     @Override
     public String visitIdxref(FixRulesParser.IdxrefContext ctx) {
         String idx = visit(ctx.idx().expr());
-        fullParseCtx += "[" + idx + "]->";
+        tagParseCtx += "[" + idx + "]->";
         return visitChildren(ctx);
     }
 
@@ -358,7 +350,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         // get value of right subexpression
         String right = visit(ctx.expr(FixRulesTransformVisitor.RIGHT));
         if ((left == null) || (right == null)) {
-            FixRulesTransformVisitor.logger.warn("null field in 'Add/Sub'. No assignment: {}",
+            FixRulesTransformVisitor.log.warn("null field in 'Add/Sub'. No assignment: {}",
                 ctx.getText());
             return null;
         }
@@ -386,7 +378,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         // get value of right subexpression
         String right = visit(ctx.expr(FixRulesTransformVisitor.RIGHT));
         if ((left == null) || (right == null)) {
-            FixRulesTransformVisitor.logger.warn("null field in 'Mul/Div'. No assignment: {}",
+            FixRulesTransformVisitor.log.warn("null field in 'Mul/Div'. No assignment: {}",
                 ctx.getText());
             return null;
         }
@@ -412,7 +404,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         // get value of right subexpression
         String right = visit(ctx.expr(FixRulesTransformVisitor.RIGHT));
         if ((left == null) || (right == null)) {
-            FixRulesTransformVisitor.logger.warn("null field in '|'. No assignment: {}",
+            FixRulesTransformVisitor.log.warn("null field in '|'. No assignment: {}",
                 ctx.getText());
             return null;
         }
@@ -791,5 +783,48 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     public String visitMyUserTerm(FixRulesParser.MyUserTermContext ctx) {
         String className = ctx.userTerm().className.getText();
         return msgMgr.handleUserDefinedTerminal(className);
+    }
+
+    /**
+     * visit a function
+     */
+    @Override
+    public String visitFunction(FixRulesParser.FunctionContext ctx) {
+        return visitChildren(ctx);
+    }
+
+    /**
+     * Splits the value of a tag context similar to {@link String#split(String)}
+     * <br>
+     */
+    @Override
+    public String visitSplit(FixRulesParser.SplitContext ctx) {
+        List<TagContext> tagList = ctx.tag();
+        String regex = removeQuotes(ctx.regex.getText());
+        TagContext sourceTagCtx = ctx.sourceTag;
+        visit(sourceTagCtx);
+        String sourceTag = tagParseCtx;
+        InfixFieldInfo fieldInfo = msgMgr.getContext(sourceTag);
+        String sourceTagValue = fieldInfo.getField().getTagVal();
+        String[] splitResult = sourceTagValue.split(regex);
+        /*
+         * The first element is the tag we split (sourceTagCtx), so skip it.
+         * Also, we consider how many destination tags we were supplied by the
+         * user more importantly than we do how many elements resulted from the
+         * split. Although they should be equal in number.
+         */
+        for (int i = 1; i < tagList.size(); i++) {
+            TagContext tCtx = tagList.get(i);
+            visit(tCtx);
+            String destTag = tagParseCtx;
+            // splitResult.length must be >= tagList.size();
+            if (i <= splitResult.length) {
+                msgMgr.putContext(destTag, splitResult[i - 1]);
+            } else {
+                log.warn(
+                    "function::split() given too many result tags. Some tags omitted from result.");
+            }
+        }
+        return visitChildren(ctx);
     }
 }

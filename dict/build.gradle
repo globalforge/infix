@@ -1,5 +1,3 @@
-// dependsOn(':fix')
-
 configurations {
    dict 
 }

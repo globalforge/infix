@@ -1,5 +1,6 @@
 package com.globalforge.infix;
 
+import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -416,6 +417,29 @@ public class TestAssignTerminals {
             Assert.fail();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+    static final String sampleMessageSymSuffix =
+        "8=FIX.4.2" + '\u0001' + "9=1042" + '\u0001' + "35=D" + '\u0001' + "55=ACL" + '\u0001'
+            + "65=U" + '\u0001' + "421=US" + '\u0001' + "10=004";
+
+    /**
+     * Test apply a suffix
+     */
+    @Test
+    public void testd29() {
+        try {
+            sampleRule = "^&65 && &421==\"US\" ? &55 = &55|\"\\\"|&65;~&65"; // 1
+            rules = new InfixActions(sampleRule);
+            result = rules.transformFIXMsg(TestAssignTerminals.sampleMessageSymSuffix);
+            System.out.println(StaticTestingUtils.rs(result));
+            resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertEquals("ACL\\U", resultStore.get(55).get(0));
+            List<String> suffix = resultStore.get(65);
+            Assert.assertTrue(suffix.isEmpty());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
         }
     }
 }

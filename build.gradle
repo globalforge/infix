@@ -1,7 +1,7 @@
 allprojects {
     apply plugin: 'java'
     compileJava {
-        options.debug = false 
+        options.debug = false
     }
     apply plugin: 'eclipse'
     group = 'com.globalforge.infix'
@@ -30,7 +30,7 @@ allprojects {
     eclipse {
         classpath {
            defaultOutputDir = file('build-eclipse')
-        } 
+        }
     }
     task cleanAllProjects(dependsOn:'clean') << {
       println "Cleaning ${project.path}"
@@ -51,7 +51,7 @@ distributions {
      }
 }
 configurations {
-   main 
+   main
 }
 dependencies {
    main "com.globalforge.infix:infix:1.1"

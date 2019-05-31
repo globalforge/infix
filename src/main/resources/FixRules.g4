@@ -137,7 +137,7 @@ OR              : '||' ;
 REF             : '->' ;
 DATETIME        : '<DATETIME>' ;
 DATE            : '<DATE>' ;
-VAL             : ('"' (~'"')+  '"') ;
+VAL             : ('"' ('""'|~'"')+  '"') ;
 WS              : [\t\r\n ]+ -> skip ;
 INT             : DIGIT+ ;
 FLOAT           : MINUS? INT+ '.' DIGIT+
@@ -155,6 +155,6 @@ Letter
 fragment
 JavaIDDigit
     :  '\u0030'..'\u0039'      // 0-9
-   ;
+    ;
 
 

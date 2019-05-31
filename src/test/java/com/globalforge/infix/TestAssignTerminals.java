@@ -105,6 +105,20 @@ public class TestAssignTerminals {
     }
 
     @Test
+    public void testQuotes() {
+        try {
+            sampleRule = "&43=\"\"\"NNT2\"\"\"";
+            rules = new InfixActions(sampleRule);
+            result = rules.transformFIXMsg(TestAssignTerminals.sampleMessageNonNumeric);
+            resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertEquals(resultStore.get(43).get(0), "\"\"NNT2\"\"");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
+
+    @Test
     public void testTagINT() {
         try {
             sampleRule = "&44=42";

@@ -596,7 +596,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     public String visitNot(FixRulesParser.NotContext ctx) {
         TerminalContext lVal = ctx.tg;
         String lResult = visit(lVal);
-        boolean isStatementTrue = lResult == null ? true : false;
+        boolean isStatementTrue = lResult == null || lResult.isEmpty() ? true : false;
         updateConditionalState(isStatementTrue);
         return null;
     }
@@ -610,7 +610,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     public String visitIs(FixRulesParser.IsContext ctx) {
         TerminalContext lVal = ctx.tg;
         String lResult = visit(lVal);
-        boolean isStatementTrue = lResult != null ? true : false;
+        boolean isStatementTrue = lResult != null && !lResult.isEmpty() ? true : false;
         updateConditionalState(isStatementTrue);
         return null;
     }

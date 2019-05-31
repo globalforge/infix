@@ -318,6 +318,64 @@ public class TestConditionals {
         } catch (Exception e) {
         }
     }
+    static final String sm1 = "8=FIX.4.4" + '\u0001' + "9=1042" + '\u0001' + "35=D" + '\u0001'
+        + "44=" + '\u0001' + "43=-1" + '\u0001' + "-43=-1" + '\u0001' + "-44=1" + '\u0001' + "45=0"
+        + '\u0001' + "78=2" + '\u0001' + "79=FOO" + '\u0001' + "80=eb8cd" + '\u0001' + "79=BAR"
+        + '\u0001' + "80=8dhosb" + '\u0001' + "10=004";
+
+    @Test
+    public void testTag18() {
+        try {
+            String sampleRule = "^&44 ? &44=42.00";
+            InfixActions rules = new InfixActions(sampleRule);
+            String result = rules.transformFIXMsg(sm1);
+            ListMultimap<Integer, String> resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertEquals(resultStore.get(44).get(0), "");
+        } catch (Exception e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testTag19() {
+        try {
+            String sampleRule = "!&44 ? &44=42.00";
+            InfixActions rules = new InfixActions(sampleRule);
+            String result = rules.transformFIXMsg(sm1);
+            ListMultimap<Integer, String> resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertEquals(resultStore.get(44).get(0), "42.00");
+        } catch (Exception e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testTag20() {
+        try {
+            String sampleRule = "!&44 ? ~&44";
+            InfixActions rules = new InfixActions(sampleRule);
+            String result = rules.transformFIXMsg(sm1);
+            ListMultimap<Integer, String> resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertTrue(resultStore.get(44).isEmpty());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testTag21() {
+        try {
+            String sampleRule = "!&102 ? ~&102";
+            InfixActions rules = new InfixActions(sampleRule);
+            String result = rules.transformFIXMsg(sm1);
+            ListMultimap<Integer, String> resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertTrue(resultStore.get(102).isEmpty());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
 
     static class Assign1 implements InfixUserTerminal {
         @Override

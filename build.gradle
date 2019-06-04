@@ -1,3 +1,4 @@
+version = '2.1'
 allprojects {
     apply plugin: 'java'
     compileJava {
@@ -5,7 +6,7 @@ allprojects {
     }
     apply plugin: 'eclipse'
     group = 'com.globalforge.infix'
-    version = '2.1'
+//    version = '2.1'
 
     jar {
         manifest.attributes provider: 'GlobalForge'
@@ -42,7 +43,7 @@ distributions {
      main {
          contents {
              from "libs/infix-2.1.jar"
-             from "libs/fix-2.1.jar"
+             from "libs/fix-2.0.jar"
              from "libs/antlr-4.7.2-complete.jar"
              from "libs/slf4j-api-1.7.7.jar"
              from "libs/slf4j-simple-1.7.7.jar"
@@ -86,7 +87,7 @@ task cleanAll(type: Delete) {
    delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix50/auto"
    delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix50sp1/auto"
    delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix50sp2/auto"
-   delete "${rootProject.projectDir}/libs/fix-2.1.jar"
+   delete "${rootProject.projectDir}/libs/fix-2.0.jar"
    delete "${rootProject.projectDir}/libs/infix-2.1.jar"
    delete "${rootProject.projectDir}/build-eclipse"
    delete "${rootProject.projectDir}/fix/build-eclipse"

@@ -107,11 +107,30 @@ public class TestAssignTerminals {
     @Test
     public void testQuotes() {
         try {
-            sampleRule = "&43=\"\"\"NNT2\"\"\"";
+            sampleRule = "&43=\"\\\"NNT2\\\"\""; // &43="NNT2"
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestAssignTerminals.sampleMessageNonNumeric);
             resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals(resultStore.get(43).get(0), "\"\"NNT2\"\"");
+            Assert.assertEquals("\"NNT2\"", resultStore.get(43).get(0));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
+
+    /**
+     * Creates a rule that assigns a tag (43) a quoted string. <br>
+     * Specified like this using infix: &43="\"NNT2\"" <br>
+     * Resulting in a FIX field that equals 43="NNT2"
+     */
+    @Test
+    public void testEscapedQuotes() {
+        try {
+            sampleRule = "&43=" + "\"" + "\\\"" + "NNT2" + "\\\"" + "\""; // &43="\"NNT2\""
+            rules = new InfixActions(sampleRule);
+            result = rules.transformFIXMsg(TestAssignTerminals.sampleMessageNonNumeric);
+            resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertEquals("\"NNT2\"", resultStore.get(43).get(0));
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();
@@ -437,11 +456,26 @@ public class TestAssignTerminals {
         "8=FIX.4.2" + '\u0001' + "9=1042" + '\u0001' + "35=D" + '\u0001' + "55=ACL" + '\u0001'
             + "65=U" + '\u0001' + "421=US" + '\u0001' + "10=004";
 
-    /**
-     * Test apply a suffix
+    /*
+     * SOH not allowd
      */
     @Test
     public void testd29() {
+        try {
+            sampleRule = "&55 == " + '\u0001' + "? &55=\"FOO\"";
+            rules = new InfixActions(sampleRule);
+            result = rules.transformFIXMsg(TestAssignTerminals.sampleMessageSymSuffix);
+            Assert.fail();
+        } catch (Exception e) {
+        }
+    }
+
+    /**
+     * Test apply a suffix. If 65 exists and country code is US then concatenate
+     * 55 and 65 into 55/65.
+     */
+    @Test
+    public void testd30() {
         try {
             sampleRule = "^&65 && &421==\"US\" ? &55 = &55|\"\\\"|&65;~&65"; // 1
             rules = new InfixActions(sampleRule);
@@ -453,6 +487,110 @@ public class TestAssignTerminals {
             Assert.assertTrue(suffix.isEmpty());
         } catch (Exception e) {
             e.printStackTrace();
+            Assert.fail();
+        }
+    }
+
+    /*
+     * \n not allowd
+     */
+    @Test
+    public void testd31() {
+        try {
+            sampleRule = "&55 == " + '\n' + "? &55=\"FOO\"";
+            rules = new InfixActions(sampleRule);
+            result = rules.transformFIXMsg(TestAssignTerminals.sampleMessageSymSuffix);
+            Assert.fail();
+        } catch (Exception e) {
+        }
+    }
+
+    /*
+     * \r not allowd
+     */
+    @Test
+    public void testd32() {
+        try {
+            sampleRule = "&55 == " + '\r' + "? &55=\"FOO\"";
+            rules = new InfixActions(sampleRule);
+            result = rules.transformFIXMsg(TestAssignTerminals.sampleMessageSymSuffix);
+            Assert.fail();
+        } catch (Exception e) {
+        }
+    }
+
+    /*
+     * \r not allowd
+     */
+    @Test
+    public void testd32a() {
+        try {
+            sampleRule = "&55 == \"\n\" ? &55=\"FOO\" : &55=\"BAR\"";
+            rules = new InfixActions(sampleRule);
+            result = rules.transformFIXMsg(TestAssignTerminals.sampleMessageSymSuffix);
+            Assert.fail();
+        } catch (Exception e) {
+        }
+    }
+
+    /*
+     * \r not allowd
+     */
+    @Test
+    public void testd32b() {
+        try {
+            sampleRule = "&55 == \"\r\" ? &55=\"FOO\" : &55=\"BAR\"";
+            rules = new InfixActions(sampleRule);
+            result = rules.transformFIXMsg(TestAssignTerminals.sampleMessageSymSuffix);
+            Assert.fail();
+        } catch (Exception e) {
+        }
+    }
+
+    /*
+     * \t ok
+     */
+    @Test
+    public void testd33() {
+        try {
+            sampleRule = "&55 == \"\t\" ? &55=\"FOO\" : &55=\"BAR\"";
+            rules = new InfixActions(sampleRule);
+            result = rules.transformFIXMsg(TestAssignTerminals.sampleMessageSymSuffix);
+            resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertEquals("BAR", resultStore.get(55).get(0));
+        } catch (Exception e) {
+            Assert.fail();
+        }
+    }
+
+    /*
+     * \t ok
+     */
+    @Test
+    public void testd33a() {
+        try {
+            sampleRule = "&55 != \"\t\" ? &55=\"FOO\" : &55=\"BAR\"";
+            rules = new InfixActions(sampleRule);
+            result = rules.transformFIXMsg(TestAssignTerminals.sampleMessageSymSuffix);
+            resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertEquals("FOO", resultStore.get(55).get(0));
+        } catch (Exception e) {
+            Assert.fail();
+        }
+    }
+
+    /*
+     * \t ok
+     */
+    @Test
+    public void testd34() {
+        try {
+            sampleRule = "&55 != \"FOO\" ? &55=\"\\\"";
+            rules = new InfixActions(sampleRule);
+            result = rules.transformFIXMsg(TestAssignTerminals.sampleMessageSymSuffix);
+            resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertEquals("\\", resultStore.get(55).get(0));
+        } catch (Exception e) {
             Assert.fail();
         }
     }

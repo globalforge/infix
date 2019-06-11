@@ -199,7 +199,6 @@ public class TestIsNotEqual {
             sampleRule = "&49!=\"\" ? &382[0]->&655=\"FOO\" : &382[0]->&655=\"BAR\"";
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestIsNotEqual.sampleMessage1);
-            Assert.fail();
             resultStore = StaticTestingUtils.parseMessage(result);
             Assert.assertEquals("FOO", resultStore.get(655).get(0));
         } catch (Exception e) {

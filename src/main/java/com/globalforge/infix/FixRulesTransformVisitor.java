@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
+import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.globalforge.infix.antlr.FixRulesBaseVisitor;
@@ -59,6 +60,8 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     final static Logger log = LoggerFactory.getLogger(FixRulesTransformVisitor.class);
     private static final int LEFT = 0;
     private static final int RIGHT = 1;
+    private static final String SINGLE_QUOTE = "\"";
+    private static final String ESCAPED_QUOTE = "\\\\\"";
     private FixMessageMgr msgMgr = null;
     private final SimpleDateFormat datetime = new SimpleDateFormat("yyyyMMdd-HH:mm:ss.SSS");
     private final SimpleDateFormat date = new SimpleDateFormat("yyyyMMdd");
@@ -66,6 +69,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     private final Stack<Boolean> conditionalStack = new Stack<>();
     private final String tag8Value;
     private String tagParseCtx = "";
+    private Pattern escPattern = Pattern.compile(ESCAPED_QUOTE);
 
     /**
      * Initialize the rule engine with a Fix input string.
@@ -73,8 +77,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      * @param fixMsg The input message
      */
     public FixRulesTransformVisitor(String fixMsg) {
-        this.fixMessage = fixMsg;
-        this.tag8Value = null;
+        this(fixMsg, null);
     }
 
     /**
@@ -304,14 +307,20 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      */
     @Override
     public String visitVal(FixRulesParser.ValContext ctx) {
-        return removeQuotes(ctx.VAL().getText());
+        return removeSpecialChars(ctx.VAL().getText());
     }
 
     /**
-     * Strips the quotes off of a String value in rule syntax.
+     * Strips the quotes off of a String value in rule syntax. <code>
+     *    1. &49="FOO"     = 49=FOO
+     *    2. &49=""FOO""   = &49="FOO"
+     *    3. &49="FO\"O"   = &49="FO"O"
+     * </code>
      */
-    private String removeQuotes(String value) {
-        return value.substring(1, value.length() - 1); // remove the quotes
+    private String removeSpecialChars(String value) {
+        String r = value.substring(1, value.length() - 1); // remove the quotes
+        r = escPattern.matcher(r).replaceAll(SINGLE_QUOTE);
+        return r;
     }
 
     /**
@@ -800,7 +809,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     @Override
     public String visitSplit(FixRulesParser.SplitContext ctx) {
         List<TagContext> tagList = ctx.tag();
-        String regex = removeQuotes(ctx.regex.getText());
+        String regex = removeSpecialChars(ctx.regex.getText());
         TagContext sourceTagCtx = ctx.sourceTag;
         visit(sourceTagCtx);
         String sourceTag = tagParseCtx;

@@ -137,7 +137,11 @@ OR              : '||' ;
 REF             : '->' ;
 DATETIME        : '<DATETIME>' ;
 DATE            : '<DATE>' ;
-VAL             : ('"' ('""'|~'"')+  '"') ;
+//VAL             : ('"' ('\\"'|~'"')+  '"') ;
+//VAL         	: '"' (~('"' | '\\' | '\r' | '\n' | '\u0001') | '\\' ('"' | '\\'))* '"' ;
+//                 Any char other than quote, CR, LF or SOH
+//                 but quote ok if escaped with backslash.
+VAL         	: '"' (~('"' | '\r' | '\n' | '\u0001') | '\\' ('"'))* '"' ; 
 WS              : [\t\r\n ]+ -> skip ;
 INT             : DIGIT+ ;
 FLOAT           : MINUS? INT+ '.' DIGIT+
@@ -156,5 +160,3 @@ fragment
 JavaIDDigit
     :  '\u0030'..'\u0039'      // 0-9
     ;
-
-

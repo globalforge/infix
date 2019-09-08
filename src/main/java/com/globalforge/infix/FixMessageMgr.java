@@ -292,8 +292,6 @@ public class FixMessageMgr {
      * Infix context
      */
     void putContext(String ctx, String tagVal) {
-        // if (ctx.contains("&")) { throw new RuntimeException("Don't use '&' in
-        // context key!"); }
         InfixFieldInfo fldPos = msgMap.get(ctx);
         if (fldPos != null) {
             msgMap.put(ctx, new InfixFieldInfo(fldPos.getField().getTagNum() + "", tagVal,

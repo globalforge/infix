@@ -6,7 +6,7 @@ Author: Michael C. Starkie
 /*
  The MIT License (MIT)
 
- Copyright (c) 2016 Global Forge LLC
+ Copyright (c) 2019 - 2020 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -34,6 +34,7 @@ parseRules      :   fixrules;
 fixrules        :   action (';' action)* ';'? ;
 
 action          :   rvalue | conditional | function;
+
 rvalue          :   assign | exchange | unary | userdef | '(' conditional ')' ;
 
 conditional     :   iff then (els)? ;
@@ -72,6 +73,7 @@ expr            :   expr op=(MUL|DIV) expr      # MulDiv
                 |   expr CT expr                # Cat
                 |   terminal                    # Term
                 |   template                    # AutoGen
+                |   function					# Func
                 |   '(' expr ')'                # Parens
                 ;
 
@@ -137,17 +139,15 @@ OR              : '||' ;
 REF             : '->' ;
 DATETIME        : '<DATETIME>' ;
 DATE            : '<DATE>' ;
-//VAL             : ('"' ('\\"'|~'"')+  '"') ;
-//VAL         	: '"' (~('"' | '\\' | '\r' | '\n' | '\u0001') | '\\' ('"' | '\\'))* '"' ;
-//                 Any char other than quote, CR, LF or SOH
-//                 but quote ok if escaped with backslash.
-VAL         	: '"' (~('"' | '\r' | '\n' | '\u0001') | '\\' ('"'))* '"' ; 
+//                Any char other than quote or SOH but quote ok if escaped with backslash.
+VAL				: '"' (~('"' | '\u0001') | ESC)* '"' ;
+fragment ESC    : '\\' ["] ;
 WS              : [\t\r\n ]+ -> skip ;
 INT             : DIGIT+ ;
 FLOAT           : MINUS? INT+ '.' DIGIT+
                 | '.' DIGIT+
                 ;
-DIGIT           :  [0-9] ;
+fragment DIGIT  :  [0-9] ;
 fragment
 Letter
     :  '\u0024' |              // $

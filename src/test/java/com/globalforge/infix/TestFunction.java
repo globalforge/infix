@@ -128,4 +128,21 @@ public class TestFunction {
             Assert.fail();
         }
     }
+
+    @Test
+    public void testSplit6() {
+        try {
+            String sampleRule = "&42=split(&56, \" \", &55)";
+            InfixActions rules = new InfixActions(sampleRule);
+            String result = rules.transformFIXMsg(sampleMessage);
+            ListMultimap<Integer, String> resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertEquals(resultStore.get(55).get(0), "BRK");
+            Assert.assertTrue(resultStore.get(65).isEmpty());
+            // split() doesn't return anything
+            Assert.assertTrue(resultStore.get(42).isEmpty());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
 }

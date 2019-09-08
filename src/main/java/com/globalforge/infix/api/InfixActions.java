@@ -7,6 +7,8 @@ import java.io.UnsupportedEncodingException;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.DiagnosticErrorListener;
+import org.antlr.v4.runtime.atn.PredictionMode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import com.globalforge.infix.FixRulesErrorStrategy;
 import com.globalforge.infix.FixRulesLexerErrorListener;
@@ -65,12 +67,14 @@ public class InfixActions {
         input = CharStreams.fromStream(ruleInput);
         lexer = new FixRulesLexer(input);
         lexer.removeErrorListeners();
-        lexer.addErrorListener(FixRulesLexerErrorListener.INSTANCE);
+        lexer.addErrorListener(FixRulesLexerErrorListener.getInstance());
         tokens = new CommonTokenStream(lexer);
         parser = new FixRulesParser(tokens);
         parser.removeErrorListeners();
-        parser.addErrorListener(FixRulesParserErrorListener.INSTANCE);
+        parser.addErrorListener(FixRulesParserErrorListener.getInstance());
         parser.setErrorHandler(new FixRulesErrorStrategy());
+        parser.getInterpreter().setPredictionMode(PredictionMode.LL_EXACT_AMBIG_DETECTION);
+        parser.addErrorListener(new DiagnosticErrorListener());
         parseRules();
     }
 

@@ -95,14 +95,15 @@ public class TestExprGroupAdd {
         + '\u0001' + "45=0" + '\u0001' + "382=2" + '\u0001' + "375=1.3" + '\u0001' + "337=eb8cd"
         + '\u0001' + "375=2" + '\u0001' + "337=8dhosb" + '\u0001' + "10=004";
 
+    /* FAIL with parser error but no way to test */
     @Test
     public void testADD1dot4() {
         try {
             sampleRule = "&375[2]=&382+1";
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestExprGroupAdd.sampleMessage1);
-            Assert.fail();
         } catch (Exception e) {
+            Assert.fail();
         }
     }
 
@@ -336,36 +337,39 @@ public class TestExprGroupAdd {
         }
     }
 
+    /* FAIL with parser error but no way to test */
     @Test
     public void testADD15() {
         try {
             sampleRule = "&375";
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestExprGroupAdd.sampleMessage1);
-            Assert.fail();
         } catch (Exception e) {
+            Assert.fail();
         }
     }
 
+    /* FAIL with parser error but no way to test */
     @Test
     public void testADD16() {
         try {
             sampleRule = "375";
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestExprGroupAdd.sampleMessage1);
-            Assert.fail();
         } catch (Exception e) {
+            Assert.fail();
         }
     }
 
+    /* FAIL with parser error but no way to test */
     @Test
     public void testADD17() {
         try {
             sampleRule = "375=&44";
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestExprGroupAdd.sampleMessage1);
-            Assert.fail();
         } catch (Exception e) {
+            Assert.fail();
         }
     }
 }

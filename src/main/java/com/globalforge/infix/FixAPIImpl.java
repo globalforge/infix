@@ -31,6 +31,7 @@ import com.globalforge.infix.api.InfixFieldInfo;
 /**
  * Implementation of an API allowing a user a handle into the internal engine
  * during a rule parse.
+ * 
  * @see InfixAPI
  * @author Michael C. Starkie
  */
@@ -43,6 +44,7 @@ class FixAPIImpl implements InfixAPI {
 
     /**
      * Remove a fix context from memory during rule parse.
+     * 
      * @see InfixAPI#removeContext(String)
      */
     @Override
@@ -53,6 +55,7 @@ class FixAPIImpl implements InfixAPI {
     /**
      * Insert a fix context into memory during a rule parse. FixVersion and
      * MsgType are not permitted to be modified.
+     * 
      * @see InfixAPI#putContext(String, String)
      */
     @Override
@@ -68,6 +71,7 @@ class FixAPIImpl implements InfixAPI {
      * Insert fix fields into the parsed message. Keys are tag numbers in rule
      * syntax and values are the tag values associated with the keys. This
      * method will replace any fields already parsed.
+     * 
      * @see InfixAPI#putMessageDict(Map)
      * @param msgDict Map<String, String> The fix fields to insert in the form
      * of a dictionary of tag numbers in rule syntax to tag values.
@@ -91,6 +95,7 @@ class FixAPIImpl implements InfixAPI {
 
     /**
      * Obtain the fix data associated with a fix context.
+     * 
      * @see InfixAPI#getContext(String)
      */
     @Override
@@ -101,6 +106,7 @@ class FixAPIImpl implements InfixAPI {
     /**
      * Obtain a fully formatted fix message representing the memory state as it
      * currently exists during a rule parse.
+     * 
      * @see InfixAPI#getMessage()
      */
     @Override
@@ -110,6 +116,7 @@ class FixAPIImpl implements InfixAPI {
 
     /**
      * Obtain the mutable message dictionary
+     * 
      * @return Map<String, InfixFieldInfo>
      */
     @Override

@@ -181,8 +181,10 @@ public class TestAssignGroupTerminals {
             sampleRule = "&375[2]=1";
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestAssignGroupTerminals.sampleMessage1);
-            Assert.fail();
+            resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertEquals(resultStore.get(375).get(1), "BAR"); // failure
         } catch (Exception e) {
+            e.printStackTrace();
             Assert.assertNull(resultStore);
         }
     }
@@ -232,7 +234,7 @@ public class TestAssignGroupTerminals {
             sampleRule = "&375[2]=.48797209745700345";
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestAssignGroupTerminals.sampleMessage1);
-            Assert.fail();
+            Assert.assertNull(resultStore.get(375).get(2));
         } catch (Exception e) {
         }
     }

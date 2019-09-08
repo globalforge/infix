@@ -4,9 +4,11 @@ import java.util.Collections;
 import java.util.List;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CommonToken;
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
+import org.antlr.v4.runtime.Token;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,13 +38,22 @@ import org.slf4j.LoggerFactory;
 /**
  * Extension of antlr bases class allowing for more control over parser error
  * reporting.
+ * 
  * @see BaseErrorListener
  * @author Michael
  */
 public class FixRulesParserErrorListener extends BaseErrorListener {
     /** logger */
     final static Logger logger = LoggerFactory.getLogger(FixRulesParserErrorListener.class);
-    public static final FixRulesParserErrorListener INSTANCE = new FixRulesParserErrorListener();
+    private static final FixRulesParserErrorListener instance = new FixRulesParserErrorListener();
+
+    public static FixRulesParserErrorListener getInstance() {
+        return instance;
+    }
+
+    private FixRulesParserErrorListener() {
+        super();
+    }
 
     /**
      * @see BaseErrorListener#reportAmbiguity
@@ -52,9 +63,9 @@ public class FixRulesParserErrorListener extends BaseErrorListener {
         int charPositionInLine, String msg, RecognitionException e) {
         List<String> stack = ((Parser) recognizer).getRuleInvocationStack();
         Collections.reverse(stack);
-        String logMsg = "Parser ERROR: line " + line + ":" + charPositionInLine + " at "
-            + offendingSymbol + ": " + msg;
         CommonToken tok = (CommonToken) offendingSymbol;
+        String logMsg = "INFIX ERROR [Parser]: line " + line + ":" + charPositionInLine + " at "
+            + tok + ": " + msg;
         String s = tok.getText();
         logMsg += ": offending token " + s;
         if (s.equals("<EOF>")) {
@@ -66,7 +77,32 @@ public class FixRulesParserErrorListener extends BaseErrorListener {
                 logMsg += " not a number. ";
             }
         }
-        FixRulesParserErrorListener.logger.error(logMsg + " Tree = {}", stack);
-        throw new RuntimeException(logMsg);
+        logger.error(logMsg + " Tree = {}", stack);
+        underlineError(recognizer, (Token) offendingSymbol, line, charPositionInLine);
+        logger.error("INFIX STACK", new Throwable());
+    }
+
+    public static void underlineError(Recognizer<?, ?> recognizer, Token offendingToken, int line,
+        int charPositionInLine) {
+        CommonTokenStream tokens = (CommonTokenStream) recognizer.getInputStream();
+        String input = tokens.getTokenSource().getInputStream().toString();
+        String[] lines = input.split("\n");
+        String errorLine = lines[line - 1];
+        // System.err.println(errorLine);
+        StringBuilder buf = new StringBuilder();
+        for (int i = 0; i < charPositionInLine; i++) {
+            // System.err.print(" ");
+            buf.append('-');
+        }
+        int start = offendingToken.getStartIndex();
+        int stop = offendingToken.getStopIndex();
+        if (start >= 0 && stop >= 0) {
+            int diff = Math.abs(stop - start);
+            for (int i = 0; i <= diff; i++) {
+                buf.append('^');
+            }
+        }
+        logger.error("INFIX LOOK HERE: " + errorLine);
+        logger.error("INFIX LOOK HERE: " + buf.toString());
     }
 }

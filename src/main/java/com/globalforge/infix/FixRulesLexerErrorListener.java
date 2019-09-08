@@ -1,8 +1,12 @@
 package com.globalforge.infix;
 
+import java.util.Collections;
+import java.util.List;
 import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
+import org.antlr.v4.runtime.Token;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,13 +36,22 @@ import org.slf4j.LoggerFactory;
 /**
  * Extension of base lexer error listener allowing for more details error
  * reporting.
+ * 
  * @see BaseErrorListener
  * @author Michael C. Starkie
  */
 public class FixRulesLexerErrorListener extends BaseErrorListener {
     /** logger */
     final static Logger logger = LoggerFactory.getLogger(FixRulesLexerErrorListener.class);
-    public static final FixRulesLexerErrorListener INSTANCE = new FixRulesLexerErrorListener();
+    private static final FixRulesLexerErrorListener instance = new FixRulesLexerErrorListener();
+
+    private FixRulesLexerErrorListener() {
+        super();
+    }
+
+    public static FixRulesLexerErrorListener getInstance() {
+        return instance;
+    }
 
     /**
      * @see BaseErrorListener#syntaxError
@@ -46,13 +59,18 @@ public class FixRulesLexerErrorListener extends BaseErrorListener {
     @Override
     public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
         int charPositionInLine, String msg, RecognitionException e) {
-        String logMsg = "Lexer ERROR: line " + line + ":" + charPositionInLine + " at "
+        String logMsg = "INFIX ERROR [Lexer]: line " + line + ":" + charPositionInLine + " at "
             + offendingSymbol + ": " + msg;
         String sourceName = recognizer.getInputStream().getSourceName();
+        List<String> stack = ((Parser) recognizer).getRuleInvocationStack();
+        Collections.reverse(stack);
+        System.err.println("rule stack: " + stack);
         if ((sourceName != null) && !sourceName.isEmpty()) {
             logMsg = String.format(logMsg + ": sourceName: " + sourceName);
         }
-        FixRulesLexerErrorListener.logger.error(logMsg);
-        throw new RuntimeException(logMsg);
+        logger.error(logMsg);
+        FixRulesParserErrorListener.underlineError(recognizer, (Token) offendingSymbol, line,
+            charPositionInLine);
+        logger.warn("STACK TRACE", new Throwable());
     }
 }

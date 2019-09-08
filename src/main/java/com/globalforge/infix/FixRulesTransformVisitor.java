@@ -62,14 +62,14 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     private static final int RIGHT = 1;
     private static final String SINGLE_QUOTE = "\"";
     private static final String ESCAPED_QUOTE = "\\\\\"";
-    private FixMessageMgr msgMgr = null;
     private final SimpleDateFormat datetime = new SimpleDateFormat("yyyyMMdd-HH:mm:ss.SSS");
     private final SimpleDateFormat date = new SimpleDateFormat("yyyyMMdd");
     private final String fixMessage;
     private final Stack<Boolean> conditionalStack = new Stack<>();
     private final String tag8Value;
+    private final Pattern escPattern = Pattern.compile(ESCAPED_QUOTE);
+    private FixMessageMgr msgMgr = null;
     private String tagParseCtx = "";
-    private Pattern escPattern = Pattern.compile(ESCAPED_QUOTE);
 
     /**
      * Initialize the rule engine with a Fix input string.
@@ -359,8 +359,8 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         // get value of right subexpression
         String right = visit(ctx.expr(FixRulesTransformVisitor.RIGHT));
         if ((left == null) || (right == null)) {
-            FixRulesTransformVisitor.log.warn("null field in 'Add/Sub'. No assignment: {}",
-                ctx.getText());
+            FixRulesTransformVisitor.log
+                .error("INFIX ERROR: null field in 'Add/Sub'. No assignment: {}", ctx.getText());
             return null;
         }
         BigDecimal result = null;
@@ -387,8 +387,8 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         // get value of right subexpression
         String right = visit(ctx.expr(FixRulesTransformVisitor.RIGHT));
         if ((left == null) || (right == null)) {
-            FixRulesTransformVisitor.log.warn("null field in 'Mul/Div'. No assignment: {}",
-                ctx.getText());
+            FixRulesTransformVisitor.log
+                .error("INFIX ERROR: null field in 'Mul/Div'. No assignment: {}", ctx.getText());
             return null;
         }
         BigDecimal result = null;
@@ -413,7 +413,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
         // get value of right subexpression
         String right = visit(ctx.expr(FixRulesTransformVisitor.RIGHT));
         if ((left == null) || (right == null)) {
-            FixRulesTransformVisitor.log.warn("null field in '|'. No assignment: {}",
+            FixRulesTransformVisitor.log.error("INFIX ERROR: null field in '|'. No assignment: {}",
                 ctx.getText());
             return null;
         }
@@ -633,12 +633,11 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
      */
     @Override
     public String visitConditional(FixRulesParser.ConditionalContext ctx) {
-        // String iff = ctx.iff().getText();
-        // String then = ctx.then().getText();
-        // String els = ctx.els().getText();
         conditionalStack.push(false);
         visitChildren(ctx);
-        // isStatementTrue = false;
+        // IffContext iff = ctx.iff();
+        // ThenContext then = ctx.then();
+        // ElsContext els = ctx.els();
         conditionalStack.pop();
         return null;
     }
@@ -830,8 +829,8 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
             if (i <= splitResult.length) {
                 msgMgr.putContext(destTag, splitResult[i - 1]);
             } else {
-                log.warn(
-                    "function::split() given too many result tags. Some tags omitted from result.");
+                log.error(
+                    "INFIX ERROR: function::split() given too many result tags. Some tags omitted from result.");
             }
         }
         return visitChildren(ctx);

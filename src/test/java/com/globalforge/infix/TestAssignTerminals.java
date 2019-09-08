@@ -66,16 +66,6 @@ public class TestAssignTerminals {
         + '\u0001' + "79=BAR" + '\u0001' + "80=8dhosb" + '\u0001' + "10=004";
 
     @Test
-    public void testTagNonNumeric1() {
-        try {
-            sampleRule = "&BAR=\"D\"";
-            rules = new InfixActions(sampleRule);
-            Assert.fail();
-        } catch (Exception e) {
-        }
-    }
-
-    @Test
     public void testTagNonNumeric2() {
         try {
             sampleRule = "&43=\"NNT2\"";
@@ -411,14 +401,14 @@ public class TestAssignTerminals {
             Assert.fail();
         }
     }
-    static final String sampleMessage1 = "8=FIX.4.4" + '\u0001' + "9=1042" + '\u0001' + "35=D"
+    static final String sampleMessage1 = "8=FIX.4.4" + '\u0001' + "9=76" + '\u0001' + "35=D"
         + '\u0001' + "44=3.142" + '\u0001' + "43=-1" + '\u0001' + "-43=-1" + '\u0001' + "-44=1"
         + '\u0001' + "45=0" + '\u0001' + "78=2" + '\u0001' + "79=FOO" + '\u0001' + "80=eb8cd"
         + '\u0001' + "79=BAR" + '\u0001' + "80=8dhosb" + '\u0001' + "10=004";
     static final String sampleMessageAI = "8=FIX.4.4" + '\u0001' + "9=1042" + '\u0001' + "35=AI"
         + '\u0001' + "44=3.142" + '\u0001' + "43=-1" + '\u0001' + "-43=-1" + '\u0001' + "-44=1"
         + '\u0001' + "45=0" + '\u0001' + "78=2" + '\u0001' + "79=FOO" + '\u0001' + "80=eb8cd"
-        + '\u0001' + "79=BAR" + '\u0001' + "80=8dhosb" + '\u0001' + "10=004";
+        + '\u0001' + "79=BAR" + '\u0001' + "80=8dhosb" + '\u0001' + "10=233";
 
     @Test
     public void t27() {
@@ -440,14 +430,16 @@ public class TestAssignTerminals {
         }
     }
 
+    /* fail so assert no change */
     @Test
     public void testd28() {
         try {
             sampleRule = "&43="; // 1
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestAssignTerminals.sampleMessage1);
-            // resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.fail();
+            resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertEquals("-1", resultStore.get(43).get(0));
+            // Assert.fail();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -500,7 +492,8 @@ public class TestAssignTerminals {
             sampleRule = "&55 == " + '\n' + "? &55=\"FOO\"";
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestAssignTerminals.sampleMessageSymSuffix);
-            Assert.fail();
+            Assert.assertEquals(resultStore.get(55).get(0), "ACL"); // rule
+                                                                    // failure
         } catch (Exception e) {
         }
     }
@@ -514,7 +507,8 @@ public class TestAssignTerminals {
             sampleRule = "&55 == " + '\r' + "? &55=\"FOO\"";
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestAssignTerminals.sampleMessageSymSuffix);
-            Assert.fail();
+            Assert.assertEquals(resultStore.get(55).get(0), "ACL"); // rule
+                                                                    // failure
         } catch (Exception e) {
         }
     }
@@ -528,8 +522,10 @@ public class TestAssignTerminals {
             sampleRule = "&55 == \"\n\" ? &55=\"FOO\" : &55=\"BAR\"";
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestAssignTerminals.sampleMessageSymSuffix);
-            Assert.fail();
+            resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertEquals("BAR", resultStore.get(55).get(0));
         } catch (Exception e) {
+            Assert.fail();
         }
     }
 
@@ -542,8 +538,8 @@ public class TestAssignTerminals {
             sampleRule = "&55 == \"\r\" ? &55=\"FOO\" : &55=\"BAR\"";
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestAssignTerminals.sampleMessageSymSuffix);
-            Assert.fail();
         } catch (Exception e) {
+            Assert.fail();
         }
     }
 

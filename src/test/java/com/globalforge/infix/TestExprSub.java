@@ -29,12 +29,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 public class TestExprSub {
-    static final String sampleMessage1 =
-        "8=FIX.4.4" + '\u0001' + "9=1000" + '\u0001' + "35=8" + '\u0001' + "-14=2" + '\u0001'
-            + "14=-2" + '\u0001' + "43=-1" + '\u0001' + "-43=-1" + '\u0001' + "-44=1" + '\u0001'
-            + "44=3.142" + '\u0001' + "60=20130412-19:30:00.686" + '\u0001' + "75=20130412"
-            + '\u0001' + "45=0" + '\u0001' + "382=2" + '\u0001' + "375=FOO" + '\u0001' + "337=eb8cd"
-            + '\u0001' + "375=BAR" + '\u0001' + "337=8dhosb" + '\u0001' + "10=004";
     static StaticTestingUtils msgStore = null;
     InfixActions rules = null;
     String sampleRule = null;
@@ -49,6 +43,50 @@ public class TestExprSub {
             result = rules.transformFIXMsg(TestExprSub.sampleMessage1);
             resultStore = StaticTestingUtils.parseMessage(result);
             Assert.assertEquals(resultStore.get(45).get(0), "-1");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testSUBdec() {
+        try {
+            // 211 = -0.01 - 0.01
+            sampleRule = "&211=&211-(0.01)";
+            rules = new InfixActions(sampleRule);
+            result = rules.transformFIXMsg(TestExprSub.sampleMessage1);
+            resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertEquals(resultStore.get(211).get(0), "-0.02");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testSUBdec2() {
+        try {
+            sampleRule = "&212=&212-(0.01)";
+            rules = new InfixActions(sampleRule);
+            result = rules.transformFIXMsg(TestExprSub.sampleMessage1);
+            resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertEquals(resultStore.get(212).get(0), "0.00");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testSUBdec3() {
+        try {
+            // 212 = 0.01 - (-0.01)
+            sampleRule = "&212=&212-(-0.01)";
+            rules = new InfixActions(sampleRule);
+            result = rules.transformFIXMsg(TestExprSub.sampleMessage1);
+            resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertEquals(resultStore.get(212).get(0), "0.02");
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();
@@ -134,15 +172,37 @@ public class TestExprSub {
         } catch (Exception e) {
         }
     }
+    static final String sampleMessage1 = "8=FIX.4.4" + '\u0001' + "9=1000" + '\u0001' + "35=8"
+        + '\u0001' + "-14=2" + '\u0001' + "14=-2" + '\u0001' + "43=-1" + '\u0001' + "-43=-1"
+        + '\u0001' + "-44=1" + '\u0001' + "44=3.142" + '\u0001' + "60=20130412-19:30:00.686"
+        + '\u0001' + "75=20130412" + '\u0001' + "45=0" + '\u0001' + "211=-0.01" + '\u0001'
+        + "212=0.01" + '\u0001' + "382=2" + '\u0001' + "375=FOO" + '\u0001' + "337=eb8cd" + '\u0001'
+        + "375=BAR" + '\u0001' + "337=8dhosb" + '\u0001' + "10=004";
 
     @Test
     public void testSUB8() {
         try {
+            // &45 = (2 - 3.142) - 1000 = -1001.142
             sampleRule = "&45=&382 - &44 - &9";
             rules = new InfixActions(sampleRule);
             result = rules.transformFIXMsg(TestExprSub.sampleMessage1);
             resultStore = StaticTestingUtils.parseMessage(result);
             Assert.assertEquals(resultStore.get(45).get(0), "-1001.142");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testSUB88() {
+        try {
+            // &45 = 2 - (3.142 - 1000) = 998.858
+            sampleRule = "&45=&382 - (&44 - &9)";
+            rules = new InfixActions(sampleRule);
+            result = rules.transformFIXMsg(TestExprSub.sampleMessage1);
+            resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertEquals(resultStore.get(45).get(0), "998.858");
         } catch (Exception e) {
             e.printStackTrace();
             Assert.fail();

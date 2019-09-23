@@ -68,13 +68,14 @@ unary           :   DEL tg=tag                          #DeleteTag
                 |   ADD '&[' (tagnum ',')* tagnum ']'   #KeepTagSet
                 ;
 
-expr            :   expr op=(MUL|DIV) expr      # MulDiv
-                |   expr op=(ADD|MINUS) expr    # AddSub
-                |   expr CT expr                # Cat
-                |   terminal                    # Term
-                |   template                    # AutoGen
-                |   function					# Func
-                |   '(' expr ')'                # Parens
+expr            :   expr op=(MUL|DIV) expr       # MulDiv
+                |   expr ADD expr        		 # Add
+                |   expr MINUS expr      		 # Sub
+                |   expr CT expr                 # Cat
+                |   terminal                     # Term
+                |   template                     # AutoGen
+                |   function					 # Func
+                |   '(' expr ')'                 # Parens
                 ;
 
 function		:	split	;

@@ -172,11 +172,6 @@ public class TestExprAdd {
             Assert.fail();
         }
     }
-    static final String sampleMessage1 = "8=FIX.4.4" + '\u0001' + "9=1000" + '\u0001' + "35=8"
-        + '\u0001' + "43=-1" + '\u0001' + "-43=-1" + '\u0001' + "-44=1" + '\u0001' + "44=3.142"
-        + '\u0001' + "60=20130412-19:30:00.686" + '\u0001' + "75=20130412" + '\u0001' + "45=0"
-        + '\u0001' + "382=2" + '\u0001' + "375=FOO" + '\u0001' + "337=eb8cd" + '\u0001' + "375=BAR"
-        + '\u0001' + "337=8dhosb" + '\u0001' + "10=004";
 
     @Test
     public void testADD11() {
@@ -350,6 +345,25 @@ public class TestExprAdd {
             resultStore = StaticTestingUtils.parseMessage(result);
             Assert.fail();
         } catch (Exception e) {
+        }
+    }
+    static final String sampleMessage1 = "8=FIX.4.4" + '\u0001' + "9=1000" + '\u0001' + "35=8"
+        + '\u0001' + "43=-1" + '\u0001' + "-43=-1" + '\u0001' + "-44=1" + '\u0001' + "44=3.142"
+        + '\u0001' + "60=20130412-19:30:00.686" + '\u0001' + "75=20130412" + '\u0001' + "45=0"
+        + '\u0001' + "382=2" + '\u0001' + "375=FOO" + '\u0001' + "337=eb8cd" + '\u0001' + "375=BAR"
+        + '\u0001' + "337=8dhosb" + '\u0001' + "10=004";
+
+    @Test
+    public void testExprA1() {
+        try {
+            sampleRule = "&45=&45+0.01"; //
+            rules = new InfixActions(sampleRule);
+            result = rules.transformFIXMsg(TestExprAdd.sampleMessage1);
+            resultStore = StaticTestingUtils.parseMessage(result);
+            Assert.assertEquals("0.01", resultStore.get(45).get(0));
+        } catch (Exception e) {
+            Assert.fail();
+            e.printStackTrace();
         }
     }
 }

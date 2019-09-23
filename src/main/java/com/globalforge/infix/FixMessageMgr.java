@@ -229,7 +229,7 @@ public class FixMessageMgr {
         try {
             tagNum = Integer.parseInt(tagStr);
         } catch (NumberFormatException e) {
-            FixMessageMgr.logger.warn("Dropping non-numeric tag number: [" + tagNum + "]");
+            FixMessageMgr.logger.warn("Dropping non-numeric tag: [" + tagStr + "]");
             return;
         }
         putField(tagNum, tagVal);

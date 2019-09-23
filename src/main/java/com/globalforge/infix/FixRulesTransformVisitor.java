@@ -346,29 +346,48 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     }
 
     /**
-     * Perform addition and subtraction on operands in rule syntax.
+     * Perform addition on operands in rule syntax.
      *
-     * @return String the result of an addition or subtraction of two operands
-     * depending upon the context.
-     * @see FixRulesParser.AddSubContext
+     * @return String the result of an addition of two operands depending upon
+     * the context.
+     * @see FixRulesParser.AddContext
      */
     @Override
-    public String visitAddSub(FixRulesParser.AddSubContext ctx) {
+    public String visitAdd(FixRulesParser.AddContext ctx) {
         // get value of left subexpression
         String left = visit(ctx.expr(FixRulesTransformVisitor.LEFT));
         // get value of right subexpression
         String right = visit(ctx.expr(FixRulesTransformVisitor.RIGHT));
         if ((left == null) || (right == null)) {
             FixRulesTransformVisitor.log
-                .error("INFIX ERROR: null field in 'Add/Sub'. No assignment: {}", ctx.getText());
+                .error("INFIX ERROR: null field in 'Add'. No assignment: {}", ctx.getText());
             return null;
         }
         BigDecimal result = null;
-        if (ctx.op.getType() == FixRulesParser.ADD) {
-            result = new BigDecimal(left).add(new BigDecimal(right), MathContext.DECIMAL32);
-        } else {
-            result = new BigDecimal(left).subtract(new BigDecimal(right), MathContext.DECIMAL32);
+        result = new BigDecimal(left).add(new BigDecimal(right), MathContext.DECIMAL32);
+        return result.toString();
+    }
+
+    /**
+     * Perform subtraction on operands in rule syntax.
+     *
+     * @return String the result of a subtraction of two operands depending upon
+     * the context.
+     * @see FixRulesParser.SubContext
+     */
+    @Override
+    public String visitSub(FixRulesParser.SubContext ctx) {
+        // get value of left subexpression
+        String left = visit(ctx.expr(FixRulesTransformVisitor.LEFT));
+        // get value of right subexpression
+        String right = visit(ctx.expr(FixRulesTransformVisitor.RIGHT));
+        if ((left == null) || (right == null)) {
+            FixRulesTransformVisitor.log
+                .error("INFIX ERROR: null field in 'Add'. No assignment: {}", ctx.getText());
+            return null;
         }
+        BigDecimal result = null;
+        result = new BigDecimal(left).subtract(new BigDecimal(right), MathContext.DECIMAL32);
         return result.toString();
     }
 

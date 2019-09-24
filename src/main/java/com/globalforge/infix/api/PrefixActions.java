@@ -4,18 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.DiagnosticErrorListener;
-import org.antlr.v4.runtime.atn.PredictionMode;
-import org.antlr.v4.runtime.tree.ParseTree;
-import com.globalforge.infix.FixRulesErrorStrategy;
-import com.globalforge.infix.FixRulesLexerErrorListener;
-import com.globalforge.infix.FixRulesParserErrorListener;
 import com.globalforge.infix.FixRulesTransformVisitor;
-import com.globalforge.infix.antlr.FixRulesLexer;
-import com.globalforge.infix.antlr.FixRulesParser;
 
 /*-
  The MIT License (MIT)
@@ -46,36 +35,15 @@ import com.globalforge.infix.antlr.FixRulesParser;
  *
  * @author Michael C. Starkie
  */
-public class InfixActions {
-    // create a CharStream that reads from standard input
-    private CharStream input = null;
-    // create a lexer that feeds off of input CharStream
-    private FixRulesLexer lexer = null;
-    // create a buffer of tokens pulled from the lexer
-    private CommonTokenStream tokens = null;
-    // create a parser that feeds off the tokens buffer
-    private FixRulesParser parser = null;
-    protected ParseTree tree = null;
-
+public class PrefixActions extends InfixActions {
     /**
      * Initialize the engine and runs the engine given a rule or set of rules.
      *
      * @param ruleInput The list of rules
      * @throws IOException When the rule input can not be read.
      */
-    public InfixActions(InputStream ruleInput) throws IOException {
-        input = CharStreams.fromStream(ruleInput);
-        lexer = new FixRulesLexer(input);
-        lexer.removeErrorListeners();
-        lexer.addErrorListener(FixRulesLexerErrorListener.getInstance());
-        tokens = new CommonTokenStream(lexer);
-        parser = new FixRulesParser(tokens);
-        parser.removeErrorListeners();
-        parser.addErrorListener(FixRulesParserErrorListener.getInstance());
-        parser.setErrorHandler(new FixRulesErrorStrategy());
-        parser.getInterpreter().setPredictionMode(PredictionMode.LL_EXACT_AMBIG_DETECTION);
-        parser.addErrorListener(new DiagnosticErrorListener());
-        parseRules();
+    public PrefixActions(InputStream ruleInput) throws IOException {
+        super(ruleInput);
     }
 
     /**
@@ -85,35 +53,8 @@ public class InfixActions {
      * @throws UnsupportedEncodingException
      * @throws IOException
      */
-    public InfixActions(String ruleInput) throws UnsupportedEncodingException, IOException {
+    public PrefixActions(String ruleInput) throws UnsupportedEncodingException, IOException {
         this(new ByteArrayInputStream(ruleInput.getBytes("UTF-8")));
-    }
-
-    /**
-     * An optional method to load classes before parsing rules. This reduces the
-     * time it takes to parse the first rule by loading static data into memory
-     * before any rule processing.
-     *
-     * @param fixVersion The fix version static data to load.
-     */
-    public static void primeEngine(String fixVersion) {
-        if ((fixVersion != null) && !fixVersion.isEmpty()) {
-            try {
-                final String sampleMessage1 = "8=" + fixVersion + '\u0001' + "9=10" + '\u0001'
-                    + "35=8" + '\u0001' + "45=1" + '\u0001' + "10=004";
-                InfixActions rules = new InfixActions("&45=2");
-                rules.transformFIXMsg(sampleMessage1);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * Parses the rules into a syntax tree for debugging.
-     */
-    private void parseRules() {
-        tree = parser.fixrules();
     }
 
     /**
@@ -124,6 +65,7 @@ public class InfixActions {
      * @param printDictionary true if you want a dump of internal dictionaries.
      * @return String the transformed fix message.
      */
+    @Override
     public String transformFIXMsg(String fixMessage, boolean printDictionary) {
         FixRulesTransformVisitor visitor = new FixRulesTransformVisitor(fixMessage);
         String transform = visitor.visit(tree);
@@ -140,6 +82,7 @@ public class InfixActions {
      * @param fixMessage The fix message to transform
      * @return String the transformed fix message.
      */
+    @Override
     public String transformFIXMsg(String fixMessage) {
         FixRulesTransformVisitor visitor = new FixRulesTransformVisitor(fixMessage);
         String result = visitor.visit(tree);
@@ -150,27 +93,10 @@ public class InfixActions {
      * @param tag8Value FIX version
      * @return String the transformed fix message.
      */
+    @Override
     public String transformFIXMsg(String fixMessage, String tag8Value) {
         FixRulesTransformVisitor visitor = new FixRulesTransformVisitor(fixMessage, tag8Value);
         String result = visitor.visit(tree);
         return result;
-    }
-
-    /**
-     * Returns an antlr rule tree for debugging.
-     */
-    @Override
-    public String toString() {
-        return tree.toStringTree(parser); // print LISP-style tree
-    }
-
-    public static void main(String[] args) {
-        try {
-            String sampleRule = "55>=65 && 40<=2 -> 60=\"FOO\"";
-            InfixActions msgHandler = new InfixActions(sampleRule);
-            System.out.println(msgHandler);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

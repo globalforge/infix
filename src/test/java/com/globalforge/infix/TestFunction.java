@@ -3,6 +3,7 @@ package com.globalforge.infix;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import com.globalforge.infix.api.InfixActions;
 import com.google.common.collect.ListMultimap;
 
@@ -30,119 +31,119 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 public class TestFunction {
-    static final String sampleMessage =
-        "8=FIX.4.4" + '\u0001' + "9=1000" + '\u0001' + "35=D" + '\u0001' + "55=BRK/A" + '\u0001'
-            + "56=BRK A" + '\u0001' + "57=BRK/A/B" + '\u0001' + "10=004";
+   static final String sampleMessage =
+      "8=FIX.4.4" + '\u0001' + "9=1000" + '\u0001' + "35=D" + '\u0001' + "55=BRK/A" + '\u0001'
+         + "56=BRK A" + '\u0001' + "57=BRK/A/B" + '\u0001' + "10=004";
 
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-    }
+   @BeforeClass
+   public static void setUpBeforeClass() throws Exception {
+   }
 
-    @Test
-    public void testSplit0() {
-        try {
-            String sampleRule = "split(&55, \"/\", &55, &65)";
-            InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage);
-            ListMultimap<Integer, String> resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals(resultStore.get(55).get(0), "BRK");
-            Assert.assertEquals(resultStore.get(65).get(0), "A");
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-    }
+   @Test
+   public void testSplit0() {
+      try {
+         String sampleRule = "split(&55, \"/\", &55, &65)";
+         InfixActions rules = new InfixActions(sampleRule);
+         String result = rules.transformFIXMsg(sampleMessage);
+         ListMultimap<String, String> resultStore = StaticTestingUtils.parseMessage(result);
+         Assert.assertEquals(resultStore.get("55").get(0), "BRK");
+         Assert.assertEquals(resultStore.get("65").get(0), "A");
+      } catch (Exception e) {
+         e.printStackTrace();
+         Assert.fail();
+      }
+   }
 
-    @Test
-    public void testSplit1() {
-        try {
-            String sampleRule = "split(&56, \" \", &55, &65)";
-            InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage);
-            ListMultimap<Integer, String> resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals(resultStore.get(55).get(0), "BRK");
-            Assert.assertEquals(resultStore.get(65).get(0), "A");
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-    }
+   @Test
+   public void testSplit1() {
+      try {
+         String sampleRule = "split(&56, \" \", &55, &65)";
+         InfixActions rules = new InfixActions(sampleRule);
+         String result = rules.transformFIXMsg(sampleMessage);
+         ListMultimap<String, String> resultStore = StaticTestingUtils.parseMessage(result);
+         Assert.assertEquals(resultStore.get("55").get(0), "BRK");
+         Assert.assertEquals(resultStore.get("65").get(0), "A");
+      } catch (Exception e) {
+         e.printStackTrace();
+         Assert.fail();
+      }
+   }
 
-    @Test
-    public void testSplit2() {
-        try {
-            String sampleRule = "split(&57, \"/\", &58, &59, &61)";
-            InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage);
-            ListMultimap<Integer, String> resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals(resultStore.get(58).get(0), "BRK");
-            Assert.assertEquals(resultStore.get(59).get(0), "A");
-            Assert.assertEquals(resultStore.get(61).get(0), "B");
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-    }
+   @Test
+   public void testSplit2() {
+      try {
+         String sampleRule = "split(&57, \"/\", &58, &59, &61)";
+         InfixActions rules = new InfixActions(sampleRule);
+         String result = rules.transformFIXMsg(sampleMessage);
+         ListMultimap<String, String> resultStore = StaticTestingUtils.parseMessage(result);
+         Assert.assertEquals(resultStore.get("58").get(0), "BRK");
+         Assert.assertEquals(resultStore.get("59").get(0), "A");
+         Assert.assertEquals(resultStore.get("61").get(0), "B");
+      } catch (Exception e) {
+         e.printStackTrace();
+         Assert.fail();
+      }
+   }
 
-    @Test
-    public void testSplit3() {
-        try {
-            String sampleRule = "split(&57, \"/\", &58, &59)";
-            InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage);
-            ListMultimap<Integer, String> resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals(resultStore.get(58).get(0), "BRK");
-            Assert.assertEquals(resultStore.get(59).get(0), "A");
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-    }
+   @Test
+   public void testSplit3() {
+      try {
+         String sampleRule = "split(&57, \"/\", &58, &59)";
+         InfixActions rules = new InfixActions(sampleRule);
+         String result = rules.transformFIXMsg(sampleMessage);
+         ListMultimap<String, String> resultStore = StaticTestingUtils.parseMessage(result);
+         Assert.assertEquals(resultStore.get("58").get(0), "BRK");
+         Assert.assertEquals(resultStore.get("59").get(0), "A");
+      } catch (Exception e) {
+         e.printStackTrace();
+         Assert.fail();
+      }
+   }
 
-    @Test
-    public void testSplit4() {
-        try {
-            String sampleRule = "split(&56, \" \", &55, &65, &85)";
-            InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage);
-            ListMultimap<Integer, String> resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals(resultStore.get(55).get(0), "BRK");
-            Assert.assertEquals(resultStore.get(65).get(0), "A");
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-    }
+   @Test
+   public void testSplit4() {
+      try {
+         String sampleRule = "split(&56, \" \", &55, &65, &85)";
+         InfixActions rules = new InfixActions(sampleRule);
+         String result = rules.transformFIXMsg(sampleMessage);
+         ListMultimap<String, String> resultStore = StaticTestingUtils.parseMessage(result);
+         Assert.assertEquals(resultStore.get("55").get(0), "BRK");
+         Assert.assertEquals(resultStore.get("65").get(0), "A");
+      } catch (Exception e) {
+         e.printStackTrace();
+         Assert.fail();
+      }
+   }
 
-    @Test
-    public void testSplit5() {
-        try {
-            String sampleRule = "split(&56, \" \", &55)";
-            InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage);
-            ListMultimap<Integer, String> resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals(resultStore.get(55).get(0), "BRK");
-            Assert.assertTrue(resultStore.get(65).isEmpty());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-    }
+   @Test
+   public void testSplit5() {
+      try {
+         String sampleRule = "split(&56, \" \", &55)";
+         InfixActions rules = new InfixActions(sampleRule);
+         String result = rules.transformFIXMsg(sampleMessage);
+         ListMultimap<String, String> resultStore = StaticTestingUtils.parseMessage(result);
+         Assert.assertEquals(resultStore.get("55").get(0), "BRK");
+         Assert.assertTrue(resultStore.get("65").isEmpty());
+      } catch (Exception e) {
+         e.printStackTrace();
+         Assert.fail();
+      }
+   }
 
-    @Test
-    public void testSplit6() {
-        try {
-            String sampleRule = "&42=split(&56, \" \", &55)";
-            InfixActions rules = new InfixActions(sampleRule);
-            String result = rules.transformFIXMsg(sampleMessage);
-            ListMultimap<Integer, String> resultStore = StaticTestingUtils.parseMessage(result);
-            Assert.assertEquals(resultStore.get(55).get(0), "BRK");
-            Assert.assertTrue(resultStore.get(65).isEmpty());
-            // split() doesn't return anything
-            Assert.assertTrue(resultStore.get(42).isEmpty());
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-    }
+   @Test
+   public void testSplit6() {
+      try {
+         String sampleRule = "&42=split(&56, \" \", &55)";
+         InfixActions rules = new InfixActions(sampleRule);
+         String result = rules.transformFIXMsg(sampleMessage);
+         ListMultimap<String, String> resultStore = StaticTestingUtils.parseMessage(result);
+         Assert.assertEquals(resultStore.get("55").get(0), "BRK");
+         Assert.assertTrue(resultStore.get("65").isEmpty());
+         // split() doesn't return anything
+         Assert.assertTrue(resultStore.get("42").isEmpty());
+      } catch (Exception e) {
+         e.printStackTrace();
+         Assert.fail();
+      }
+   }
 }

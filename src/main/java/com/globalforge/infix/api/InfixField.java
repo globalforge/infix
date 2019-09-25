@@ -27,70 +27,86 @@ import java.io.Serializable;
  */
 /**
  * An encapsulation of a Fix Field including tag number and tag value.
+ * 
  * @author Michael Starkie
  */
 public final class InfixField implements Serializable {
-    private static final long serialVersionUID = 1L;
-    private final int tagNum;
-    private final String tagVal;
+   private static final long serialVersionUID = 1L;
+   private final String tagNum;
+   private final String tagVal;
 
-    /**
-     * Constructs an immutable instance.
-     * @param num A Fix tag number.
-     * @param val A fix tag value.
-     */
-    public InfixField(int num, String val) {
-        tagNum = num;
-        tagVal = val;
-    }
+   /**
+    * Constructs an immutable instance.
+    * 
+    * @param num A Fix tag number.
+    * @param val A fix tag value.
+    */
+   public InfixField(int num, String val) {
+      tagNum = num + "";
+      tagVal = val;
+   }
 
-    /**
-     * Constructs an immutable instance.
-     * @param num A Fix tag number.
-     * @param val A fix tag value.
-     */
-    public InfixField(String num, String val) {
-        tagNum = Integer.parseInt(num);
-        tagVal = val;
-    }
+   /**
+    * Constructs an immutable instance.
+    * 
+    * @param num A Fix tag number.
+    * @param val A fix tag value.
+    */
+   public InfixField(String num, String val) {
+      tagNum = num;
+      tagVal = val;
+   }
 
-    /**
-     * return the tag number associated with this field.
-     * @return int The tag number.
-     */
-    public int getTagNum() {
-        return tagNum;
-    }
+   /**
+    * return the tag number associated with this field.
+    * 
+    * @return int The tag number.
+    */
+   public String getTag() {
+      return tagNum;
+   }
 
-    /**
-     * Return the tag value associated with this field.
-     * @return int The tag value.
-     */
-    public String getTagVal() {
-        return tagVal;
-    }
+   /**
+    * return the tag number associated with this field.
+    * 
+    * @return int The tag number.
+    */
+   public int getTagNum() {
+      return Integer.parseInt(getTag());
+   }
 
-    @Override
-    public int hashCode() {
-        return toString().hashCode();
-    }
+   /**
+    * Return the tag value associated with this field.
+    * 
+    * @return int The tag value.
+    */
+   public String getTagVal() {
+      return tagVal;
+   }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof InfixField) {
-            if (this == obj) { return true; }
-            return this.hashCode() == obj.hashCode();
-        }
-        return false;
-    }
+   @Override
+   public int hashCode() {
+      return toString().hashCode();
+   }
 
-    /**
-     * Return a string representation of this instance. <br>
-     * Warning: DO NOT CHANGE THIS METHOD IN ANY WAY!
-     */
-    @Override
-    public String toString() {
-        String fieldStr = getTagNum() + "=" + getTagVal();
-        return fieldStr;
-    }
+   @Override
+   public boolean equals(Object obj) {
+      if (obj instanceof InfixField) {
+         if (this == obj) {
+            return true;
+         }
+         return this.hashCode() == obj.hashCode();
+      }
+      return false;
+   }
+
+   /**
+    * Return a string representation of this instance. <br>
+    * Warning: DO NOT CHANGE THIS METHOD IN ANY WAY!
+    */
+   @Override
+   public String toString() {
+      String fieldStr = getTag() + "=" + getTagVal();
+      return fieldStr;
+   }
 }

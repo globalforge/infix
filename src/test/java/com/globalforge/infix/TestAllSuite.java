@@ -27,15 +27,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-    TestAndOr.class, TestAssignGroupTerminals.class, TestAssignTemplate.class,
-    TestAssignTerminals.class, TestCkSumBodyLen.class, TestConditionalBoundaries.class,
-    TestConditionals.class, TestCustomDictionary.class, TestExchange.class, TestExprAdd.class,
-    TestExprCat.class, TestExprDiv.class, TestExprGroupAdd.class, TestExprMul.class,
-    TestExprParen.class, TestExprSub.class, TestFixField.class, TestFixFieldOrderHash.class,
-    TestFunction.class, TestGroup.class, TestGrp44Mgr.class, TestGrp50Mgr.class, TestIs.class,
-    TestIsEqual.class, TestIsGreater.class, TestIsGreaterEquals.class, TestIsLess.class,
-    TestIsLessEquals.class, TestIsNotEqual.class, TestMessageMap.class, TestMsgMgr.class,
-    TestNot.class, TestUnary.class, TestUserDev.class })
+@Suite.SuiteClasses({ TestAndOr.class, TestAssignGroupTerminals.class, TestAssignTemplate.class,
+   TestAssignTerminals.class, TestAssignTerminalsSimple.class, TestCkSumBodyLen.class,
+   TestConditionalBoundaries.class, TestConditionals.class, TestCustomDictionary.class,
+   TestExchange.class, TestExprAdd.class, TestExprAddSimple.class, TestExprCat.class,
+   TestExprDiv.class, TestExprGroupAdd.class, TestExprMul.class, TestExprParen.class,
+   TestExprSub.class, TestFixField.class, TestFixFieldOrderHash.class, TestFunction.class,
+   TestGroup.class, TestGrp44Mgr.class, TestGrp50Mgr.class, TestIs.class, TestIsEqual.class,
+   TestIsGreater.class, TestIsGreaterEquals.class, TestIsLess.class, TestIsLessEquals.class,
+   TestIsNotEqual.class, TestMessageMap.class, TestMsgMgr.class, TestNot.class, TestUnary.class,
+   TestUserDev.class })
 public class TestAllSuite {
 }

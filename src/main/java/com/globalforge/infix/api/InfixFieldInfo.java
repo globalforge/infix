@@ -37,67 +37,86 @@ import java.math.BigDecimal;
  * information before the member fields are referenced by the mapping event.
  * Examples of tag contexts for tags 35 and 375: &35, &382[0]->&375,
  * &382[1]->&375
+ * 
  * @author Michael Starkie
  */
 public class InfixFieldInfo implements Serializable, Comparable<InfixFieldInfo> {
-    private static final long serialVersionUID = 1L;
-    /**
-     * A unique value describing a tag number and any nesting information if the
-     * tag is part of a repeating group. Used as a key in a hash of tag
-     * numbers..
-     */
-    private final InfixField field;
-    /**
-     * A value representing the relative position of a tag context in the
-     * original message
-     */
-    private final BigDecimal position;
+   private static final long serialVersionUID = 1L;
+   /**
+    * A unique value describing a tag number and any nesting information if the
+    * tag is part of a repeating group. Used as a key in a hash of tag numbers..
+    */
+   private final InfixField field;
+   /**
+    * A value representing the relative position of a tag context in the
+    * original message
+    */
+   private final BigDecimal position;
 
-    public InfixFieldInfo(String tag, String val, BigDecimal pos) {
-        field = new InfixField(tag, val);
-        position = pos;
-    }
+   /**
+    * Constructor
+    * 
+    * @param tag FIX Tag number
+    * @param val FIX Tag value
+    * @param pos The position of the field within a FIX message
+    */
+   public InfixFieldInfo(String tag, String val, BigDecimal pos) {
+      field = new InfixField(tag, val);
+      position = pos;
+   }
 
-    /**
-     * return the tag number associated with this field.
-     * @return int The tag number.
-     */
-    public int getTagNum() {
-        return field.getTagNum();
-    }
+   /**
+    * return the tag associated with this field (may not be an int)
+    * 
+    * @return String The tag
+    */
+   public String getTag() {
+      return field.getTag();
+   }
 
-    /**
-     * Return the tag value associated with this field.
-     * @return int The tag value.
-     */
-    public String getTagVal() {
-        return field.getTagVal();
-    }
+   /**
+    * return the tag associated with this field (may not be an int)
+    * 
+    * @return String The tag
+    */
+   public int getTagNum() {
+      return field.getTagNum();
+   }
 
-    /**
-     * Get the Field Object
-     * @return InfixField
-     */
-    public InfixField getField() {
-        return field;
-    }
+   /**
+    * Return the tag value associated with this field.
+    * 
+    * @return int The tag value.
+    */
+   public String getTagVal() {
+      return field.getTagVal();
+   }
 
-    /**
-     * The value associated with the tag context.
-     * @return
-     */
-    public BigDecimal getPosition() {
-        return position;
-    }
+   /**
+    * Get the Field Object
+    * 
+    * @return InfixField
+    */
+   public InfixField getField() {
+      return field;
+   }
 
-    @Override
-    public String toString() {
-		return "[" + field + ", pos=" + position + "]";
-    }
+   /**
+    * The value associated with the tag context.
+    * 
+    * @return
+    */
+   public BigDecimal getPosition() {
+      return position;
+   }
 
+   @Override
+   public String toString() {
+      return "[" + field + ", pos=" + position + "]";
+   }
 
-    @Override
-    public int compareTo(InfixFieldInfo o) {
-        return position.compareTo(o.getPosition());
-    }
+   @Override
+   public int compareTo(InfixFieldInfo o) {
+      return position.compareTo(o.getPosition());
+   }
 }

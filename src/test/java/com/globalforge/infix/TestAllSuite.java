@@ -27,15 +27,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ TestAndOr.class, TestAssignGroupTerminals.class, TestAssignTemplate.class,
-   TestAssignTerminals.class, TestAssignTerminalsSimple.class, TestCkSumBodyLen.class,
-   TestConditionalBoundaries.class, TestConditionals.class, TestCustomDictionary.class,
-   TestExchange.class, TestExprAdd.class, TestExprAddSimple.class, TestExprCat.class,
-   TestExprDiv.class, TestExprGroupAdd.class, TestExprMul.class, TestExprParen.class,
-   TestExprSub.class, TestFixField.class, TestFixFieldOrderHash.class, TestFunction.class,
-   TestGroup.class, TestGrp44Mgr.class, TestGrp50Mgr.class, TestIs.class, TestIsEqual.class,
-   TestIsGreater.class, TestIsGreaterEquals.class, TestIsLess.class, TestIsLessEquals.class,
-   TestIsNotEqual.class, TestMessageMap.class, TestMsgMgr.class, TestNot.class, TestUnary.class,
-   TestUserDev.class })
+@Suite.SuiteClasses({
+    TestAndOr.class, TestAndOrSimple.class, TestAssignGroupTerminals.class,
+    TestAssignTemplate.class, TestAssignTemplateSimple.class, TestAssignTerminals.class,
+    TestAssignTerminalsSimple.class, TestCkSumBodyLen.class, TestConditionalBoundaries.class,
+    TestConditionalBoundariesSimple.class, TestConditionals.class, TestConditionalsSimple.class,
+    TestCustomDictionary.class, TestExchange.class, TestExchangeSimple.class, TestExprAdd.class,
+    TestExprAddSimple.class, TestExprCat.class, TestExprCatSimple.class, TestExprDiv.class,
+    TestExprDivSimple.class, TestExprGroupAdd.class, TestExprMul.class, TestExprMulSimple.class,
+    TestExprParen.class, TestExprParenSimple.class, TestExprSub.class, TestExprSubSimple.class,
+    TestFixField.class, TestFixFieldOrderHash.class, TestFunction.class, TestFunctionSimple.class,
+    TestGroup.class, TestGrp44Mgr.class, TestGrp50Mgr.class, TestIs.class, TestIsSimple.class,
+    TestIsEqual.class, TestIsEqualSimple.class, TestIsGreater.class, TestIsGreaterSimple.class,
+    TestIsGreaterEquals.class, TestIsGreaterEqualsSimple.class, TestIsLess.class,
+    TestIsLessSimple.class, TestIsLessEquals.class, TestIsLessEqualsSimple.class,
+    TestIsNotEqual.class, TestIsNotEqualSimple.class, TestMessageMap.class, TestMsgMgr.class,
+    TestNot.class, TestNotSimple.class, TestUnary.class, TestUnarySimple.class, TestUserDev.class,
+    TestUserDevSimple.class })
 public class TestAllSuite {
 }

@@ -17,11 +17,11 @@ The engine behind InFIX is ANTLR4 (http://antlr.org).  With a little work, InFIX
 
 Set up the Build Environment
 ----------------------------
-Install the latest Gradle 2.x.x from https://gradle.org.
+The Infix build will quietly use Gradle 5.6.2 from https://gradle.org. There is no need to download Gradle before building.
 
 Build the App
 -------------
-The first step in the pipeline is to parse the data dictionaries.
+The first step in the pipeline is to parse the data dictionaries. This will build the data dictionary jar called fix-2.0.jar.
 
 All commands issued from the project root.  
 
@@ -29,13 +29,9 @@ All commands issued from the project root.
 
 The above command will parse the FIX data dictionaries (Quick FIX/J) and generate Java code offering fast lookups of FIX data.
 
-./gradlew buildFIX
-
-The above command will compile all the FIX data source code into a seperate library called fix-2.0.jar
-
 ./gradlew build
 
-The above command will build and test the Infix code against fix-2.0.jar and create a library called infix-2.0.jar.  infix-2.1.jar is dependent upon fix-2.0.jar at both compile time and run time.
+The above command will build and test the Infix code against fix-2.0.jar and create a library called infix-x.x.x.jar.  infix-x.x.x.jar is dependent upon fix-2.0.jar at both compile time and runtime.
 
 ./gradlew distTar
 

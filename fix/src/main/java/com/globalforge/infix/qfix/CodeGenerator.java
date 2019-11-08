@@ -26,6 +26,7 @@ SOFTWARE.
 /**
  * Code generation main starting point. Produces all the java code that Infix
  * depends on.
+ * 
  * @author Michael C. Starkie
  */
 public class CodeGenerator {
@@ -36,19 +37,16 @@ public class CodeGenerator {
         FieldOrderMapCodeGenerator fieldGen = null;
         GroupManagerCodeGenerator groupGen = null;
         try {
-            // custom dictionary
-            if (args.length > 0) {
-                fixVersion = args[0];
-                dataGen.parseCustom(fixVersion);
-                msgGen = new MessageDataCodeGenerator(fixVersion, dataGen);
-                msgGen.generateClass();
-                fieldGen = new FieldOrderMapCodeGenerator(fixVersion, dataGen); //
-                fieldGen.generateClass();
-                groupGen = new GroupManagerCodeGenerator(fixVersion, dataGen); //
-                groupGen.generateClass();
-                dataGen.clear();
-                return;
-            }
+            // Custom FIX version: FIX42Aqua
+            fixVersion = "FIX42Aqua";
+            dataGen.parseCustom(fixVersion);
+            msgGen = new MessageDataCodeGenerator(fixVersion, dataGen);
+            msgGen.generateClass();
+            fieldGen = new FieldOrderMapCodeGenerator(fixVersion, dataGen); //
+            fieldGen.generateClass();
+            groupGen = new GroupManagerCodeGenerator(fixVersion, dataGen); //
+            groupGen.generateClass();
+            dataGen.clear();
             // FIX4.0
             fixVersion = "FIX.4.0";
             dataGen.parseFIX40();

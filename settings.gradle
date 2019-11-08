@@ -1,3 +1,2 @@
-//include "fix", "dict"
-include "fix"
-
+rootProject.name = 'infix'
+include 'fix'

@@ -2,37 +2,28 @@ version = '2.0'
 configurations {
    fix
 }
+
 dependencies {
-   
-   fix "com.globalforge.infix:fix:2.0"
    runtime "org.slf4j:slf4j-simple:1.7.7"
 }
+
 project.ext {
    mainClass = 'com.globalforge.infix.qfix.CodeGenerator'
-   resourceDir = "${projectDir}/src/main/resources" 
-   libDir = "${projectDir}/libs"
-   repoDir = "${projectDir}/src/main/resources"
    srcDir = "${projectDir}/src/main/java/com/globalforge/infix/qfix"
-   rootLib = "${rootProject.libDir}"
 }
 
-task parseCustomFIX42Aqua(
-   type: JavaExec, dependsOn:classes) {
-   main = project.ext.mainClass
-   classpath sourceSets.main.runtimeClasspath
-   systemProperty 'SRC_DIR', project.ext.srcDir
-   args 'FIX42Aqua'
+distributions {
+     main {
+         contents {
+			from(configurations.runtime.allArtifacts.files)
+         }
+     }
 }
 
-task parseFIX( 
-   type: JavaExec, dependsOn:parseCustomFIX42Aqua) {
-   main = project.ext.mainClass
-   classpath sourceSets.main.runtimeClasspath 
-   systemProperty 'SRC_DIR', project.ext.srcDir 
-}
-
-task buildFIX(type: Copy, dependsOn:jar) {
-   from('build/libs')
-   into("$project.ext.rootLib")
-   include('*.jar')
+task parseFIX(type: JavaExec) {
+	println("Parsing QFIX and generating data dictionaries")
+	main = project.ext.mainClass
+	classpath sourceSets.main.runtimeClasspath 
+	systemProperty 'SRC_DIR', project.ext.srcDir 
+	description = 'Parses the Quick FIX data dictionaries into Java source code.'
 }

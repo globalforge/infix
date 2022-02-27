@@ -20,7 +20,7 @@ distributions {
      }
 }
 
-task parseFIX(type: JavaExec) {
+task parse(type: JavaExec) {
 	println("Parsing QFIX and generating data dictionaries")
 	main = project.ext.mainClass
 	classpath sourceSets.main.runtimeClasspath 

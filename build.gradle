@@ -10,8 +10,8 @@ allprojects {
         mavenCentral()
    	}
 	dependencies {
-         antlr "org.antlr:antlr4:4.7.2"
-         compile 'org.antlr:antlr4-runtime:4.7.2'
+         antlr "org.antlr:antlr4:4.9.3"
+         compile 'org.antlr:antlr4-runtime:4.9.3'
          compile 'org.slf4j:slf4j-api:1.7.7'
          testCompile "junit:junit:4.11"
          testCompile "com.google.guava:guava:18.0"

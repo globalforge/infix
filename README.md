@@ -25,7 +25,7 @@ The first step in the pipeline is to parse the data dictionaries. This will buil
 
 All commands issued from the project root.  
 
-./gradlew parseFIX
+./gradlew parse
 
 The above command will parse the FIX data dictionaries (Quick FIX/J) and generate Java code offering fast lookups of FIX data.
 

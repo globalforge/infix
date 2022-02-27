@@ -44,6 +44,6 @@ The above command will create an eclipse project that you can import directly us
 Test the App
 -------------
 InFIX comes with a sample application.  Take a peek at the README.txt file in the distribution.  See if you can execute the runExample.sh program and apply rules found in the help guide.
-Help Guide can be round at http://ec2-18-212-197-10.compute-1.amazonaws.com/infixweb/roadmap.html
-Try the sample application at http://ec2-18-212-197-10.compute-1.amazonaws.com/infixweb/sample.jsp.
+Documentation: http://ec2-18-212-197-10.compute-1.amazonaws.com/infixweb/roadmap.html
+Sample application: http://ec2-18-212-197-10.compute-1.amazonaws.com/infixweb/sample.jsp.
 

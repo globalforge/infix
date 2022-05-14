@@ -11,7 +11,7 @@ InFIX has also successfully been used in production to increase order flow and a
 
 Preamble
 --------
-InFIX is a Java 1.8 application that is known to build on Windows, Linux and OS X but it should be buildable on any UNIX platform.
+InFIX is a Java 11 application that is known to build on Windows, Linux and OS X but it should be buildable on any UNIX platform.
 
 The engine behind InFIX is ANTLR4 (http://antlr.org).  With a little work, InFIX can be ported to C#, Python (2 and 3) and at some point in the future C++. The language limitations are due to currently supported code generation targets by Antlr4.
 

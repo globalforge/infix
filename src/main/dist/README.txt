@@ -22,6 +22,9 @@ Usage:
 The example app will display a static FIX message and wait for user input
 at the command prompt.
 Apply an action to the FIX message and hit enter.
+
+Example: &207="UK" <return>
+
 The example app will display a transformed FIX message after applying the action
 and then re-display the original message and wait for input again.
 

@@ -10,7 +10,7 @@ import com.globalforge.infix.FixRulesSimpleTransformVisitor;
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2019-2020 Global Forge LLC
+ Copyright (c) 2019-2022 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -55,8 +55,8 @@ public class InfixSimpleActions extends InfixActions {
     * Initializes the rule engine with a string in rule syntax.
     *
     * @param ruleInput The rules to apply in rule syntax.
-    * @throws UnsupportedEncodingException
-    * @throws IOException
+    * @throws UnsupportedEncodingException UTF-8 not supported.
+    * @throws IOException The ruleInput argument is corrupt.
     */
    public InfixSimpleActions(String ruleInput) throws UnsupportedEncodingException, IOException {
       this(new ByteArrayInputStream(ruleInput.getBytes("UTF-8")));

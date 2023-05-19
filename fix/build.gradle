@@ -1,4 +1,4 @@
-version = '2.2.0'
+version = '2.2.1'
 configurations {
    fix
 }
@@ -26,4 +26,13 @@ task parse(type: JavaExec) {
 	classpath sourceSets.main.runtimeClasspath 
 	systemProperty 'SRC_DIR', project.ext.srcDir 
 	description = 'Parses the Quick FIX data dictionaries into Java source code.'
+
+task javadocJar(type: Jar) {
+    from javadoc
+    classifier = 'javadoc'
 }
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    classifier = 'sources'
+}}

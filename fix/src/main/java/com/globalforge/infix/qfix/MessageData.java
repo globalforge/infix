@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 /*-
 The MIT License (MIT)
 
-Copyright (c) 2019-2020 Global Forge LLC
+Copyright (c) 2019-2022 Global Forge LLC
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -44,8 +44,8 @@ public abstract class MessageData {
     /**
      * Dynamically loads the extension of FieldOrderMap associated with a
      * message type.
-     * @param msgType
-     * @return FieldOrderMap
+     * @param msgType the FIX message type (35).
+     * @return FieldOrderMap the map containing all fields associated with the message
      */
     public FieldOrderMap getFieldOrderMap(String msgType) {
         FieldOrderMap fldMap = fieldOrderMap.get(msgType);
@@ -66,8 +66,8 @@ public abstract class MessageData {
     /**
      * Dynamically loads the extension of FixGroupMgr associated with a message
      * type.
-     * @param msgType
-     * @return FixGroupMgr
+     * @param msgType The FIX message type (35).
+     * @return FixGroupMgr The group manager associated with the message type.
      */
     public FixGroupMgr getGroupMgr(String msgType) {
         FixGroupMgr grpMgr = groupMap.get(msgType);

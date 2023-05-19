@@ -7,7 +7,7 @@ import java.util.Set;
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2019-2020 Global Forge LLC
+ Copyright (c) 2019-2022 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -89,7 +89,7 @@ public class FixRepeatingGroup {
     /**
      * Returns the set of all members of a repeating group. This does not
      * include the id tag but does include the delimiter tag.
-     * @return Set<String> The tag members belonging to this group.
+     * @return Set{@literal <}String{@literal >} The tag members belonging to this group.
      */
     public Set<String> getMemberSet() {
         return Collections.unmodifiableSet(memberSet);
@@ -97,7 +97,7 @@ public class FixRepeatingGroup {
 
     /**
      * Returns all the nested group identifiers found within a repeating group
-     * @return Set<String>
+     * @return Set{@literal <}String{@literal >}
      */
     public Set<String> getReferenceSet() {
         return Collections.unmodifiableSet(referenceSet);

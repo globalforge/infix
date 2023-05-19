@@ -20,7 +20,7 @@ import com.globalforge.infix.qfix.AbstractXMLParser.CurrentContext;
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2019-2020 Global Forge LLC
+ Copyright (c) 2019-2022 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -65,7 +65,7 @@ public class HeaderParser {
      * @param f FIX data dictionary file name
      * @param cParser data parses from the fields section
      * @param c component and group information from the component parse
-     * @throws Exception
+     * @throws Exception All exceptions should be caught.
      */
     public HeaderParser(String f, FieldParser cParser, DataStore c) throws Exception {
         this.fixFileName = f;
@@ -83,7 +83,7 @@ public class HeaderParser {
 
     /**
      * Begin parsing
-     * @throws XMLStreamException
+     * @throws XMLStreamException XML related parser error.
      */
     public void parse() throws XMLStreamException {
         parseHeader();
@@ -92,7 +92,7 @@ public class HeaderParser {
 
     /**
      * Returns the context map (see class member section).
-     * @return LinkedHashMap<String, String>
+     * @return LinkedHashMap the context map.
      */
     public LinkedHashMap<String, String> getContextMap() {
         return ctxMap;
@@ -100,6 +100,7 @@ public class HeaderParser {
 
     /**
      * Parses components block. Expects field, group, or component.
+     * @throws XMLStreamException XML related parsing error.
      */
     public void parseHeader() throws XMLStreamException {
         InputStream dictStream = ClassLoader.getSystemResourceAsStream(fixFileName);

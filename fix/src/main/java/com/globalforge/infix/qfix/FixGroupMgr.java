@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 /*-
 The MIT License (MIT)
 
-Copyright (c) 2019-2020 Global Forge LLC
+Copyright (c) 2019-2022 Global Forge LLC
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -100,7 +100,6 @@ public abstract class FixGroupMgr {
     /**
      * Determines if a repeating group may be present in a particular message
      * type.
-     * @param msgType The message type.
      * @param groupId The identifier of the group.
      * @return true or false.
      */
@@ -110,7 +109,6 @@ public abstract class FixGroupMgr {
 
     /**
      * Given a message type and a groupId return the repeating group.
-     * @param msgType the message type being parsed or referenced.
      * @param groupId the unique tag number that identifies the start of a
      * particular repeating group.
      * @return FixRepeatingGroup the repeating group.
@@ -122,7 +120,7 @@ public abstract class FixGroupMgr {
     /**
      * Adds a repeating group to a message type. This method is called by the
      * generated code and there should be no reason for a programmer to call it.
-     * @param msgType The message type.
+     * @param groupId The group ID tag which identifies the repeating group.
      * @param g The repeating group to add.
      */
     protected void putGroup(String groupId, FixRepeatingGroup g) {
@@ -132,7 +130,7 @@ public abstract class FixGroupMgr {
     /**
      * Builds a context string for a repeating group member from a stack of all
      * the previous member fields seen so far during a message parse.
-     * @return String
+     * @return String The context string which identifies the current group.
      */
     private String getCurrentGoupContext() {
         String grpCtx = "";

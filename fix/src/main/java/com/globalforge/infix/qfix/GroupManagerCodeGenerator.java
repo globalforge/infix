@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 /*-
 The MIT License (MIT)
 
-Copyright (c) 2019-2020 Global Forge LLC
+Copyright (c) 2019-2022 Global Forge LLC
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -64,7 +64,7 @@ public class GroupManagerCodeGenerator {
 
     /**
      * Start here to generate all the code.
-     * @throws Exception
+     * @throws Exception Error generating class.
      */
     public void generateClass() throws Exception {
         generateCode();
@@ -225,7 +225,7 @@ public class GroupManagerCodeGenerator {
         out.println("/*-");
         out.println("The MIT License (MIT)");
         out.println();
-        out.println("Copyright (c) 2019-2020 Global Forge LLC");
+        out.println("Copyright (c) 2019-2022 Global Forge LLC");
         out.println();
         out.println("Permission is hereby granted, free of charge, to any person obtaining a copy");
         out.println(

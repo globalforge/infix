@@ -7,7 +7,7 @@ import com.globalforge.infix.api.InfixUserContext;
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2019-2020 Global Forge LLC
+ Copyright (c) 2019-2022 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -46,7 +46,7 @@ public class ExampleUserContext implements InfixUserContext {
     /**
      * Demonstrate how to change the state of a fix message as it resides in
      * memory before final transformation.
-     * @param InfixMappingAPI A handle into the infix internals.
+     * @param infixApi A handle into the infix internals.
      * @see InfixAPI
      */
     @Override

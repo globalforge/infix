@@ -14,7 +14,7 @@ import com.globalforge.infix.qfix.MessageData;
 /*-
 The MIT License (MIT)
 
-Copyright (c) 2019-2020 Global Forge LLC
+Copyright (c) 2019-2022 Global Forge LLC
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -118,7 +118,7 @@ public class FixFieldOrderHash {
     }
 
     /**
-     * Number after last '>'
+     * Number after last '{@literal >}'
      * @param ctxString Full context of field reference.
      * @return String a tag number
      */
@@ -184,7 +184,7 @@ public class FixFieldOrderHash {
     /**
      * Returns the outer most nesting level of a repeating group in Infix
      * context
-     * @param ctxString Infix context
+     * @param grpCtx Infix context that defines the group tag.
      * @return int the outer most nesting level of a group member.
      */
     public static int getFirstNestingLevel(String grpCtx) {
@@ -214,7 +214,7 @@ public class FixFieldOrderHash {
 
     /**
      * Testing only
-     * @param args
+     * @param args program arguments
      */
     public static void main(String[] args) {
         List<BigDecimal> sortList = new LinkedList<BigDecimal>();

@@ -10,7 +10,7 @@ import java.util.Set;
 /*-
 The MIT License (MIT)
 
-Copyright (c) 2019-2020 Global Forge LLC
+Copyright (c) 2019-2022 Global Forge LLC
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -67,8 +67,8 @@ public class DataGenerator {
      * @param fVersion The FIX version
      * @throws Exception Some bad thing happened.
      */
-    private void parseFIX(String fVersion) throws Exception {
-        parseFIX(fVersion, null);
+    private DataDictionaryParser parseFIX(String fVersion) throws Exception {
+        return parseFIX(fVersion, null);
     }
 
     /**
@@ -79,7 +79,7 @@ public class DataGenerator {
      * FIX44 or FIX50).
      * @throws Exception Some bad thing happened.
      */
-    private void parseFIX(String fVersion, String basedOnVer) throws Exception {
+    private DataDictionaryParser parseFIX(String fVersion, String basedOnVer) throws Exception {
         // Parse all the xml data into objects we can manage.
         DataDictionaryParser eng = null;
         if (basedOnVer == null) {
@@ -134,6 +134,8 @@ public class DataGenerator {
             Map<String, RepeatingGroupBuilder> gMap = dataStore.getGroupsInMessage(msgType);
             grpMap.addAll(msgType, gMap);
         }
+        
+        return eng;
     }
 
     /**
@@ -141,7 +143,7 @@ public class DataGenerator {
      * @param f5Version some version in FIX50 format.
      * @throws Exception Some bad thing happened.
      */
-    public void parseFIX5(String f5Version) throws Exception {
+    public DataDictionaryParser parseFIX5(String f5Version) throws Exception {
         if (!orderMap.containsKey("FIXT.1.1")) {
             parseFIX("FIXT.1.1");
         }
@@ -149,7 +151,7 @@ public class DataGenerator {
         ContextOrderMap ctxMap = new ContextOrderMap();
         orderMap.put(f5Version, ctxMap);
         ctxMap.addAll(fixTMap);
-        parseFIX(f5Version);
+        return parseFIX(f5Version);
     }
 
     /**
@@ -158,11 +160,11 @@ public class DataGenerator {
      * @param fixVersion The custom FIX version name.
      * @throws Exception Some bad thing happened.
      */
-    public void parseCustom(String fixVersion) throws Exception {
+    public DataDictionaryParser parseCustom(String fixVersion) throws Exception {
         if (fixVersion.startsWith("FIX4")) {
-            parseFIX4Custom(fixVersion);
+            return parseFIX4Custom(fixVersion);
         } else if (fixVersion.startsWith("FIX5")) {
-            parseFIX5Custom(fixVersion);
+            return parseFIX5Custom(fixVersion);
         } else {
             throw new RuntimeException(
                 "Data Dict XML filename must start with either FIX4 or FIX5!");
@@ -174,8 +176,8 @@ public class DataGenerator {
      * @param f4Version The custom fix version
      * @throws Exception Some bad thing happened.
      */
-    public void parseFIX4Custom(String f4Version) throws Exception {
-        parseFIX(f4Version, "FIX.4.4");
+    public DataDictionaryParser parseFIX4Custom(String f4Version) throws Exception {
+        return parseFIX(f4Version, "FIX.4.4");
     }
 
     /**
@@ -183,72 +185,72 @@ public class DataGenerator {
      * @param f4Version the FIX 4 version
      * @throws Exception Some bad thing happened.
      */
-    public void parseFIX4(String f4Version) throws Exception {
-        parseFIX(f4Version);
+    public DataDictionaryParser parseFIX4(String f4Version) throws Exception {
+        return parseFIX(f4Version);
     }
 
     /**
      * Parse FIX 4.0 data dictionary
      * @throws Exception Some bad thing happened.
      */
-    public void parseFIX40() throws Exception {
-        parseFIX4("FIX.4.0");
+    public DataDictionaryParser parseFIX40() throws Exception {
+        return parseFIX4("FIX.4.0");
     }
 
     /**
      * Parse FIX 4.1 data dictionary
      * @throws Exception Some bad thing happened.
      */
-    public void parseFIX41() throws Exception {
-        parseFIX4("FIX.4.1");
+    public DataDictionaryParser parseFIX41() throws Exception {
+        return parseFIX4("FIX.4.1");
     }
 
     /**
      * Parse FIX 4.2 data dictionary
      * @throws Exception Some bad thing happened.
      */
-    public void parseFIX42() throws Exception {
-        parseFIX4("FIX.4.2");
+    public DataDictionaryParser parseFIX42() throws Exception {
+        return parseFIX4("FIX.4.2");
     }
 
     /**
      * Parse FIX 4.3 data dictionary
      * @throws Exception Some bad thing happened.
      */
-    public void parseFIX43() throws Exception {
-        parseFIX4("FIX.4.3");
+    public DataDictionaryParser parseFIX43() throws Exception {
+        return parseFIX4("FIX.4.3");
     }
 
     /**
      * Parse FIX 4.4 data dictionary
      * @throws Exception Some bad thing happened.
      */
-    public void parseFIX44() throws Exception {
-        parseFIX4("FIX.4.4");
+    public DataDictionaryParser parseFIX44() throws Exception {
+        return parseFIX4("FIX.4.4");
     }
 
     /**
      * Parse FIX 5.0 data dictionary
      * @throws Exception Some bad thing happened.
      */
-    public void parseFIX50() throws Exception {
-        parseFIX5("FIX.5.0");
+    public DataDictionaryParser parseFIX50() throws Exception {
+        return parseFIX5("FIX.5.0");
     }
 
     /**
      * Parse FIX 5.0SP1 data dictionary
      * @throws Exception Some bad thing happened.
      */
-    public void parseFIX50SP1() throws Exception {
-        parseFIX5("FIX.5.0SP1");
+    public DataDictionaryParser parseFIX50SP1() throws Exception {
+        return parseFIX5("FIX.5.0SP1");
     }
 
     /**
      * Parse FIX 5.0SP2 data dictionary
      * @throws Exception Some bad thing happened.
      */
-    public void parseFIX50SP2() throws Exception {
-        parseFIX5("FIX.5.0SP2");
+    public DataDictionaryParser parseFIX50SP2() throws Exception {
+        return parseFIX5("FIX.5.0SP2");
     }
 
     /**
@@ -256,8 +258,8 @@ public class DataGenerator {
      * @param f5Version The custom fix version
      * @throws Exception Some bad thing happened.
      */
-    public void parseFIX5Custom(String f5Version) throws Exception {
-        parseFIX(f5Version, "FIX.5.0");
+    public DataDictionaryParser parseFIX5Custom(String f5Version) throws Exception {
+        return parseFIX(f5Version, "FIX.5.0");
     }
 
     /**
@@ -270,7 +272,7 @@ public class DataGenerator {
 
     /**
      * Testing only
-     * @param args
+     * @param args program arguments.
      */
     public static void main(String[] args) {
         DataGenerator dataGen = new DataGenerator();

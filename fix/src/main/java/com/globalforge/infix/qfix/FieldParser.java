@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2019-2020 Global Forge LLC
+ Copyright (c) 2019-2022 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -53,10 +53,20 @@ public class FieldParser {
     /**
      * Requires a name of a fix file
      * @param f the filename
-     * @throws Exception
+     * @throws Exception For caller to capture all types of exceptions including runtime exceptions. 
+     * This is done so that an application is forced to make a conscience choice to ignore or fail any 
+     * business logic associated with the application resulting from any exception.
      */
     public FieldParser(String f) throws Exception {
         this.fixFileName = f;
+    }
+
+    public Map<String, String> getTagNameToNumber() {
+        return tagNameToNumber;
+    }
+
+    public Map<String, String> getTagNumberToName() {
+        return tagNumberToName;
     }
 
     /**
@@ -74,7 +84,6 @@ public class FieldParser {
      * that may legally found in each Message Type. Associations include
      * repeating groups, references to repeating groups within other repeating
      * groups and block.
-     * @param v The fix version we should parse (e.g., FIX.4.4)
      * @throws XMLStreamException XML file is corrupted.
      */
     public void parse() throws XMLStreamException {

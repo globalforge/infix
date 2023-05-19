@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 /*-
 The MIT License (MIT)
 
-Copyright (c) 2019-2020 Global Forge LLC
+Copyright (c) 2019-2022 Global Forge LLC
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -56,7 +56,7 @@ public class FieldDataStore {
      * Returns the list of fields in Infix syntax associated with a group
      * component name.
      * @param referredName the name of the group component.
-     * @return LinkedList<String> the list of fields.
+     * @return LinkedList{@literal <}String{@literal >} the list of fields.
      */
     public LinkedList<String> getGroupContext(String referredName) {
         return groupToInfixFieldsMap.get(referredName);
@@ -74,7 +74,7 @@ public class FieldDataStore {
     /**
      * Returns a list of fields in Infix syntax associated with a component.
      * @param referredName The name of the component.
-     * @return LinkedList<String> The list of fields.
+     * @return LinkedList{@literal <}String{@literal >} The list of fields.
      */
     public LinkedList<String> getComponentContext(String referredName) {
         return componentToInfixFieldsMap.get(referredName);
@@ -82,7 +82,7 @@ public class FieldDataStore {
 
     /**
      * Returns the complete set of group component names if a FIX dictionary.
-     * @return Set<String> The set of group names.
+     * @return Set{@literal <}String{@literal >} The set of group names.
      */
     Set<String> getGroupNameSet() {
         return groupToInfixFieldsMap.keySet();
@@ -117,7 +117,7 @@ public class FieldDataStore {
     /**
      * Returns the complete set of component names (non-groups) found in a data
      * dictionary.
-     * @return Set<String> The set of component names.
+     * @return Set{@literal <}String{@literal >} The set of component names.
      */
     Set<String> getComponentNameSet() {
         return componentToInfixFieldsMap.keySet();

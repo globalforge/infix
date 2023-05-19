@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 /*-
 The MIT License (MIT)
 
-Copyright (c) 2019-2020 Global Forge LLC
+Copyright (c) 2019-2022 Global Forge LLC
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -65,8 +65,8 @@ public class ComponentManager {
     /**
      * Adds a nested component name to the list of fields associated with a
      * component.
-     * @param compName
-     * @param nestedCompName
+     * @param compName The component name
+     * @param nestedCompName the nested component name
      */
     public void addNestedComponent(String compName, String nestedCompName) {
         LinkedList<String> memberList = componentMap.get(compName);
@@ -96,16 +96,16 @@ public class ComponentManager {
 
     /**
      * Returns an unmodifiable set of component names.
-     * @return Set<String> componentNames.
+     * @return Set{@literal <}String{@literal >} componentNames.
      */
     public Set<String> getComponentNames() {
         return Collections.unmodifiableSet(componentMap.keySet());
     }
 
     /**
-     * Returns a modifable list of field names given a component name.
+     * Returns a modifiable list of field names given a component name.
      * @param componentName The component name.
-     * @return LinkedList<String> The associated field names.
+     * @return LinkedList{@literal <}String{@literal >} The associated field names.
      */
     LinkedList<String> getMemberList(String componentName) {
         return componentMap.get(componentName);

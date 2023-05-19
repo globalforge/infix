@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 /*-
 The MIT License (MIT)
 
-Copyright (c) 2019-2020 Global Forge LLC
+Copyright (c) 2019-2022 Global Forge LLC
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -67,8 +67,8 @@ public class GroupManager {
     /**
      * Adds a nested component name to the list of fields associated with a
      * component.
-     * @param compName
-     * @param nestedCompName
+     * @param compName the component name.
+     * @param nestedCompName the nested component name.
      */
     public void addNestedComponent(String compName, String nestedCompName) {
         RepeatingGroupBuilder grp = groupMap.get(compName);
@@ -97,7 +97,7 @@ public class GroupManager {
 
     /**
      * Returns an unmodifiable set of group names.
-     * @return Set<String> group names.
+     * @return Set{@literal <}String{@literal >} group names.
      */
     public Set<String> getGroupNames() {
         return Collections.unmodifiableSet(groupMap.keySet());

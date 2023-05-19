@@ -1,4 +1,4 @@
-version = '2.2.0'
+version = '2.2.1'
 allprojects {
 	apply plugin: 'java'
 	apply plugin: 'antlr'
@@ -60,7 +60,12 @@ clean.doFirst {
     delete "${rootProject.projectDir}/fix/src/main/java/com/globalforge/infix/qfix/fix50sp2/auto"
 }
 
+task javadocJar(type: Jar) {
+    from javadoc
+    classifier = 'javadoc'
+}
 
-
-
-
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    classifier = 'sources'
+}

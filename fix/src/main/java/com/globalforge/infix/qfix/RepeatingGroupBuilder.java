@@ -7,7 +7,7 @@ import java.util.List;
 /*-
 The MIT License (MIT)
 
-Copyright (c) 2019-2020 Global Forge LLC
+Copyright (c) 2019-2022 Global Forge LLC
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -71,7 +71,7 @@ public class RepeatingGroupBuilder {
 
     /**
      * Add a reference to a nested group within this group
-     * @param groupId
+     * @param groupId The FIX field number of a repeating group.
      */
     public void addReference(String groupId) {
         referenceList.add(groupId);
@@ -86,7 +86,7 @@ public class RepeatingGroupBuilder {
 
     /**
      * Set true if this group is nested within some other group.
-     * @param n
+     * @param n true if this instance is a nested group.
      */
     public void setNested(boolean n) {
         isNested = n;
@@ -112,14 +112,14 @@ public class RepeatingGroupBuilder {
 
     /**
      * Returns the actual set of all members of a repeating group.
-     * @return Set<String> The tag members belonging to this group.
+     * @return Set{@literal <}String{@literal >} The tag members belonging to this group.
      */
     public LinkedList<String> getMemberList() {
         return memberList;
     }
 
     /**
-     * @return LinkedList<String> a list of all nested group identifiers within
+     * @return LinkedList{@literal <}String{@literal >} a list of all nested group identifiers within
      * this group.
      */
     public LinkedList<String> getReferenceList() {
@@ -128,7 +128,7 @@ public class RepeatingGroupBuilder {
 
     /**
      * Returns an unmodifiable set copy of all members of a repeating group.
-     * @return Set<String> The tag members belonging to this group.
+     * @return Set{@literal <}String{@literal >} The tag members belonging to this group.
      */
     public List<String> getUnmodifiableMemberList() {
         return Collections.unmodifiableList(memberList);
@@ -136,7 +136,7 @@ public class RepeatingGroupBuilder {
 
     /**
      * Returns a modifiable set copy of all members of a repeating group.
-     * @return Set<String> The tag members belonging to this group.
+     * @return Set{@literal <}String{@literal >} The tag members belonging to this group.
      */
     public LinkedList<String> getCopyOfMemberList() {
         return new LinkedList<String>(memberList);

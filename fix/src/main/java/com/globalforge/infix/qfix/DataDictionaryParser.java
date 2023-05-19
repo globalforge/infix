@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2019-2020 Global Forge LLC
+ Copyright (c) 2019-2022 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -41,6 +41,8 @@ public class DataDictionaryParser {
     protected HeaderParser hdrParser = null;
     protected ComponentParser componentParser = null;
     protected MessageParser messageParser = null;
+  
+
     protected PrintStream out = null;
     protected String fixFileName = null;
     protected String qFixVersion = null;
@@ -48,7 +50,7 @@ public class DataDictionaryParser {
     /**
      * Standard dictionary constructor
      * @param ver a FIX version. The name of a FIX data dictionary.
-     * @throws Exception
+     * @throws Exception Parsing or other type exception.
      */
     public DataDictionaryParser(String ver) throws Exception {
         setUp(ver, null);
@@ -61,7 +63,7 @@ public class DataDictionaryParser {
      * @param basedOnVer Must supply a standard FIX version that the custom
      * dictionary is based upon. For example FIX.4.4 or FIX.5.0. All FIX version
      * specific parsings in this tool are based upon one of those two.
-     * @throws Exception
+     * @throws Exception Parsing or other type exception.
      */
     public DataDictionaryParser(String ver, String basedOnVer) throws Exception {
         setUp(ver, basedOnVer);
@@ -86,6 +88,10 @@ public class DataDictionaryParser {
      */
     public ComponentParser getComponentParser() {
         return componentParser;
+    }
+    
+    public FieldParser getFieldParser() {
+        return fieldParser;
     }
 
     /**
@@ -139,7 +145,7 @@ public class DataDictionaryParser {
 
     /**
      * Parses the fields section of a fix xml data dictionary file.
-     * @throws Exception
+     * @throws Exception Parsing or other type exception.
      */
     protected void parseFields() throws Exception {
         fieldParser = new FieldParser(fixFileName);
@@ -148,7 +154,7 @@ public class DataDictionaryParser {
 
     /**
      * Parses the components section of a fix xml data dictionary file
-     * @throws Exception
+     * @throws Exception Parsing or other type exception.
      */
     protected void parseComponents() throws Exception {
         Class<?> FIXParserDefinition;
@@ -166,7 +172,7 @@ public class DataDictionaryParser {
 
     /**
      * Parses the messages section of a fix xml data dictionary file
-     * @throws Exception
+     * @throws Exception Parsing or other type exception.
      */
     protected void parseMessages() throws Exception {
         Class<?> FIXParserDefinition;
@@ -184,7 +190,7 @@ public class DataDictionaryParser {
 
     /**
      * Parses the header section of a fix xml data dictionary file
-     * @throws Exception
+     * @throws Exception Parsing or other type exception.
      */
     protected void parseHeader() throws Exception {
         Class<?> FIXParserDefinition;

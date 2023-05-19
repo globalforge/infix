@@ -3,7 +3,7 @@ package com.globalforge.infix.api;
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2019-2020 Global Forge LLC
+ Copyright (c) 2019-2022 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -56,7 +56,7 @@ public interface InfixUserContext {
     /**
      * Obtain a handle to an API for in memory changes to a FIX message before
      * transformation into a FIX string
-     * @param infixApi
+     * @param infixApi The concrete InfixAPI instance.
      */
     public void visitInfixAPI(InfixAPI infixApi);
 }

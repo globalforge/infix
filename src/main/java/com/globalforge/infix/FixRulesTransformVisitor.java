@@ -37,7 +37,7 @@ import com.globalforge.infix.api.InfixFieldInfo;
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2019-2020 Global Forge LLC
+ Copyright (c) 2019-2022 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -137,7 +137,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
    }
 
    /**
-    * Number after last '>'
+    * Number after last '{@literal >}'
     *
     * @param ctxString Full context of field reference.
     * @return String a tag number
@@ -323,9 +323,9 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
 
    /**
     * Strips the quotes off of a String value in rule syntax. <code>
-    *    1. &49="FOO"     = 49=FOO
-    *    2. &49=""FOO""   = &49="FOO"
-    *    3. &49="FO\"O"   = &49="FO"O"
+    *    1. {@literal &}49="FOO"     = {@literal &}49=FOO
+    *    2. {@literal &}49=""FOO""   = {@literal &}49="FOO"
+    *    3. {@literal &}49="FO\"O"   = {@literal &}49="FO"O"
     * </code>
     */
    private String removeSpecialChars(String value) {
@@ -403,7 +403,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
    }
 
    /**
-    * Perform multiplication & division on operands in rule syntax depending
+    * Perform multiplication {@literal &} division on operands in rule syntax depending
     * upon the context.
     *
     * @return String the result of a multiplication or division of two operands.
@@ -538,7 +538,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
    }
 
    /**
-    * Determines if a boolean ">" operation is true or false. The operation may
+    * Determines if a boolean "{@literal >}" operation is true or false. The operation may
     * exists as part of a larger boolean expression consisting of multiple
     * boolean operators within a single action.
     */
@@ -560,7 +560,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
    }
 
    /**
-    * Determines if a boolean "<" operation is true or false. The operation may
+    * Determines if a boolean "{@literal <}" operation is true or false. The operation may
     * exists as part of a larger boolean expression consisting of multiple
     * boolean operators within a single action.
     */
@@ -582,7 +582,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
    }
 
    /**
-    * Determines if a boolean "<=" operation is true or false. The operation may
+    * Determines if a boolean "{@literal <}=" operation is true or false. The operation may
     * exists as part of a larger boolean expression consisting of multiple
     * boolean operators within a single action.
     */
@@ -604,7 +604,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
    }
 
    /**
-    * Determines if a boolean ">=" operation is true or false. The operation may
+    * Determines if a boolean "{@literal >}=" operation is true or false. The operation may
     * exists as part of a larger boolean expression consisting of multiple
     * boolean operators within a single action.
     */
@@ -657,7 +657,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
     * The entry and exit point of a conditional statement including the if/else
     * and all rule parses, assignments, etc. in between. Once the children have
     * been visited we reset the flag to false. This completes the conditional
-    * and both the if and else have been parsed or ignored. Onced the
+    * and both the if and else have been parsed or ignored. Once the
     * isStatementTrue flag has been reset we can parse a new conditional.
     */
    @Override
@@ -721,7 +721,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
    }
 
    /**
-    * The result of a boolean expression on the left side of an AND (&&) or OR
+    * The result of a boolean expression on the left side of an AND ({@literal &}{@literal &}) or OR
     * (||) compared with the result of boolean expression on the right.
     */
    @Override
@@ -781,7 +781,7 @@ public class FixRulesTransformVisitor extends FixRulesBaseVisitor<String> {
    }
 
    /**
-    * Deletes all tags and keeps only those indicated (always keeps 8, 9, 10, &
+    * Deletes all tags and keeps only those indicated (always keeps 8, 9, 10, {@literal &}
     * 35)
     */
    @Override

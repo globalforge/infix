@@ -20,7 +20,7 @@ import com.globalforge.infix.antlr.FixRulesParser;
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2019-2020 Global Forge LLC
+ Copyright (c) 2019-2022 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -82,8 +82,8 @@ public class InfixActions {
      * Initializes the rule engine with a string in rule syntax.
      *
      * @param ruleInput The rules to apply in rule syntax.
-     * @throws UnsupportedEncodingException
-     * @throws IOException
+     * @throws UnsupportedEncodingException Not likely thrown for UTF-8
+     * @throws IOException Not likely thrown ruleInput String is corrupt
      */
     public InfixActions(String ruleInput) throws UnsupportedEncodingException, IOException {
         this(new ByteArrayInputStream(ruleInput.getBytes("UTF-8")));
@@ -147,6 +147,9 @@ public class InfixActions {
     }
 
     /**
+     * Apply transform rules to the given properly formatted FIX message.
+     * Specify the value of tag 8 for the rule parser to assume if the FIX message does not contain tag 8.
+     * @param fixMessage properly encoded FIX message
      * @param tag8Value FIX version
      * @return String the transformed fix message.
      */

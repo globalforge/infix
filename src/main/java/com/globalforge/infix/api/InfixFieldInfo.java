@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2019-2020 Global Forge LLC
+ Copyright (c) 2019-2022 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -35,8 +35,8 @@ import java.math.BigDecimal;
  * accomplishes this by mapping a number associated with the tag context in the
  * original message. The FieldContext class is a temporary holder of this
  * information before the member fields are referenced by the mapping event.
- * Examples of tag contexts for tags 35 and 375: &35, &382[0]->&375,
- * &382[1]->&375
+ * Examples of tag contexts for tags 35 and 375: {@literal &}35, {@literal &}382[0]-{@literal >}{@literal &}375,
+ * {@literal &}382[1]-{@literal >}{@literal &}375 
  * 
  * @author Michael Starkie
  */
@@ -86,7 +86,7 @@ public class InfixFieldInfo implements Serializable, Comparable<InfixFieldInfo> 
    /**
     * Return the tag value associated with this field.
     * 
-    * @return int The tag value.
+    * @return String The tag value.
     */
    public String getTagVal() {
       return field.getTagVal();
@@ -95,7 +95,7 @@ public class InfixFieldInfo implements Serializable, Comparable<InfixFieldInfo> 
    /**
     * Get the Field Object
     * 
-    * @return InfixField
+    * @return InfixField The field as an InfixField type
     */
    public InfixField getField() {
       return field;
@@ -104,7 +104,7 @@ public class InfixFieldInfo implements Serializable, Comparable<InfixFieldInfo> 
    /**
     * The value associated with the tag context.
     * 
-    * @return
+    * @return BigDecimal The position of the field within a FIX message
     */
    public BigDecimal getPosition() {
       return position;

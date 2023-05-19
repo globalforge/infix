@@ -7,7 +7,7 @@ import java.util.Map;
 /*-
 The MIT License (MIT)
 
-Copyright (c) 2019-2020 Global Forge LLC
+Copyright (c) 2019-2022 Global Forge LLC
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -60,7 +60,7 @@ public class RepeatingGroupStateManager {
     /**
      * Sets the initial state of a stream of Infix to just after receiving a new
      * group identifier.
-     * @param groupId
+     * @param groupId The FIX tag number representing a repeating group.
      */
     public void setGroupInProgressState(String groupId) {
         transitionState = ComponentContextState.GROUP_MEMBER;
@@ -185,7 +185,7 @@ public class RepeatingGroupStateManager {
      * member. If you are parsing free fields in a fix message the only legal
      * state transition you can make is either to another free floating field or
      * to a group identifier.
-     * @param msgType The message type
+     * @param curMessage The current infix context
      * @param compCtx The current infix field
      */
     public void fieldToGroupIDStateTransition(String curMessage, String compCtx) {

@@ -5,11 +5,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import com.globalforge.infix.FixContextMgr;
+import com.globalforge.infix.FixMessageMgr;
+import com.globalforge.infix.qfix.FieldToNameMap;
 
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2019-2020 Global Forge LLC
+ Copyright (c) 2019-2022 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -34,24 +37,26 @@ import java.util.Map;
  * Should only be used for serializing infix maps and reading tag values at the
  * receiving end.
  * 
- * @author mstarkie
+ * @author Michael Starkie
  */
 public class InfixMap implements Serializable {
     private static final long serialVersionUID = 1L;
     private final Map<String, InfixFieldInfo> infixMap;
+    private FieldToNameMap nameMap = null;
 
     public InfixMap(HashMap<String, InfixFieldInfo> iMap) {
         infixMap = Collections.unmodifiableMap(iMap);
+        nameMap = FixContextMgr.getInstance().getFieldToNameMap(FixMessageMgr.simpleFixVersion);
     }
 
     /**
-     * Modfication work-arounds. If that is your intention then create an
+     * Modification work-around. If that is your intention then create an
      * instance of FixMessageMgr giving this map to the constructor, then add
      * fields and obtain the new map from FixMessageMgr and call InfixMap with
      * the new map. <br>
      * <code>
      *     // for simple tags
-     *     Map<String, InfixFieldInfo> unmodifiableMap = infixMap.getUnmodifiableMap();
+     *     Map{@literal <}String, InfixFieldInfo{@literal >} unmodifiableMap = infixMap.getUnmodifiableMap();
      *     FixMessageMgr fixMsgMgr = new FixMessageMgr(unmodifiableMap);
      *     fixMsgMgr.parseField(76="FOO"); //add tag 76
      *     InfixMap infixMap = fixMsgMgr.getInfixMessageMap();
@@ -61,17 +66,17 @@ public class InfixMap implements Serializable {
      * <p>
      * <code> 
      *    // if you want to apply Infix actions
-     *    Map<String, InfixFieldInfo> unmodifiableMap = infixMap.getUnmodifiableMap();
+     *    Map{@literal <}String, InfixFieldInfo{@literal >} unmodifiableMap = infixMap.getUnmodifiableMap();
      *    FixMessageMgr fixMsgMgr = new FixMessageMgr(unmodifiableMap);
      *    String fixString = fixMsgMgr.toString();
-     *    String rule = "&552[0]->&453[0]->&448=\"STARK\""; 
+     *    String rule = "{@literal &}552[0]-{@literal >}{@literal &}453[0]-{@literal >}{@literal &}448=\"STARK\""; 
      *    InfixActions rules = new InfixActions(rule); 
      *    String result = rules.transformFIXMsg(fixString);
      *    fixMsgMgr = new FixMessageMgr(result);
      *    infixMap = fixMsgMgr.getInfixMap();
      * </code>
      * 
-     * @return Map<String, InfixFieldInfo>
+     * @return Map{@literal <}String, InfixFieldInfo{@literal >}
      */
     public Map<String, InfixFieldInfo> getUnmodifiableMap() {
         return infixMap;
@@ -84,8 +89,8 @@ public class InfixMap implements Serializable {
      * nesting withing repeating groups. <code>
      *    Example ctx:
      *       35
-     *       382[0]->375
-     *       552[0]->453[1]->448
+     *       382[0]-{@literal >}375
+     *       552[0]-{@literal >}453[1]-{@literal >}448
      * </code>
      * 
      * @param ctx Infix Context
@@ -119,6 +124,10 @@ public class InfixMap implements Serializable {
     /**
      * @see getGroupTagValue(String grpIdTagNum, int grpIdx, String
      * grpMemberTagNum)
+     * @param grpIdTagNum The FIX tag number that the defines the Group
+     * @param grpIdx The index of the group of (starts at 0)
+     * @param grpMemberTagNum The tag number within the group defined by grpIdx
+     * @return The value of the specific tag within the group defined by grpIdx
      */
     public String getGroupTagValue(int grpIdTagNum, int grpIdx, int grpMemberTagNum) {
         return getGroupTagValue(grpIdTagNum + "", grpIdx, grpMemberTagNum + "");
@@ -170,6 +179,26 @@ public class InfixMap implements Serializable {
         for (InfixFieldInfo fieldInfo : orderedFields) {
             InfixField field = fieldInfo.getField();
             fieldStr = field.toString() + '\u0001';
+            str.append(fieldStr);
+        }
+        return str.toString();
+    }
+    
+    public String toDisplayString() {
+        StringBuilder str = new StringBuilder();
+        ArrayList<InfixFieldInfo> orderedFields = new ArrayList<InfixFieldInfo>(infixMap.values());
+        Collections.sort(orderedFields);
+        String fieldStr = null;
+        for (InfixFieldInfo fieldInfo : orderedFields) {
+            InfixField field = fieldInfo.getField();
+            String tagNum = field.getTag();
+            String tagName = nameMap.getTagName(tagNum);
+            if (!tagName.isEmpty()) {
+                //fieldStr = "(" + tagName + ")" + field.getTag() + "=" + field.getTagVal() + "\n";
+                fieldStr =  field.getTag() + "(" + tagName + ")" + "=" + field.getTagVal() + "\n";
+            } else {
+                fieldStr = field.getTag() + "=" + field.getTagVal() + "\n";
+            }
             str.append(fieldStr);
         }
         return str.toString();

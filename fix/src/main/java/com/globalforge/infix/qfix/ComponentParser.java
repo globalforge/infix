@@ -5,7 +5,7 @@ import javax.xml.stream.XMLStreamException;
 /*-
 The MIT License (MIT)
 
-Copyright (c) 2019-2020 Global Forge LLC
+Copyright (c) 2019-2022 Global Forge LLC
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -39,8 +39,8 @@ public abstract class ComponentParser {
 
     /**
      * Parse a component section of a fix data dictionary
-     * @throws XMLStreamException
-     * @throws Exception
+     * @throws XMLStreamException XML related parser exception.
+     * @throws Exception Non XML related parser exception.
      */
     public abstract void parse() throws XMLStreamException, Exception;
     /*
@@ -51,7 +51,7 @@ public abstract class ComponentParser {
     /**
      * Obtains the data store holding all the field and group information for
      * all components.
-     * @return
+     * @return DataStore The data store.
      */
     public DataStore getContextStore() {
         return ctxStore;
@@ -60,7 +60,7 @@ public abstract class ComponentParser {
     /**
      * Obtain the resolver algorithm which resolves all component and group
      * references.
-     * @return
+     * @return ResolveManager The resolver instance.
      */
     public ResolveManager getResolveMgr() {
         return resolveMgr;

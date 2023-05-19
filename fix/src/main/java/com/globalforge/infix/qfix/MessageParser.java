@@ -22,7 +22,7 @@ import com.globalforge.infix.qfix.RepeatingGroupStateManager.ComponentContextSta
 /*-
 The MIT License (MIT)
 
-Copyright (c) 2019-2020 Global Forge LLC
+Copyright (c) 2019-2022 Global Forge LLC
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -77,8 +77,8 @@ public abstract class MessageParser {
 
     /**
      * Entry point
-     * @throws XMLStreamException
-     * @throws Exception
+     * @throws XMLStreamException XML related parsing error.
+     * @throws Exception Non XML related exception.
      */
     public abstract void parse() throws XMLStreamException, Exception;
 
@@ -101,7 +101,7 @@ public abstract class MessageParser {
     /**
      * Obtain a reference to the map of message types to the map of field
      * contexts to field order.
-     * @return Map<String, Map<String, String>>
+     * @return A reference to the map of message types to the map of field contexts to field order.
      */
     public Map<String, Map<String, String>> getMessageMap() {
         return Collections.unmodifiableMap(messageMap);
@@ -110,7 +110,8 @@ public abstract class MessageParser {
     /**
      * Obtain a reference to the map of message types to the map of field
      * contexts to field order.
-     * @return Map<String, Map<String, Integer>>
+     * @return a reference to the map of message types to the map of field
+     * contexts to field order.
      */
     public Map<String, Map<String, Integer>> getGroupMap() {
         return Collections.unmodifiableMap(groupMap);
@@ -140,8 +141,8 @@ public abstract class MessageParser {
 
     /**
      * returns the innermost group identifier of a group context
-     * @param ctxString
-     * @return String
+     * @param ctxString The group context
+     * @return String the innermost group identifier
      */
     public static String getGroupIdCtx(String ctxString) {
         int bracketIdx = ctxString.lastIndexOf("[");
@@ -157,7 +158,7 @@ public abstract class MessageParser {
      * runtime.
      * @param msgType The message type
      * @param fOrder the current order of the last field seen
-     * @return LinkedHashMap<String, String> A list of field contexts and their
+     * @return A list of field contexts and their
      * order in the message.
      */
     protected LinkedHashMap<String, String> orderMessage(String msgType, int fOrder) {
@@ -256,7 +257,7 @@ public abstract class MessageParser {
     }
 
     /**
-     * Number after last '&'
+     * Number after last '{@literal &}'
      * @param ctxString Full context of field reference.
      * @return String a tag number
      */

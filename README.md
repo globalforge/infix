@@ -41,6 +41,26 @@ The above command will create distribution containing all the needed runtime jar
 
 The above command will create an eclipse project that you can import directly using the infix directory created during the clone as the project root.
 
+./gradlew clean; ./gradlew javadoc; ./gradlew parse; ./gradlew build; ./gradlew distTar
+
+The above command does it all.
+
+./gradlew javadocJar
+
+The above command generates a javadoc jar file for infix
+
+./gradlew sourcesJar
+
+The above command gratis a source code jar file for infix.
+
+./gradlew :fix:javadocJar
+
+The above command generates a javadoc jar file for the fix repeating group data dictionary
+
+./gradlew :fix:sourcesJar
+
+The above command generates a source code jar file for the fix repeating group data dictionary.
+
 Test the App
 -------------
 InFIX comes with a sample application.  Take a peek at the README.txt file in the distribution.  See if you can execute the runExample.sh program and apply rules found in the help guide. \

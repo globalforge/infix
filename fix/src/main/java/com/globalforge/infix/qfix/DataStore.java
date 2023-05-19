@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 /*-
 The MIT License (MIT)
 
-Copyright (c) 2019-2020 Global Forge LLC
+Copyright (c) 2019-2022 Global Forge LLC
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -58,7 +58,6 @@ public class DataStore {
      * Begin a repeating group in a message type.
      * @param curMessage The message type
      * @param groupId The first member of a repeating group
-     * @param isNested Whether the group is nested inside some other group.
      * @return RepeatingGroupBuilder group in progress
      */
     public RepeatingGroupBuilder setNestedGroup(String curMessage, String groupId) {
@@ -106,6 +105,7 @@ public class DataStore {
 
     /**
      * Whether this group identifier was defined within a message block.
+     * @param curMessage the current message.
      * @param groupId The group identifier.
      * @return true if true
      */
@@ -119,6 +119,7 @@ public class DataStore {
     /**
      * Given a group identifier return the group which was defined in a message
      * block.
+     * @param curMessage the current message.
      * @param groupId The group identifier.
      * @return RepeatingGroupBuilder The group.
      */
@@ -128,7 +129,7 @@ public class DataStore {
 
     /**
      * Obtain a set of all message types containing at least 1 repeating group
-     * @return Set<String> The set.
+     * @return Set{@literal <}String{@literal >} The set.
      */
     public Set<String> getRepeatingGroupMsgTypes() {
         return groupStore.getRepeatingGroupMsgTypes();
@@ -138,7 +139,7 @@ public class DataStore {
      * Obtain a map of group identifiers to groups for all groups defined within
      * the message block defined by the message type argument.
      * @param msgType The message type.
-     * @return Map<String, RepeatingGroupBuilder> The map.
+     * @return Map{@literal <}String, RepeatingGroupBuilder{@literal >} The map.
      */
     public Map<String, RepeatingGroupBuilder> getGroupsInMessage(String msgType) {
         return groupStore.getGroupsInMessage(msgType);
@@ -183,27 +184,33 @@ public class DataStore {
     /**
      * Returns a list of fields in Infix context for a component
      * @param componentName The component
-     * @return LinkedList<String> The list
+     * @return LinkedList{@literal <}String{@literal >} The list
      */
     public LinkedList<String> getComponentContext(String componentName) {
         return fieldStore.getComponentContext(componentName);
     }
 
     /**
-     * @see {FieldDataStore{@link #getGroupContext(String)}
+     * @param componentName The component
+     * @see FieldDataStore#getGroupContext(String)
+     * @return LinkedList{@literal <}String{@literal >} The list
      */
     public LinkedList<String> getGroupContext(String componentName) {
         return fieldStore.getGroupContext(componentName);
     }
 
     /**
-     * @see {FieldDataStore{@link #putGroupContext(String, LinkedList)}
+     * @param key The group component name
+     * @param memList The list of fields.
+     * @see FieldDataStore#putGroupContext(String, LinkedList)
      */
     public void putGroupContext(String key, LinkedList<String> memList) {
         fieldStore.putGroupContext(key, memList);
     }
 
     /**
+     * @param key The component name.
+     * @param memList The list of fields
      * @see FieldDataStore#putComponentContext(String, LinkedList)
      */
     public void putComponentContext(String key, LinkedList<String> memList) {
@@ -211,13 +218,16 @@ public class DataStore {
     }
 
     /**
+     * @param nameKey The key
      * @see FieldDataStore#containsComponentName(String)
+     * @return true if the set of component names includes the key.
      */
     public boolean containsComponentName(String nameKey) {
         return fieldStore.containsComponentName(nameKey);
     }
 
     /**
+     * @param nameKey The component name.
      * @see FieldDataStore#removeComponent(String)
      */
     public void removeComponent(String nameKey) {
@@ -226,6 +236,7 @@ public class DataStore {
 
     /**
      * @see FieldDataStore#getGroupNameSet()
+     * @return Set{@literal <}String{@literal >} The set of component names.
      */
     public Set<String> getGroupNameSet() {
         return fieldStore.getGroupNameSet();
@@ -233,6 +244,7 @@ public class DataStore {
 
     /**
      * @see FieldDataStore#getComponentNameSet()
+     * @return Set{@literal <}String{@literal >} The set of component names.
      */
     public Set<String> getComponentNameSet() {
         return fieldStore.getComponentNameSet();

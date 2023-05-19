@@ -1,11 +1,15 @@
 package com.globalforge.infix;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import com.globalforge.infix.qfix.DefaultFieldToNameMap;
+import com.globalforge.infix.qfix.FieldToNameMap;
 import com.globalforge.infix.qfix.MessageData;
 
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2019-2020 Global Forge LLC
+ Copyright (c) 2019-2022 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -31,6 +35,8 @@ import com.globalforge.infix.qfix.MessageData;
  * @author Michael Starkie
  */
 public class FixContextMgr {
+    private final static Logger logger = LoggerFactory
+        .getLogger(FixContextMgr.class);
     private static final FixContextMgr instance = new FixContextMgr();
 
     /**
@@ -64,5 +70,20 @@ public class FixContextMgr {
             + upperCaseVer + "DynamicMessageData";
         Class<?> c = FixContextMgr.class.getClassLoader().loadClass(messageDataStr);
         return (MessageData) c.newInstance();
+    }
+    
+    public FieldToNameMap getFieldToNameMap(String fixVersion) {
+        String upperCaseVer = fixVersion.replaceAll("[\",.]", "");
+        String lowerCaseVer = upperCaseVer.toLowerCase();
+        String messageDataStr = "com.globalforge.infix.qfix." + lowerCaseVer + ".auto."
+            + upperCaseVer + "FieldToNameMap";
+        Class<?> c;
+        try {
+            c = FixContextMgr.class.getClassLoader().loadClass(messageDataStr);
+            return (FieldToNameMap) c.newInstance();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return new DefaultFieldToNameMap();
     }
 }

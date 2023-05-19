@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 /*-
 The MIT License (MIT)
 
-Copyright (c) 2019-2020 Global Forge LLC
+Copyright (c) 2019-2022 Global Forge LLC
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -42,7 +42,7 @@ public class ContextOrderMap {
 
     /**
      * Transfers all context mappings into this class.
-     * @param msgType
+     * @param msgType The value of FIX message type
      * @param ctxOrderMap field contexts belonging to a message type
      */
     public void addAll(String msgType, LinkedHashMap<String, String> ctxOrderMap) {
@@ -56,7 +56,7 @@ public class ContextOrderMap {
 
     /**
      * Transfers all group information into this class.
-     * @param otherMap
+     * @param otherMap the other map to transfer from.
      */
     public void addAll(ContextOrderMap otherMap) {
         LinkedHashMap<String, LinkedHashMap<String, String>> otherMessageMap = otherMap.messageMap;

@@ -6,23 +6,22 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.globalforge.infix.api.InfixAPI;
 import com.globalforge.infix.api.InfixField;
 import com.globalforge.infix.api.InfixFieldInfo;
 import com.globalforge.infix.api.InfixMap;
 import com.globalforge.infix.api.InfixUserContext;
 import com.globalforge.infix.api.InfixUserTerminal;
+import com.globalforge.infix.qfix.FieldToNameMap;
 import com.globalforge.infix.qfix.FixGroupMgr;
 import com.globalforge.infix.qfix.MessageData;
 
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2019-2020 Global Forge LLC
+ Copyright (c) 2019-2022 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -53,6 +52,7 @@ import com.globalforge.infix.qfix.MessageData;
  * @author Michael Starkie
  */
 public class FixMessageMgr {
+   public static String simpleFixVersion;
    /** logger */
    final static Logger logger = LoggerFactory.getLogger(FixMessageMgr.class);
    /** maps a tag in rule syntax to a relative point in the message */
@@ -65,6 +65,7 @@ public class FixMessageMgr {
       new HashMap<String, InfixUserTerminal>();
    /** manages repeating group contexts */
    private MessageData msgData = null;
+   
    /**
     * manages FIX tag position in a FIX message, especially the order of tags in
     * repeating groups
@@ -114,7 +115,7 @@ public class FixMessageMgr {
     * Sets the value of tag 8 first. This constructor should only be used if you
     * are applying a custom dictionary defined by the tag8Value argument but the
     * client is sending a standard FIX version in tag 8. You basically trick the
-    * system into thinking the client sent 8=<custom fix version>.
+    * system into thinking the client sent 8={@literal <}custom fix version{@literal >}.
     *
     * @param baseMsg The input message
     * @param tag8Value The value must be the version in a custom FIX data
@@ -157,7 +158,7 @@ public class FixMessageMgr {
    /**
     * Get the raw underlying FIX map
     *
-    * @return Map<String, InfixFieldInfo>
+    * @return Map{@literal <}String, InfixFieldInfo{@literal >}
     */
    public HashMap<String, InfixFieldInfo> getInfixMessageMap() {
       return msgMap;
@@ -219,8 +220,9 @@ public class FixMessageMgr {
     * (D) and calls {@link FixMessageMgr#putField(int, String)} to map the
     * results.
     *
-    * @param fixField The string representing a Fix field as it is found in a
-    * Fix message.
+    * @param tagStr The string representing a FIX field name as it is found in a
+    * FIX message.
+    * @param tagVal the string representing a FIX field value as it is found in a FIX message.
     * @throws Exception can't create the runtime classes specified by the FIX
     * version.
     */
@@ -254,7 +256,7 @@ public class FixMessageMgr {
     * @throws Exception can't create the runtime classes specified by the FIX
     */
    private void init(String fixVersion) throws Exception {
-      String simpleFixVersion = fixVersion.replaceAll("[\",.]", "");
+      simpleFixVersion = fixVersion.replaceAll("[\",.]", "");
       msgData = FixContextMgr.getInstance().getMessageData(simpleFixVersion);
       posGen = new FixFieldOrderHash(msgData);
    }
@@ -344,6 +346,7 @@ public class FixMessageMgr {
     * Removes a context and it's value from memory.
     *
     * @param ctx The tag context to remove.
+    * @return InfixFieldInfo The FIX information removed.
     */
    protected InfixFieldInfo remove(String ctx) {
       return msgMap.remove(ctx);

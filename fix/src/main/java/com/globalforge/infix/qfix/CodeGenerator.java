@@ -3,7 +3,7 @@ package com.globalforge.infix.qfix;
 /*-
 The MIT License (MIT)
 
-Copyright (c) 2019-2020 Global Forge LLC
+Copyright (c) 2019-2022 Global Forge LLC
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -36,50 +36,60 @@ public class CodeGenerator {
         MessageDataCodeGenerator msgGen = null;
         FieldOrderMapCodeGenerator fieldGen = null;
         GroupManagerCodeGenerator groupGen = null;
+        DataDictionaryParser ddp = null;
+        FieldNumberToNameMapGenerator nameMapGen = null;
         try {
             // Custom FIX version: FIX42Aqua
             fixVersion = "FIX42Aqua";
-            dataGen.parseCustom(fixVersion);
+            ddp = dataGen.parseCustom(fixVersion);
             msgGen = new MessageDataCodeGenerator(fixVersion, dataGen);
             msgGen.generateClass();
             fieldGen = new FieldOrderMapCodeGenerator(fixVersion, dataGen); //
             fieldGen.generateClass();
             groupGen = new GroupManagerCodeGenerator(fixVersion, dataGen); //
             groupGen.generateClass();
+            nameMapGen = new FieldNumberToNameMapGenerator(fixVersion, dataGen, ddp);
+            nameMapGen.generateClass();
             dataGen.clear();
             // FIX4.0
             fixVersion = "FIX.4.0";
-            dataGen.parseFIX40();
+            ddp = dataGen.parseFIX40();
             msgGen = new MessageDataCodeGenerator(fixVersion, dataGen);
             msgGen.generateClass();
             fieldGen = new FieldOrderMapCodeGenerator(fixVersion, dataGen); //
             fieldGen.generateClass();
             groupGen = new GroupManagerCodeGenerator(fixVersion, dataGen); //
             groupGen.generateClass();
+            nameMapGen = new FieldNumberToNameMapGenerator(fixVersion, dataGen, ddp);
+            nameMapGen.generateClass();
             dataGen.clear();
             // FIX4.1
             fixVersion = "FIX.4.1";
-            dataGen.parseFIX41();
+            ddp = dataGen.parseFIX41();
             msgGen = new MessageDataCodeGenerator(fixVersion, dataGen);
             msgGen.generateClass();
             fieldGen = new FieldOrderMapCodeGenerator(fixVersion, dataGen); //
             fieldGen.generateClass();
             groupGen = new GroupManagerCodeGenerator(fixVersion, dataGen); //
             groupGen.generateClass();
+            nameMapGen = new FieldNumberToNameMapGenerator(fixVersion, dataGen, ddp);
+            nameMapGen.generateClass();
             dataGen.clear();
             // FIX4.2
             fixVersion = "FIX.4.2";
-            dataGen.parseFIX42();
+            ddp = dataGen.parseFIX42();
             msgGen = new MessageDataCodeGenerator(fixVersion, dataGen);
             msgGen.generateClass();
             fieldGen = new FieldOrderMapCodeGenerator(fixVersion, dataGen); //
             fieldGen.generateClass();
             groupGen = new GroupManagerCodeGenerator(fixVersion, dataGen); //
             groupGen.generateClass();
+            nameMapGen = new FieldNumberToNameMapGenerator(fixVersion, dataGen, ddp);
+            nameMapGen.generateClass();
             dataGen.clear();
             // FIX4.3
             fixVersion = "FIX.4.3";
-            dataGen.parseFIX43();
+            ddp = dataGen.parseFIX43();
             msgGen = new MessageDataCodeGenerator(fixVersion, dataGen);
             msgGen.generateClass();
             fieldGen = new FieldOrderMapCodeGenerator(fixVersion, dataGen); //
@@ -89,43 +99,51 @@ public class CodeGenerator {
             dataGen.clear();
             // FIX4.4
             fixVersion = "FIX.4.4";
-            dataGen.parseFIX44();
+            ddp = dataGen.parseFIX44();
             msgGen = new MessageDataCodeGenerator(fixVersion, dataGen);
             msgGen.generateClass();
             fieldGen = new FieldOrderMapCodeGenerator(fixVersion, dataGen); //
             fieldGen.generateClass();
             groupGen = new GroupManagerCodeGenerator(fixVersion, dataGen); //
             groupGen.generateClass();
+            nameMapGen = new FieldNumberToNameMapGenerator(fixVersion, dataGen, ddp);
+            nameMapGen.generateClass();
             dataGen.clear();
             // FIX5.0
             fixVersion = "FIX.5.0";
-            dataGen.parseFIX50();
+            ddp = dataGen.parseFIX50();
             msgGen = new MessageDataCodeGenerator(fixVersion, dataGen);
             msgGen.generateClass();
             fieldGen = new FieldOrderMapCodeGenerator(fixVersion, dataGen); //
             fieldGen.generateClass();
             groupGen = new GroupManagerCodeGenerator(fixVersion, dataGen); //
             groupGen.generateClass();
+            nameMapGen = new FieldNumberToNameMapGenerator(fixVersion, dataGen, ddp);
+            nameMapGen.generateClass();
             dataGen.clear();
             // FIX5.0.SP1
             fixVersion = "FIX.5.0SP1";
-            dataGen.parseFIX50SP1();
+            ddp = dataGen.parseFIX50SP1();
             msgGen = new MessageDataCodeGenerator(fixVersion, dataGen);
             msgGen.generateClass();
             fieldGen = new FieldOrderMapCodeGenerator(fixVersion, dataGen); //
             fieldGen.generateClass();
             groupGen = new GroupManagerCodeGenerator(fixVersion, dataGen); //
             groupGen.generateClass();
+            nameMapGen = new FieldNumberToNameMapGenerator(fixVersion, dataGen, ddp);
+            nameMapGen.generateClass();
             dataGen.clear();
             // FIX5.0.SP2
             fixVersion = "FIX.5.0SP2";
-            dataGen.parseFIX50SP2();
+            ddp = dataGen.parseFIX50SP2();
             msgGen = new MessageDataCodeGenerator(fixVersion, dataGen);
             msgGen.generateClass();
             fieldGen = new FieldOrderMapCodeGenerator(fixVersion, dataGen);
             fieldGen.generateClass();
             groupGen = new GroupManagerCodeGenerator(fixVersion, dataGen);
             groupGen.generateClass();
+            nameMapGen = new FieldNumberToNameMapGenerator(fixVersion, dataGen, ddp);
+            nameMapGen.generateClass();
             dataGen.clear();
         } catch (Exception e) {
             e.printStackTrace();

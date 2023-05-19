@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 /*-
 The MIT License (MIT)
 
-Copyright (c) 2019-2020 Global Forge LLC
+Copyright (c) 2019-2022 Global Forge LLC
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -49,7 +49,7 @@ public class GroupDataStore {
     /**
      * returns a list of all message types that contain at least 1 repeating
      * group.
-     * @return Set<String> The set of all message types.
+     * @return Set{@literal <}String{@literal >} The set of all message types.
      */
     public Set<String> getRepeatingGroupMsgTypes() {
         return messageGroups.keySet();
@@ -59,7 +59,7 @@ public class GroupDataStore {
      * Given a message type return a map of all repeating groups found within
      * the message keyed by group identifier.
      * @param msgType The message type.
-     * @return Map<String, RepeatingGroupBuilder>
+     * @return Map{@literal <}String, RepeatingGroupBuilder{@literal >}
      */
     public Map<String, RepeatingGroupBuilder> getGroupsInMessage(String msgType) {
         return messageGroups.get(msgType);
@@ -85,7 +85,7 @@ public class GroupDataStore {
      * @param msgType a message type
      * @param groupId a group identifier
      * @param tagNum a field within a group
-     * @return
+     * @return true if the tagNum argument represents the start of the repeating group identified by groupId.
      */
     public boolean isMessageGroupReference(String msgType, String groupId, String tagNum) {
         Map<String, RepeatingGroupBuilder> rgmap = messageGroups.get(msgType);
@@ -130,7 +130,7 @@ public class GroupDataStore {
      * as it is defined for that message type.
      * @param msgType the message type
      * @param groupId the group identifier
-     * @return
+     * @return RepeatingGroupBuilder the group builder.
      */
     public RepeatingGroupBuilder getMessageGroup(String msgType, String groupId) {
         Map<String, RepeatingGroupBuilder> rgmap = messageGroups.get(msgType);
@@ -141,9 +141,9 @@ public class GroupDataStore {
     /**
      * Given a msgType, a group identifier and a member tag number, add the
      * member to the group defined by groupId.
-     * @param msgType
-     * @param groupId
-     * @param tagNum
+     * @param msgType a FIX msgType (35).
+     * @param groupId a tag number representing a repeating group.
+     * @param tagNum a tag number representing a field within the repeating group.
      */
     public void addMessageGroupMember(String msgType, String groupId, String tagNum) {
         GroupDataStore.logger.info(
@@ -158,9 +158,9 @@ public class GroupDataStore {
      * Given a message type, an outer group identifier and an inner group
      * identifier, add the inner group identifier as a reference (nested group)
      * member of the outer group.
-     * @param msgType
-     * @param groupId
-     * @param nestedGroupId
+     * @param msgType a FIX msgType (35).
+     * @param groupId a tag number representing the outer repeating group.
+     * @param nestedGroupId a tag number representing the inner repeating group.
      */
     public void addMessageGroupReference(String msgType, String groupId, String nestedGroupId) {
         GroupDataStore.logger.info("Add Group Reference: curMessage=" + msgType + ", groupId="
@@ -200,8 +200,8 @@ public class GroupDataStore {
     /**
      * Return from the set of groups defined in the components section the group
      * associated with a given group identifier.
-     * @param groupId
-     * @return RepeatingGroupBuilder
+     * @param groupId the group identifier
+     * @return RepeatingGroupBuilder the builder associated with the repeating group.
      */
     public RepeatingGroupBuilder getComponentGroup(String groupId) {
         return componentGroups.get(groupId);
@@ -210,8 +210,8 @@ public class GroupDataStore {
     /**
      * Return true if the given group identifier belongs to the set of groups
      * defined in the components section.
-     * @param groupId
-     * @return boolean
+     * @param groupId the group identifier
+     * @return boolean true if the group id belongs to the component group.
      */
     public boolean isComponentGroup(String groupId) {
         return componentGroups.containsKey(groupId);

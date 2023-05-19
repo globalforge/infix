@@ -14,7 +14,7 @@ import com.globalforge.infix.api.InfixFieldInfo;
 /*-
  The MIT License (MIT)
 
- Copyright (c) 2019-2020 Global Forge LLC
+ Copyright (c) 2019-2022 Global Forge LLC
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -71,6 +71,7 @@ public class FixSimpleMessageMgr extends FixMessageMgr {
     * Parses a fix message in raw fix format, assigns context, and keeps state.
     *
     * @param baseMsg The input message
+    * @throws Exception Parsing failure for one reason or another.
     */
    public FixSimpleMessageMgr(String baseMsg) throws Exception {
       parseMessage(baseMsg);
@@ -94,10 +95,10 @@ public class FixSimpleMessageMgr extends FixMessageMgr {
     * (D) and calls {@link FixSimpleMessageMgr#putField(int, String)} to map the
     * results.
     *
-    * @param fixField The string representing a Fix field as it is found in a
+    * @param tagStr The string representing a Fix field name as it is found in a
     * Fix message.
-    * @throws Exception can't create the runtime classes specified by the FIX
-    * version.
+    * @param tagVal The string representing a Fix field value as it is found in a
+    * Fix message.
     */
    public void parseField(String tagStr, String tagVal) {
       putField(tagStr, tagVal);
@@ -122,7 +123,7 @@ public class FixSimpleMessageMgr extends FixMessageMgr {
     * a rule context and inserts the context and associated field data into the
     * mappings. Order of tag data within the message is maintained.
     *
-    * @param tagNum The tag number
+    * @param tagStr The tag number
     * @param tagVal The tag value
     */
    protected void putField(String tagStr, String tagVal) {

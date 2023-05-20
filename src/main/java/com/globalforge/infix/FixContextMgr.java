@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.globalforge.infix.qfix.DefaultFieldToNameMap;
 import com.globalforge.infix.qfix.FieldToNameMap;
+import com.globalforge.infix.qfix.FieldValueToDefMap;
 import com.globalforge.infix.qfix.MessageData;
 
 /*-
@@ -86,4 +87,19 @@ public class FixContextMgr {
         }
         return new DefaultFieldToNameMap();
     }
+
+	public FieldValueToDefMap getFieldValueToDefMap(String fixVersion) {
+		String upperCaseVer = fixVersion.replaceAll("[\",.]", "");
+        String lowerCaseVer = upperCaseVer.toLowerCase();
+        String messageDataStr = "com.globalforge.infix.qfix." + lowerCaseVer + ".auto."
+            + upperCaseVer + "FieldValueToDefMap";
+        Class<?> c;
+        try {
+            c = FixContextMgr.class.getClassLoader().loadClass(messageDataStr);
+            return (FieldValueToDefMap) c.newInstance();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return null;
+	}
 }

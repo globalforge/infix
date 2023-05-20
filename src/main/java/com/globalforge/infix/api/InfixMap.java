@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
 import com.globalforge.infix.FixContextMgr;
 import com.globalforge.infix.FixMessageMgr;
 import com.globalforge.infix.qfix.FieldToNameMap;
+import com.globalforge.infix.qfix.FieldValueToDefMap;
+import com.globalforge.infix.qfix.fix42.auto.FIX42FieldValueToDefMap;
 
 /*-
  The MIT License (MIT)
@@ -42,11 +45,11 @@ import com.globalforge.infix.qfix.FieldToNameMap;
 public class InfixMap implements Serializable {
     private static final long serialVersionUID = 1L;
     private final Map<String, InfixFieldInfo> infixMap;
-    private FieldToNameMap nameMap = null;
 
     public InfixMap(HashMap<String, InfixFieldInfo> iMap) {
         infixMap = Collections.unmodifiableMap(iMap);
-        nameMap = FixContextMgr.getInstance().getFieldToNameMap(FixMessageMgr.simpleFixVersion);
+        FixContextMgr.getInstance().getFieldToNameMap(FixMessageMgr.simpleFixVersion);
+        FixContextMgr.getInstance().getFieldValueToDefMap(FixMessageMgr.simpleFixVersion);
     }
 
     /**
@@ -184,6 +187,10 @@ public class InfixMap implements Serializable {
         return str.toString();
     }
     
+    /**
+     * Prints the FIX message in column format includes the tagNames and definitions of tagValues.
+     * @return
+     */
     public String toDisplayString() {
         StringBuilder str = new StringBuilder();
         ArrayList<InfixFieldInfo> orderedFields = new ArrayList<InfixFieldInfo>(infixMap.values());
@@ -192,10 +199,22 @@ public class InfixMap implements Serializable {
         for (InfixFieldInfo fieldInfo : orderedFields) {
             InfixField field = fieldInfo.getField();
             String tagNum = field.getTag();
-            String tagName = nameMap.getTagName(tagNum);
+            String tagName = FieldToNameMap.getTagName(tagNum);
             if (!tagName.isEmpty()) {
-                //fieldStr = "(" + tagName + ")" + field.getTag() + "=" + field.getTagVal() + "\n";
-                fieldStr =  field.getTag() + "(" + tagName + ")" + "=" + field.getTagVal() + "\n";
+            	Map<String, String> fieldDefMap = FieldValueToDefMap.getFieldValueDefMap(tagName);
+            	String tagValue = field.getTagVal();
+            	String tagDef = null;
+            	boolean isDone = false;
+            	if (fieldDefMap != null) {
+            		tagDef = fieldDefMap.get(tagValue);
+            		if (tagDef != null) {
+            			fieldStr =  field.getTag() + "(" + tagName + ")" + "=" + field.getTagVal() + "("+ tagDef + ")" + "\n";
+            			isDone = true;
+            		}
+            	}
+            	if (!isDone) {
+            		fieldStr =  field.getTag() + "(" + tagName + ")" + "=" + field.getTagVal() + "\n";
+            	}
             } else {
                 fieldStr = field.getTag() + "=" + field.getTagVal() + "\n";
             }

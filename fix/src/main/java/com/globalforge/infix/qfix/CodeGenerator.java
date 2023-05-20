@@ -38,6 +38,7 @@ public class CodeGenerator {
         GroupManagerCodeGenerator groupGen = null;
         DataDictionaryParser ddp = null;
         FieldNumberToNameMapGenerator nameMapGen = null;
+        FieldValueToDefMapGenerator valDefGen = null;
         try {
             // Custom FIX version: FIX42Aqua
             fixVersion = "FIX42Aqua";
@@ -50,6 +51,8 @@ public class CodeGenerator {
             groupGen.generateClass();
             nameMapGen = new FieldNumberToNameMapGenerator(fixVersion, dataGen, ddp);
             nameMapGen.generateClass();
+            valDefGen = new FieldValueToDefMapGenerator(fixVersion, dataGen, ddp);
+            valDefGen.generateClass();
             dataGen.clear();
             // FIX4.0
             fixVersion = "FIX.4.0";
@@ -62,6 +65,8 @@ public class CodeGenerator {
             groupGen.generateClass();
             nameMapGen = new FieldNumberToNameMapGenerator(fixVersion, dataGen, ddp);
             nameMapGen.generateClass();
+            valDefGen = new FieldValueToDefMapGenerator(fixVersion, dataGen, ddp);
+            valDefGen.generateClass();
             dataGen.clear();
             // FIX4.1
             fixVersion = "FIX.4.1";
@@ -74,6 +79,8 @@ public class CodeGenerator {
             groupGen.generateClass();
             nameMapGen = new FieldNumberToNameMapGenerator(fixVersion, dataGen, ddp);
             nameMapGen.generateClass();
+            valDefGen = new FieldValueToDefMapGenerator(fixVersion, dataGen, ddp);
+            valDefGen.generateClass();
             dataGen.clear();
             // FIX4.2
             fixVersion = "FIX.4.2";
@@ -86,6 +93,8 @@ public class CodeGenerator {
             groupGen.generateClass();
             nameMapGen = new FieldNumberToNameMapGenerator(fixVersion, dataGen, ddp);
             nameMapGen.generateClass();
+            valDefGen = new FieldValueToDefMapGenerator(fixVersion, dataGen, ddp);
+            valDefGen.generateClass();
             dataGen.clear();
             // FIX4.3
             fixVersion = "FIX.4.3";
@@ -96,6 +105,10 @@ public class CodeGenerator {
             fieldGen.generateClass();
             groupGen = new GroupManagerCodeGenerator(fixVersion, dataGen); //
             groupGen.generateClass();
+            nameMapGen = new FieldNumberToNameMapGenerator(fixVersion, dataGen, ddp);
+            nameMapGen.generateClass();
+            valDefGen = new FieldValueToDefMapGenerator(fixVersion, dataGen, ddp);
+            valDefGen.generateClass();
             dataGen.clear();
             // FIX4.4
             fixVersion = "FIX.4.4";
@@ -108,6 +121,8 @@ public class CodeGenerator {
             groupGen.generateClass();
             nameMapGen = new FieldNumberToNameMapGenerator(fixVersion, dataGen, ddp);
             nameMapGen.generateClass();
+            valDefGen = new FieldValueToDefMapGenerator(fixVersion, dataGen, ddp);
+            valDefGen.generateClass();
             dataGen.clear();
             // FIX5.0
             fixVersion = "FIX.5.0";
@@ -120,6 +135,8 @@ public class CodeGenerator {
             groupGen.generateClass();
             nameMapGen = new FieldNumberToNameMapGenerator(fixVersion, dataGen, ddp);
             nameMapGen.generateClass();
+            valDefGen = new FieldValueToDefMapGenerator(fixVersion, dataGen, ddp);
+            valDefGen.generateClass();
             dataGen.clear();
             // FIX5.0.SP1
             fixVersion = "FIX.5.0SP1";
@@ -132,6 +149,8 @@ public class CodeGenerator {
             groupGen.generateClass();
             nameMapGen = new FieldNumberToNameMapGenerator(fixVersion, dataGen, ddp);
             nameMapGen.generateClass();
+            valDefGen = new FieldValueToDefMapGenerator(fixVersion, dataGen, ddp);
+            valDefGen.generateClass();
             dataGen.clear();
             // FIX5.0.SP2
             fixVersion = "FIX.5.0SP2";
@@ -144,6 +163,8 @@ public class CodeGenerator {
             groupGen.generateClass();
             nameMapGen = new FieldNumberToNameMapGenerator(fixVersion, dataGen, ddp);
             nameMapGen.generateClass();
+            valDefGen = new FieldValueToDefMapGenerator(fixVersion, dataGen, ddp);
+            valDefGen.generateClass();
             dataGen.clear();
         } catch (Exception e) {
             e.printStackTrace();

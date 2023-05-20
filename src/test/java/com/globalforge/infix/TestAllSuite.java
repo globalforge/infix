@@ -43,6 +43,6 @@ SOFTWARE.
     TestIsLessSimple.class, TestIsLessEquals.class, TestIsLessEqualsSimple.class,
     TestIsNotEqual.class, TestIsNotEqualSimple.class, TestMessageMap.class, TestMsgMgr.class,
     TestNot.class, TestNotSimple.class, TestUnary.class, TestUnarySimple.class, TestUserDev.class,
-    TestUserDevSimple.class })
+    TestUserDevSimple.class, TestInfixMap.class })
 public class TestAllSuite {
 }

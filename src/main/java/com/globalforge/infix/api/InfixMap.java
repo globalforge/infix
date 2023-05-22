@@ -3,6 +3,7 @@ package com.globalforge.infix.api;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -191,10 +192,10 @@ public class InfixMap implements Serializable {
      * Prints the FIX message in column format includes the tagNames and definitions of tagValues.
      * @return
      */
-    public String toDisplayString() {
+    public String toDisplayString(Comparator<InfixFieldInfo> comparator) {
         StringBuilder str = new StringBuilder();
         ArrayList<InfixFieldInfo> orderedFields = new ArrayList<InfixFieldInfo>(infixMap.values());
-        Collections.sort(orderedFields);
+        Collections.sort(orderedFields, comparator);
         String fieldStr = null;
         for (InfixFieldInfo fieldInfo : orderedFields) {
             InfixField field = fieldInfo.getField();

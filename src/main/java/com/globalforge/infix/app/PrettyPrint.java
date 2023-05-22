@@ -3,6 +3,7 @@ package com.globalforge.infix.app;
 import java.util.Scanner;
 
 import com.globalforge.infix.FixMessageMgr;
+import com.globalforge.infix.api.InfixFieldInfoPosComparator;
 
 /**
  * Utility which accepts a FIX message copied from a Unix log file (with \0001
@@ -23,7 +24,7 @@ public class PrettyPrint {
 			properFix = properFix.replaceAll("\\n", "");
 			properFix = properFix.replaceAll("\\r", "");
 			FixMessageMgr msgMgr = new FixMessageMgr(properFix);
-			String displayString = msgMgr.getInfixMap().toDisplayString();
+			String displayString = msgMgr.getInfixMap().toDisplayString(new InfixFieldInfoPosComparator());
 			System.out.println();
 			System.out.println(displayString);
 			System.out.println();

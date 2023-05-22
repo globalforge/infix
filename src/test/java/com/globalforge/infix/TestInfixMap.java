@@ -2,7 +2,10 @@ package com.globalforge.infix;
 
 import org.junit.Assert;
 import org.junit.Test;
-import com.globalforge.infix.qfix.MessageData;
+
+import com.globalforge.infix.api.InfixFieldInfoNameComparator;
+import com.globalforge.infix.api.InfixFieldInfoPosComparator;
+import com.globalforge.infix.api.InfixFieldInfoValComparator;
 
 /*-
 The MIT License (MIT)
@@ -36,7 +39,7 @@ public class TestInfixMap {
         try {
             String properFix = fixMsg1.replaceAll("\\^A", "\u0001");
             FixMessageMgr msgMgr = new FixMessageMgr(properFix);
-            String displayString = msgMgr.getInfixMap().toDisplayString();
+            String displayString = msgMgr.getInfixMap().toDisplayString(new InfixFieldInfoNameComparator());
             System.out.println(displayString);
             System.out.println();
         } catch (Exception e) {
@@ -50,7 +53,21 @@ public class TestInfixMap {
         try {
             String properFix = fixMsg44.replaceAll("\\^A", "\u0001");
             FixMessageMgr msgMgr = new FixMessageMgr(properFix);
-            String displayString = msgMgr.getInfixMap().toDisplayString();
+            String displayString = msgMgr.getInfixMap().toDisplayString(new InfixFieldInfoValComparator());
+            System.out.println(displayString);
+            System.out.println();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+    }
+    
+    @Test
+    public void t3() {
+        try {
+            String properFix = fixMsg44.replaceAll("\\^A", "\u0001");
+            FixMessageMgr msgMgr = new FixMessageMgr(properFix);
+            String displayString = msgMgr.getInfixMap().toDisplayString(new InfixFieldInfoPosComparator());
             System.out.println(displayString);
             System.out.println();
         } catch (Exception e) {

@@ -259,6 +259,7 @@ public class FixMessageMgr {
       simpleFixVersion = fixVersion.replaceAll("[\",.]", "");
       msgData = FixContextMgr.getInstance().getMessageData(simpleFixVersion);
       posGen = new FixFieldOrderHash(msgData);
+      FixContextMgr.getInstance().getFieldValueToDefMap(FixMessageMgr.simpleFixVersion);
    }
 
    /**

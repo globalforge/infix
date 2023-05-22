@@ -188,6 +188,19 @@ public class InfixMap implements Serializable {
         return str.toString();
     }
     
+    private void setTagNamesIfAvailable() {
+       ArrayList<InfixFieldInfo> orderedFields = new ArrayList<InfixFieldInfo>(infixMap.values());
+       for (InfixFieldInfo fieldInfo : orderedFields) {
+          InfixField field = fieldInfo.getField();
+          String tagNum = field.getTag();
+          String tagName = FieldToNameMap.getTagName(tagNum);
+          if (!tagName.isEmpty()) {
+             fieldInfo.setTagName(tagName);
+          }
+          
+       }
+    }
+    
     /**
      * Prints the FIX message in column format includes the tagNames and definitions of tagValues.
      * @return
@@ -195,12 +208,12 @@ public class InfixMap implements Serializable {
     public String toDisplayString(Comparator<InfixFieldInfo> comparator) {
         StringBuilder str = new StringBuilder();
         ArrayList<InfixFieldInfo> orderedFields = new ArrayList<InfixFieldInfo>(infixMap.values());
+        setTagNamesIfAvailable();
         Collections.sort(orderedFields, comparator);
         String fieldStr = null;
         for (InfixFieldInfo fieldInfo : orderedFields) {
             InfixField field = fieldInfo.getField();
-            String tagNum = field.getTag();
-            String tagName = FieldToNameMap.getTagName(tagNum);
+            String tagName = fieldInfo.getTagName();
             if (!tagName.isEmpty()) {
             	Map<String, String> fieldDefMap = FieldValueToDefMap.getFieldValueDefMap(tagName);
             	String tagValue = field.getTagVal();

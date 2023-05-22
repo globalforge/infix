@@ -52,6 +52,13 @@ public class InfixFieldInfo implements Serializable, Comparable<InfixFieldInfo> 
     * original message
     */
    private final BigDecimal position;
+   
+   /**
+    * Placeholder for an optional tagName.  Tag name will only exist in the context for which the parsed data dictionaries are used.
+    * This means that if any *Simple* class are used, like InfixSimpleActions, the tagName will not exist because the general concept behind
+    * using the *Simple* classes are that they are not dependent on the fix library.
+    */
+   private String tagName = "";
 
    /**
     * Constructor
@@ -109,6 +116,14 @@ public class InfixFieldInfo implements Serializable, Comparable<InfixFieldInfo> 
    public BigDecimal getPosition() {
       return position;
    }
+   
+   public void setTagName(String tagName) {
+      this.tagName = tagName;
+   }
+
+   public String getTagName() {
+      return tagName;
+   }
 
    @Override
    public String toString() {
@@ -119,4 +134,6 @@ public class InfixFieldInfo implements Serializable, Comparable<InfixFieldInfo> 
    public int compareTo(InfixFieldInfo o) {
       return position.compareTo(o.getPosition());
    }
+
+
 }

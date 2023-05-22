@@ -1,3 +1,6 @@
 /build-eclipse/
 **/.DS_Store
 **/.*
+**/*.class
+fix/bin/**
+bin/**

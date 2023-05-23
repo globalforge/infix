@@ -3,11 +3,15 @@ package com.globalforge.infix;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.globalforge.infix.api.InfixAPI;
 import com.globalforge.infix.api.InfixField;
 import com.globalforge.infix.api.InfixFieldInfo;
@@ -15,6 +19,7 @@ import com.globalforge.infix.api.InfixMap;
 import com.globalforge.infix.api.InfixUserContext;
 import com.globalforge.infix.api.InfixUserTerminal;
 import com.globalforge.infix.qfix.FieldToNameMap;
+import com.globalforge.infix.qfix.FieldValueToDefMap;
 import com.globalforge.infix.qfix.FixGroupMgr;
 import com.globalforge.infix.qfix.MessageData;
 
@@ -246,6 +251,48 @@ public class FixMessageMgr {
       }
       putField(tagNum, tagVal);
    }
+   
+   /**
+    * Returns a list of the FIX fields and all known data about them.
+    * @param comparator How to sort the result.
+    * @return List<FixData>
+    */
+   public List<FixData> getFixData(Comparator<InfixFieldInfo> comparator) {
+      List<FixData> fddList = new ArrayList<>();
+      ArrayList<InfixFieldInfo> orderedFields = new ArrayList<InfixFieldInfo>(msgMap.values());
+      setTagNamesIfAvailable(orderedFields);
+      Collections.sort(orderedFields, comparator);
+      for (InfixFieldInfo fieldInfo : orderedFields) {
+         FixData fdd = new FixData();
+         InfixField field = fieldInfo.getField();
+         int tagNum = field.getTagNum();
+         fdd.setTagNum(tagNum+"");
+         String tagValue = field.getTagVal();
+         fdd.setTagVal(tagValue);
+         String tagName = fieldInfo.getTagName();
+         fdd.setTagName(tagName);
+         if (!tagName.isEmpty()) {
+            Map<String, String> fieldDefMap = FieldValueToDefMap.getFieldValueDefMap(tagName);
+            if (fieldDefMap != null) {
+               String tagDef = fieldDefMap.get(tagValue);
+               fdd.setTagDef(tagDef);
+            }
+         }
+         fddList.add(fdd);
+      }
+      return fddList;
+   }
+   
+   private void setTagNamesIfAvailable(ArrayList<InfixFieldInfo> orderedFields) {
+      for (InfixFieldInfo fieldInfo : orderedFields) {
+         InfixField field = fieldInfo.getField();
+         String tagNum = field.getTag();
+         String tagName = FieldToNameMap.getTagName(tagNum);
+         if (!tagName.isEmpty()) {
+            fieldInfo.setTagName(tagName);
+         }
+      }
+   }
 
    /**
     * Dynamically creates a {@link FixGroupMgr} representing the fixVersion at
@@ -259,6 +306,7 @@ public class FixMessageMgr {
       simpleFixVersion = fixVersion.replaceAll("[\",.]", "");
       msgData = FixContextMgr.getInstance().getMessageData(simpleFixVersion);
       posGen = new FixFieldOrderHash(msgData);
+      FixContextMgr.getInstance().getFieldToNameMap(FixMessageMgr.simpleFixVersion);
       FixContextMgr.getInstance().getFieldValueToDefMap(FixMessageMgr.simpleFixVersion);
    }
 

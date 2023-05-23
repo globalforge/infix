@@ -1,7 +1,9 @@
 package com.globalforge.infix.app;
 
+import java.util.List;
 import java.util.Scanner;
 
+import com.globalforge.infix.FixData;
 import com.globalforge.infix.FixMessageMgr;
 import com.globalforge.infix.api.InfixFieldInfoPosComparator;
 
@@ -24,9 +26,19 @@ public class PrettyPrint {
 			properFix = properFix.replaceAll("\\n", "");
 			properFix = properFix.replaceAll("\\r", "");
 			FixMessageMgr msgMgr = new FixMessageMgr(properFix);
-			String displayString = msgMgr.getInfixMap().toDisplayString(new InfixFieldInfoPosComparator());
-			System.out.println();
+			List<FixData> listFdd = msgMgr.getFixData(new InfixFieldInfoPosComparator());
+			String displayString = "";
+			for (FixData fdd : listFdd) {
+			   displayString += fdd.getTagNum();
+			   displayString += (fdd.getTagName().isEmpty() ? "" : (" (" + fdd.getTagName() + ")"));
+			   displayString += " = " + fdd.getTagVal();
+			   displayString += (fdd.getTagDef().isEmpty() ? "" : (" (" + fdd.getTagDef() + ") "));
+			   displayString += "\n";
+			   
+			}
+			//String displayString = msgMgr.getInfixMap().toDisplayString(new InfixFieldInfoPosComparator());
 			System.out.println(displayString);
+			
 			System.out.println();
 			System.out.println(fixMsg);
 			scanner.close();

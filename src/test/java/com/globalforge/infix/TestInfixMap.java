@@ -1,5 +1,7 @@
 package com.globalforge.infix;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -31,48 +33,77 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 public class TestInfixMap {
-    public static String fixMsg1 = "8=FIX.4.2^A9=69^A35=0^A49=RPTRDCSHFD^A56=CANTRPTRDCSHFD^A34=427^A52=20230518-04:03:03.328^A21=3^A10=079^A";
-    public static String fixMsg44 = "8=FIX.4.4^A9=69^A35=0^A49=RPTRDCSHFD^A56=CANTRPTRDCSHFD^A34=427^A52=20230518-04:03:03.328^A21=1^A10=079^A";
+   public static String fixMsg1 =
+      "8=FIX.4.2^A9=69^A35=0^A49=RPTRDCSHFD^A56=CANTRPTRDCSHFD^A34=427^A52=20230518-04:03:03.328^A21=3^A10=079^A";
+   public static String fixMsg44 =
+      "8=FIX.4.4^A9=69^A35=0^A49=RPTRDCSHFD^A56=CANTRPTRDCSHFD^A34=427^A52=20230518-04:03:03.328^A21=1^A10=079^A";
 
-    @Test
-    public void t1() {
-        try {
-            String properFix = fixMsg1.replaceAll("\\^A", "\u0001");
-            FixMessageMgr msgMgr = new FixMessageMgr(properFix);
-            String displayString = msgMgr.getInfixMap().toDisplayString(new InfixFieldInfoNameComparator());
-            System.out.println(displayString);
-            System.out.println();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-    }
-    
-    @Test
-    public void t2() {
-        try {
-            String properFix = fixMsg44.replaceAll("\\^A", "\u0001");
-            FixMessageMgr msgMgr = new FixMessageMgr(properFix);
-            String displayString = msgMgr.getInfixMap().toDisplayString(new InfixFieldInfoValComparator());
-            System.out.println(displayString);
-            System.out.println();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-    }
-    
-    @Test
-    public void t3() {
-        try {
-            String properFix = fixMsg44.replaceAll("\\^A", "\u0001");
-            FixMessageMgr msgMgr = new FixMessageMgr(properFix);
-            String displayString = msgMgr.getInfixMap().toDisplayString(new InfixFieldInfoPosComparator());
-            System.out.println(displayString);
-            System.out.println();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-    }
+   @Test
+   public void t1() {
+      try {
+         String properFix = fixMsg1.replaceAll("\\^A", "\u0001");
+         FixMessageMgr msgMgr = new FixMessageMgr(properFix);
+         List<FixData> displayString =
+            msgMgr.getFixData(new InfixFieldInfoNameComparator());
+         System.out.println(displayString);
+         for (FixData fdd : displayString) {
+            switch (fdd.getTagName()) {
+               case "MsgType":
+                  Assert.assertEquals("HEARTBEAT", fdd.getTagDef());
+                  break;
+               case "HandlInst":
+                  Assert.assertEquals("MANUAL_ORDER_BEST_EXECUTION", fdd.getTagDef());
+            }
+         }
+      } catch (Exception e) {
+         e.printStackTrace();
+         Assert.fail();
+      }
+   }
+
+   @Test
+   public void t2() {
+      try {
+         String properFix = fixMsg44.replaceAll("\\^A", "\u0001");
+         FixMessageMgr msgMgr = new FixMessageMgr(properFix);
+         List<FixData> displayString =
+            msgMgr.getFixData(new InfixFieldInfoValComparator());
+         System.out.println(displayString);
+         for (FixData fdd : displayString) {
+            switch (fdd.getTagName()) {
+               case "MsgType":
+                  Assert.assertEquals("HEARTBEAT", fdd.getTagDef());
+                  break;
+               case "HandlInst":
+                  Assert.assertEquals("AUTOMATED_EXECUTION_ORDER_PRIVATE", fdd.getTagDef());
+            }
+         }
+      } catch (Exception e) {
+         e.printStackTrace();
+         Assert.fail();
+      }
+   }
+
+   @Test
+   public void t3() {
+      try {
+         String properFix = fixMsg44.replaceAll("\\^A", "\u0001");
+         FixMessageMgr msgMgr = new FixMessageMgr(properFix);
+         List<FixData> displayString =
+            msgMgr.getFixData(new InfixFieldInfoPosComparator());
+         System.out.println(displayString);
+         for (FixData fdd : displayString) {
+            switch (fdd.getTagName()) {
+               case "MsgType":
+                  Assert.assertEquals("HEARTBEAT", fdd.getTagDef());
+                  break;
+               case "HandlInst":
+                  Assert.assertEquals("AUTOMATED_EXECUTION_ORDER_PRIVATE", fdd.getTagDef());
+            }
+         }
+      } catch (Exception e) {
+         e.printStackTrace();
+         Assert.fail();
+      }
+   }
 }

@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import com.globalforge.infix.api.InfixAPI;
 import com.globalforge.infix.api.InfixField;
 import com.globalforge.infix.api.InfixFieldInfo;
+import com.globalforge.infix.api.InfixFieldInfoPosComparator;
 import com.globalforge.infix.api.InfixMap;
 import com.globalforge.infix.api.InfixUserContext;
 import com.globalforge.infix.api.InfixUserTerminal;
@@ -70,7 +71,6 @@ public class FixMessageMgr {
       new HashMap<String, InfixUserTerminal>();
    /** manages repeating group contexts */
    private MessageData msgData = null;
-   
    /**
     * manages FIX tag position in a FIX message, especially the order of tags in
     * repeating groups
@@ -120,7 +120,8 @@ public class FixMessageMgr {
     * Sets the value of tag 8 first. This constructor should only be used if you
     * are applying a custom dictionary defined by the tag8Value argument but the
     * client is sending a standard FIX version in tag 8. You basically trick the
-    * system into thinking the client sent 8={@literal <}custom fix version{@literal >}.
+    * system into thinking the client sent 8={@literal <}custom fix
+    * version{@literal >}.
     *
     * @param baseMsg The input message
     * @param tag8Value The value must be the version in a custom FIX data
@@ -227,7 +228,8 @@ public class FixMessageMgr {
     *
     * @param tagStr The string representing a FIX field name as it is found in a
     * FIX message.
-    * @param tagVal the string representing a FIX field value as it is found in a FIX message.
+    * @param tagVal the string representing a FIX field value as it is found in
+    * a FIX message.
     * @throws Exception can't create the runtime classes specified by the FIX
     * version.
     */
@@ -251,9 +253,10 @@ public class FixMessageMgr {
       }
       putField(tagNum, tagVal);
    }
-   
+
    /**
     * Returns a list of the FIX fields and all known data about them.
+    * 
     * @param comparator How to sort the result.
     * @return List<FixData>
     */
@@ -266,7 +269,7 @@ public class FixMessageMgr {
          FixData fdd = new FixData();
          InfixField field = fieldInfo.getField();
          int tagNum = field.getTagNum();
-         fdd.setTagNum(tagNum+"");
+         fdd.setTagNum(tagNum + "");
          String tagValue = field.getTagVal();
          fdd.setTagVal(tagValue);
          String tagName = fieldInfo.getTagName();
@@ -278,11 +281,20 @@ public class FixMessageMgr {
                fdd.setTagDef(tagDef);
             }
          }
+         fdd.setTagPos(fieldInfo.getPosition());
          fddList.add(fdd);
       }
       return fddList;
    }
-   
+
+   /**
+    * Returns the FixData in the default sort order which is by FIX position.
+    * @return List<FixData>
+    */
+   public List<FixData> getFixData() {
+      return getFixData(new InfixFieldInfoPosComparator());
+   }
+
    private void setTagNamesIfAvailable(ArrayList<InfixFieldInfo> orderedFields) {
       for (InfixFieldInfo fieldInfo : orderedFields) {
          InfixField field = fieldInfo.getField();

@@ -3,15 +3,11 @@ package com.globalforge.infix.api;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.globalforge.infix.FixContextMgr;
 import com.globalforge.infix.FixMessageMgr;
-import com.globalforge.infix.qfix.FieldToNameMap;
-import com.globalforge.infix.qfix.FieldValueToDefMap;
-import com.globalforge.infix.qfix.fix42.auto.FIX42FieldValueToDefMap;
 
 /*-
  The MIT License (MIT)

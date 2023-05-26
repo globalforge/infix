@@ -289,6 +289,7 @@ public class FixMessageMgr {
 
    /**
     * Returns the FixData in the default sort order which is by FIX position.
+    * 
     * @return List<FixData>
     */
    public List<FixData> getFixData() {
@@ -327,13 +328,26 @@ public class FixMessageMgr {
     *
     * @return String The Fix message type.
     */
-   private String getMsgType() {
+   public String getMsgType() {
       String tagVal = null;
       InfixFieldInfo msgType = getField(35);
       if (msgType != null) {
          tagVal = msgType.getField().getTagVal();
       }
       return tagVal;
+   }
+
+   /**
+    * Return the group manager for a msgType. Modification of the instance is
+    * dangerous and can corrupt the entire process. Hope you know what you're
+    * doing. It should only be accessed in a READ-ONLY way. The internal maps
+    * should not be modified. ToDo:  Make the maps READ-ONLY.
+    * 
+    * @param msgType The FIX message type.
+    * @return FixGroupMgr
+    */
+   public FixGroupMgr getGroupMgr(String msgType) {
+      return msgData.getGroupMgr(msgType);
    }
 
    /**

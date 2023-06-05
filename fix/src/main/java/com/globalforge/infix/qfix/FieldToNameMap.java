@@ -36,8 +36,8 @@ SOFTWARE.
 public abstract class FieldToNameMap {
     private final static Logger logger = LoggerFactory
         .getLogger(FieldToNameMap.class);
-    protected static Map<String, String> map = new ConcurrentHashMap<>();
-    public static String getTagName(String tagValue) {
+    protected Map<String, String> map = new ConcurrentHashMap<>();
+    public String getTagName(String tagValue) {
         if (map.containsKey(tagValue)) {
             return map.get(tagValue);
         } else {
@@ -45,14 +45,14 @@ public abstract class FieldToNameMap {
         }
     }
 
-    public static void putTagName(String tagValue, String tagName) {
+    public void putTagName(String tagValue, String tagName) {
         if ((tagValue != null && !tagValue.isEmpty())
             && (tagName != null && !tagName.isEmpty())) {
             map.put(tagValue, tagName);
         }
     }
 
-    public static void putMap(Map<String, String> numToNameMap) {
+    public void putMap(Map<String, String> numToNameMap) {
         map = new ConcurrentHashMap<>(numToNameMap);
     }
 }

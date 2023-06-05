@@ -76,6 +76,16 @@ public class FixMessageMgr {
     * repeating groups
     */
    private FixFieldOrderHash posGen = null;
+   /**
+    * manages a map between the value of a fix field and it's definition
+    * according to the data dictionary
+    */
+   private FieldValueToDefMap fieldValueToDefMap;
+   /**
+    * manages a map between a fix field number and it's name according to the
+    * data dictionary
+    */
+   private FieldToNameMap fieldToNameMap;
 
    /**
     * Test if string is an integer. It allows for negative field numbers. Yes,
@@ -275,7 +285,7 @@ public class FixMessageMgr {
          String tagName = fieldInfo.getTagName();
          fdd.setTagName(tagName);
          if (!tagName.isEmpty()) {
-            Map<String, String> fieldDefMap = FieldValueToDefMap.getFieldValueDefMap(tagName);
+            Map<String, String> fieldDefMap = fieldValueToDefMap.getFieldValueDefMap(tagName);
             if (fieldDefMap != null) {
                String tagDef = fieldDefMap.get(tagValue);
                fdd.setTagDef(tagDef);
@@ -300,7 +310,7 @@ public class FixMessageMgr {
       for (InfixFieldInfo fieldInfo : orderedFields) {
          InfixField field = fieldInfo.getField();
          String tagNum = field.getTag();
-         String tagName = FieldToNameMap.getTagName(tagNum);
+         String tagName = fieldToNameMap.getTagName(tagNum);
          if (!tagName.isEmpty()) {
             fieldInfo.setTagName(tagName);
          }
@@ -319,8 +329,10 @@ public class FixMessageMgr {
       simpleFixVersion = fixVersion.replaceAll("[\",.]", "");
       msgData = FixContextMgr.getInstance().getMessageData(simpleFixVersion);
       posGen = new FixFieldOrderHash(msgData);
-      FixContextMgr.getInstance().getFieldToNameMap(FixMessageMgr.simpleFixVersion);
-      FixContextMgr.getInstance().getFieldValueToDefMap(FixMessageMgr.simpleFixVersion);
+      fieldToNameMap =
+         FixContextMgr.getInstance().getFieldToNameMap(FixMessageMgr.simpleFixVersion);
+      fieldValueToDefMap =
+         FixContextMgr.getInstance().getFieldValueToDefMap(FixMessageMgr.simpleFixVersion);
    }
 
    /**
@@ -341,7 +353,7 @@ public class FixMessageMgr {
     * Return the group manager for a msgType. Modification of the instance is
     * dangerous and can corrupt the entire process. Hope you know what you're
     * doing. It should only be accessed in a READ-ONLY way. The internal maps
-    * should not be modified. ToDo:  Make the maps READ-ONLY.
+    * should not be modified. ToDo: Make the maps READ-ONLY.
     * 
     * @param msgType The FIX message type.
     * @return FixGroupMgr

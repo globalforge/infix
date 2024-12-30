@@ -11,13 +11,22 @@ InFIX has also successfully been used in production to increase order flow and a
 
 Preamble
 --------
-InFIX is a Java 11 application that is known to build on Windows, Linux and OS X but it should be buildable on any UNIX platform.
+InFIX is a Java 11 application that is known to build on Windows, Linux and OS X but it should be buildable on any UNIX platform.  Java 11 is used because antlr 4.10.1 was compiled with Class File Version 55.0 (Java 11).
+
+Java 11 works with Gradle 5.6.2 but Java 17 requires more recent versions of Gradle which are not compatible with the current build.gradle file.
+
+Porting build.gradle to the latest version of gradle is due for an upgrade.
 
 The engine behind InFIX is ANTLR4 (http://antlr.org).  With a little work, InFIX can be ported to C#, Python (2 and 3) and at some point in the future C++. The language limitations are due to currently supported code generation targets by Antlr4.
 
 Set up the Build Environment
 ----------------------------
 The Infix build will quietly use Gradle 5.6.2 from https://gradle.org. There is no need to download Gradle before building.
+
+Make sure JAVA_HOME points to Java 11
+
+
+##### JAVA_HOME=C:\Program Files\Java\jdk-11
 
 Build the App
 -------------

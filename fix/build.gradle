@@ -10,12 +10,14 @@ dependencies {
 project.ext {
    mainClass = 'com.globalforge.infix.qfix.CodeGenerator'
    srcDir = "${projectDir}/src/main/java/com/globalforge/infix/qfix"
+   libDir = "${rootProject.projectDir}/libs"
 }
 
 distributions {
      main {
          contents {
 			from(configurations.runtime.allArtifacts.files)
+			from(project.ext.libDir)
          }
      }
 }

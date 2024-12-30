@@ -5,6 +5,7 @@
 fix/bin/**
 bin/**
 **/build/*
+!build/distributions
 **/qfix/*
 **/antlr/*
 
